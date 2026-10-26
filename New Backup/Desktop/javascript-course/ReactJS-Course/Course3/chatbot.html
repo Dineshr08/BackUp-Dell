@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chatbot</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/chatbot.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">
+      function ChatInput({ chatMessages, setChatMessages }) {
+
+        //Step2: Here we have use state, this state referes the input text box,Here we made it empty because the initial value is ''. Here onChange={saveInputText} we have called in ChatInput component, so it will run the function which is saveInputText it will capture the the inout text taht we enter in input text box. and here we used state,so that capturing value we have passed to update function which is setInputText, so when this execute it will update back the inputText. Then on  send button we have added onClick={sendMessage} function which will run sendMessage when we click the send button, here we have used splice operator, becuase in react when we update the array we cant directly update we will take copy of that then we will update , here we have taken copy then adding the data back to arry which is input text we entered in text box as message and sender as user because we entered then unique key which we saved to variable then that variable we used in setChatMessages(newChatMessages); update function , so it will update back the chatMessages ie orginal data and update the html as well, so it will display in website. 
+
+        const [inputText, setInputText] = React.useState('');
+
+        function saveInputText(event) {
+          setInputText(event.target.value);
+        }
+
+        function sendMessage() {
+          const newChatMessages = [
+            ...chatMessages,
+            {
+              message: inputText,
+              sender: 'user',
+              id: crypto.randomUUID()
+            }
+          ];
+
+          setChatMessages(newChatMessages);
+
+          //Step3: then we have used external libaray chatbot, which is the object and it has method getResponse which will tahe input ie our inputText, so what it will do is based on our input it will return the output, that again we are using in update function and updating back the chatMessages, so it will update the data and update the html.
+          const response = Chatbot.getResponse(inputText);
+          setChatMessages([
+            ...newChatMessages,
+            {
+              message: response,
+              sender: 'robot',
+              id: crypto.randomUUID()
+            }
+          ]);
+          //Step4: At end we have setInputText(''); update function , so it will update back the inputText text to '' string and the same to display in UI we have used value property value={inputText}, so in UI it will display empty in input text box
+          setInputText('');
+        }
+
+        return (
+          <>
+            <input
+              placeholder="Send a message to Chatbot"
+              size="30"
+              onChange={saveInputText}
+              value={inputText}
+            />
+            <button
+              onClick={sendMessage}
+            >Send</button>
+          </>
+        );
+      }
+
+      function ChatMessage({ message, sender }) {
+        // const message = props.message;
+        // const sender = props.sender;
+        // const { message, sender } = props;
+
+        /*
+        if (sender === 'robot') {
+          return (
+            <div>
+              <img src="robot.png" width="50" />
+              {message}
+            </div>
+          );
+        }
+        */
+
+        return (
+          <div>
+            {sender === 'robot' && (
+              <img src="robot.png" width="50" />
+            )}
+            {message}
+            {sender === 'user' && (
+              <img src="user.png" width="50" />
+            )}
+          </div>
+        );
+      }
+
+      //Step1: from previous course to here, all the data was hardcoded , So what we did here is we save the data in the array, then using map created the ChatMessage component array. If we are using the component arry , then we need to assign key and it should be unique, thats y we have added key property.So here we have moved that to state ie React.useState(), the reason is when we update the data, it will update the html as well in the website, but without state, if you update the data it wont update html.So we moved the data inside the state and it return the array that returned array will have 2 values ie array[0] and array[1], here chatMessages, setChatMessages, array[0] ie chatMessages referes the current data and array[1] ie setChatMessages referes the update function which will update the current data. When the update function runs it will update the current data and update the html as well in backend by default.
+
+      function ChatMessages({ chatMessages }) {
+
+        // const [chatMessages, setChatMessages] = React.useState([{
+        //   message: 'hello chatbot',
+        //   sender: 'user',
+        //   id: 'id1'
+        // }, {
+        //   message: 'Hello! How can I help you?',
+        //   sender: 'robot',
+        //   id: 'id2'
+        // }, {
+        //   message: 'can you get me todays date?',
+        //   sender: 'user',
+        //   id: 'id3'
+        // }, {
+        //   message: 'Today is September 27',
+        //   sender: 'robot',
+        //   id: 'id4'
+        // }]);
+        // // const [chatMessages, setChatMessages] = array;
+        // // const chatMessages = array[0];
+        // // const setChatMessages = array[1];
+
+
+        return (
+          <>
+            {chatMessages.map((chatMessage) => {
+              return (
+                <ChatMessage
+                  message={chatMessage.message}
+                  sender={chatMessage.sender}
+                  key={chatMessage.id}
+                />
+              );
+            })}
+          </>
+        );
+      }
+
+      function App() {
+
+        //Step5: Earlier it was above on this component place, function ChatMessages({ chatMessages }) {, as we need to use this array in other component , so we used lifiting up the state concept, we have moved this state to main componet , so we can share this arry to other child componenta as property like below
+        /*
+         <ChatInput
+              chatMessages={chatMessages}
+              setChatMessages={setChatMessages}
+            />
+            <ChatMessages
+              chatMessages={chatMessages}
+        */ //We can also pass array as properties like above.
+
+        const [chatMessages, setChatMessages] = React.useState([{
+          message: 'hello chatbot',
+          sender: 'user',
+          id: 'id1'
+        }, {
+          message: 'Hello! How can I help you?',
+          sender: 'robot',
+          id: 'id2'
+        }, {
+          message: 'can you get me todays date?',
+          sender: 'user',
+          id: 'id3'
+        }, {
+          message: 'Today is September 27',
+          sender: 'robot',
+          id: 'id4'
+        }]);
+        // const [chatMessages, setChatMessages] = array;
+        // const chatMessages = array[0];
+        // const setChatMessages = array[1];
+
+        return (
+          <>
+            <ChatInput
+              chatMessages={chatMessages}
+              setChatMessages={setChatMessages}
+            />
+            <ChatMessages
+              chatMessages={chatMessages}
+            />
+          </>
+        );
+      }
+
+      const container = document.querySelector('.js-container');
+      ReactDOM.createRoot(container).render(<App />);
+    </script>
+  </body>
+</html>

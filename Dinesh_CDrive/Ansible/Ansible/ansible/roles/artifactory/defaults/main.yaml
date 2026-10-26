@@ -1,0 +1,125 @@
+---
+
+# YUM repo URL
+artifactory_yumrepo_url: "{{
+  'http://jfrog.bintray.com/artifactory-pro-rpms/org/artifactory/pro/rpm/jfrog-artifactory-pro/6.16.0/'
+  }}"
+
+# Additional YUM repo pararms
+artifactory_yumrepo_params: {}
+
+# Package to be installed (explicit version can be specified here)
+artifactory_pkg: "{{
+  'jfrog-artifactory-pro-6.16.0.rpm'
+  }}"
+
+# Default list of extra packages
+artifactory_deps_pkgs__default: []
+
+# Packages required for the PostgreSQL DB creation
+artifactory_db_pgsql_pkgs:
+    - python-psycopg2
+
+# postgresql jar file to be download
+url: "http://jdbc.postgresql.org/download/postgresql-42.2.5.jar"
+
+# Custom list of extra packages
+artifactory_deps_pkgs__custom: []
+
+# Final list of extra packages
+artifactory_deps_pkgs: "{{
+  (
+    artifactory_db_pgsql_pkgs
+      if artifactory_db_engine == 'postgresql'
+      else
+    []
+  ) +
+  artifactory_deps_pkgs__default +
+  artifactory_deps_pkgs__custom }}"
+
+# Name of the service
+artifactory_service: artifactory
+
+# Name of db service:
+db_service: postgresql-11
+
+# Config directory
+artifactory_conf_dir: /etc/opt/jfrog/artifactory
+
+# artifactory home directory
+artifactory_home_dir: /var/opt/jfrog/artifactory
+
+# pgsql data directory
+artifactory_pgsql_data_path: "/apps/artifactory/pgsql/{{ pgsql_version }}/data"
+
+# pgsql data directory
+artifactory_apps_path: "/apps/artifactory"
+
+# pgsql general path
+pgsql_data_path: "/var/lib/pgsql/{{ pgsql_version }}/data"
+
+# DB engine [postgresql]
+artifactory_db_engine: postgresql-42.2.5
+
+# plugins directory
+plugins_directory: "{{ artifactory_home_dir }}/etc/plugins"
+
+# Destination symlink for the JDBC driver
+artifactory_db_driver_destination: "{{ artifactory_home_dir }}/tomcat/lib/{{ artifactory_db_engine }}-jdbc.jar"
+
+# opt folder 
+artifactory_opt_path: /opt/jfrog/artifactory
+
+# Tomcat folder
+tomcat_path: "{{ artifactory_opt_path }}/app/artifactory/tomcat/conf"
+
+# artifactory tomcat path 
+artifactory_tomcat_path: "{{ artifactory_home_dir }}/tomcat/conf"
+
+# User used to create DB and user
+artifactory_db_login_user: "{{
+  'artifactory'
+    if artifactory_db_engine == 'postgresql'
+    else
+  'root' }}"
+
+# Password used to create DB and user
+artifactory_db_login_password: "{{
+  'artifactory'
+    if artifactory_db_engine == 'postgresql'
+    else
+  None }}"
+
+# Password used to create DB and user
+artifactory_db_driver: "{{
+  'org.postgresql.Driver'
+    if artifactory_db_engine == 'postgresql'
+    }}"
+
+# Location of the JDBC driver
+artifactory_db_driver_location: "{{
+  '/usr/share/java/postgresql-42.2.5.jar'
+    if artifactory_db_engine == 'postgresql'
+    }}"
+
+# DB server configuration options
+artifactory_db_host:  "{{ groups[input_artifactory_db_host_grp] | to_yaml | replace('[','') | replace(']','') | replace('\n', '')}}"
+artifactory_db_port: "{{
+  5432
+    if artifactory_db_engine == 'postgresql'
+    else
+  3306 }}"
+artifactory_db_name: artifactory
+artifactory_db_user: artifactory
+artifactory_db_password: artifactory
+
+artifactory_user: artifactory
+artifactory_group: artifactory
+
+# DB property file
+artifactory_db_conf:
+  type: "{{ artifactory_db_engine }}"
+  driver: "{{ artifactory_db_driver }}"
+  url: jdbc:{{ artifactory_db_engine }}://{{ artifactory_db_host }}:{{ artifactory_db_port }}/{{ artifactory_db_name }}
+  username: "{{ artifactory_db_user }}"
+  password: "{{ artifactory_db_password }}"

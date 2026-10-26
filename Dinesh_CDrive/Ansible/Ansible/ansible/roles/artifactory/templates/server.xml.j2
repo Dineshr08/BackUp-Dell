@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+{{ ansible_managed }}
+-->
+
+<Server port="8015" shutdown="SHUTDOWN">
+
+    <Service name="Catalina">
+        <Connector port="8081" sendReasonPhrase="true" relaxedPathChars='[]' relaxedQueryChars='[]' maxThreads="200"/>
+
+        <!-- Must be at least the value of artifactory.access.client.max.connections -->
+        <Connector port="8040" sendReasonPhrase="true" maxThreads="50"/>
+
+        <Engine name="Catalina" defaultHost="localhost">
+            <Host name="localhost" appBase="webapps" startStopThreads="2"/>
+        </Engine>
+    </Service>
+
+</Server>

@@ -1,0 +1,25 @@
+<!--What we do here is if we click subscribe it will become subscribed else subscribe using dom here creating fn and perform all the operation there and call here-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dom </title>
+  </head>
+  <body>
+    <p>YouTube Subscribe Button</p>
+    <button onclick="
+      subscribe();
+    " class="js-subscribe-button">Subscribe</button>
+    <script>
+
+      function subscribe() {
+        const buttonElement = document.querySelector('.js-subscribe-button');
+        if(buttonElement.innerHTML === 'Subscribe') {
+          buttonElement.innerHTML = 'Subscribed';
+        } else {
+          buttonElement.innerHTML = 'Subscribe';
+        }
+      }
+
+    </script>
+  </body>
+</html>

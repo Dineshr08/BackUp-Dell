@@ -1,0 +1,135 @@
+Here we are going to use vitest framework for automated test
+
+To install:
+npm install --save-dev vitest@3.1.2
+Here --save-dev is use this library only during the delelopment phase
+
+Below command is to run all the test case in the project. When we run the below command and just update the code and save , for each save it will run the test.
+npx vitest
+
+Creating the test case file:
+We need to create a test case file in same place of orginal file is available. but the file name is orginalfilename.test.js. Eg below
+money.test.js
+
+Below is sample unit test case
+To create a test suite or group multiple test case use describe.describe take 2 inputs one is test suite name and second one is ()=> {} fn where inisde it we will write all the test case related to the test suite. Test suite name we can give anything which make sense, here formatMoney i have given which is the function for that function we are creating multiple test case.
+
+it is where we will write the test case, it will take 2 imputs one is name of the test case we can give some relevent name, then fn, where we write the test case.expect is used to check for the result. Here expect(formatMoney(1099)).toBe('$10.99'); we have used formatMoney function inside the expect so once that fn is run expect will have that value and that we are comparing with toBe value. toBe is the value we have gien to check whether we are getting expected result.We can have multiple expect inside the it
+
+First we need to import
+import {it, describe,expect } from 'vitest';
+import { formatMoney } from './money';
+
+describe('formatMoney', () => {
+
+  it('check the data working for $1099', () => {
+    expect(formatMoney(1099)).toBe('$10.99');
+  });
+  it('check the data working for $10 & $103', () => {
+    expect(formatMoney(10)).toBe('$0.10');
+    expect(formatMoney(103)).toBe('$1.03');
+  });
+});
+
+Unit test: We are testing a piece of code. Eg we are testing formatMoney fn alone is a piece of code.
+
+
+Integration Test: To test multiple piece of code or the complete component or page.Because the component will have multiple piece of codes like multiple functions.
+While doing Component or integration testing, need to test 2 things
+1.Page is loading the proper information or not. To load the component need to use render. To do that need to do below things
+Install below packages for integration test
+npm install --save-dev @testing-library/react@16.3.0 @testing-library/jest-dom@6.6.3 @testing-library/user-event@14.6.1 jsdom@26.1.0
+
+Create vitest.config.js file and add below
+
+import { defineConfig } from 'vitest/config'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: './setupTests.js',
+  }
+});
+
+Create setupTests.js and add below
+import '@testing-library/jest-dom';
+
+Creating Test file:
+Just follow same as unit test. Crate file uunder same location with .jsx and it should be like filename.test.jsx
+
+render
+Diaplay a component in a page
+Render a component in a fake webpage
+Mock:
+Create a fake version of this function
+vi.fn() - Create a fake function that doesent do anything. This fake fn is called as mock
+screen - Let us help in check the fake webpage, to see if everything was rendered correctly
+
+Below we tested the Products component,for the product component we have passed 2 props one is product and other is loadCart. Product is the one which the orginal code will use and display the information, so for testing we manually gave the product information and testing and we also used loadCart in orginal cart and that data we used through api, so can use the api here because if we dend something it will update the existing data, so instead we used mock.vi.fn() - Create a fake function that doesent do anything. This fake fn is called as mock. Ealrier in unit test we run fun to check, in integration testing we use render to display the information of the page. Here we used screen too, it will get the data from the fake page and that wont display in ui.
+To compare the data in screen we use below
+expect(screen.getByText('Black and Gray Athletic Cotton Socks - 6 Pairs')).toBeInTheDocument();
+To Test the image is loaded properly we use below. But we need to add data-testid = "product-rating-stars-image" in the orginal html place to test it. Then on getByTestId we have to give that data-testid name and on we .toHaveAttribute('src', 'images/ratings/rating-45.png'); we have to give impage path. Eg below
+
+<div className="product-rating-container">
+        <img className="product-rating-stars"
+        data-testid="product-rating-stars-image"
+
+expect(
+      screen.getByTestId('product-rating-stars-image')
+    ).toHaveAttribute('src', 'images/ratings/rating-45.png');
+
+Integration Testing Example:
+import {it, describe,expect, vi } from 'vitest';
+import { Products } from './Products';
+import { render, screen } from '@testing-library/react';
+
+
+describe('Product Component', () => {
+
+  
+
+  it('Checking whether its display the proper information on the page', () => {
+
+    const product = {
+    id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
+    image: "images/products/athletic-cotton-socks-6-pairs.jpg",
+    name: "Black and Gray Athletic Cotton Socks - 6 Pairs",
+    rating: {
+      stars: 4.5,
+      count: 87
+    },
+    priceCents: 1090,
+    keywords: ["socks", "sports", "apparel"]
+  }
+
+  const loadCart = vi.fn();
+  
+    render( <Products product={product} loadCart={loadCart} />);
+    expect(screen.getByText('Black and Gray Athletic Cotton Socks - 6 Pairs')).toBeInTheDocument();
+    expect(screen.getByText('$10.90')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('product-image')
+    ).toHaveAttribute('src', 'images/products/athletic-cotton-socks-6-pairs.jpg');
+
+    expect(
+      screen.getByTestId('product-rating-stars-image')
+    ).toHaveAttribute('src', 'images/ratings/rating-45.png');
+
+    expect(
+      screen.getByText('87')
+    ).toBeInTheDocument();
+  });
+});
+
+2. User Interaction, when we click something whether its behaving properly or not.Like click on add to cart whether its added to cart or not.
+Just read Product.test.jsx for more details.
+
+
+Mock Implementation:make a mock to do whatever we want
+
+MemoryRouter  - It specifically for testing
+
+within() - Let us find something within the specific element

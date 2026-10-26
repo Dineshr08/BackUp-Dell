@@ -1,0 +1,39 @@
+Why Docker:
+Before docker was invented, consider if we have to develope the app it has appserver in nodejs, postgresql db, mq and ansible orchetrisation.So need to find the os which is compatible for all the technology and its version, then for each component ie nodejs need to find the compatabile lib and dependenises(ext library) as well. Which is very difficult, then if replace the component from pogrgres to mongodb then same process which is time consuming and when new developer join he need to run lot of command to setup the env.Also if developer use different os and the same app is deployed in different test and prod env again the app will fail because of the compatability issue. So docker inveneted,on top of host os we can install docker, on top of docker we can create any number of container or instance.Our case its 4 container for 4 component, so each component has its own os, lib and dependencies we can export that to other envlike prod and test, so the compatability issue will be fixed.
+
+Containers:
+Container is the instance it will have its own process, network interface and mounts but it will share the host os kernal.On top of host os on top of docker we can can create any number of containers. 
+What is Share host os kernal ?
+Consider we have os like ubuntu, rhel, debian, sles all are different os but share the same os kernal which is linux.What differentiating each ie ubuntu, rhel, debian, sles is their softwares ie pkg, compiler, dev tool , ui etc which only differentiate the os but share same os kernal. So if the hardware os is any linux os on top we can create any number of docker container with different os , but cant create container with windows since its not share the same os kernal.
+Docker structure:(Look bottom to top)
+os+lib and its dependencies+application
+container
+docker
+Host os
+Hardware
+
+Container vs VM
+VM:
+On top of hardware we install hypervisor and top of that we will create vm.in vm will have os+app and its lib and dependencies. We can create many vm on top of hypervisor. So it consumer more resources, because on hypervisor will be more different os so it consume high resources and load time is high and size is big too.
+Container:
+On container on single host os we can create any number of container and took less resource because it has single host os and container use the same kernal os so less resource and less size and boot time is quick.
+
+So we work together : On server, we will create hypervisor, then on top we will create a vm , on vm will create multiple container. This how we will work both together.Earlier on vm one app and now one vm 1000 containers.
+
+Images and registries:
+Images:We will create all our application as image ie complete package or template. We can create our own image ie our application we can create as image. With image we can create multiple running containers  or instance.We can have postgres image and use that image and create a instance, so that instance will have pre installed postgres and postgres releated things.
+Registery:Where we store all our images. Docker hub, github container registeris are examples.
+
+Docker and Devops:
+Earlier when developer develope the application they will give war file and installation guide to devops people where they manage application. But devops team will not have an developer knowledege so they need to reachout to developer to fix this issue. So with image developer can deveope the image and share with devops team so they can install in any environment.  
+
+Steps to install docker on RHEL:
+Below command used to check os details and arch ie bit details of server.
+cat /etc/*Release*
+arch or uname -m
+
+Follow below steps to install docker on rhel
+https://docs.docker.com/engine/install/rhel/
+
+Command to pull image and run on the container
+docker run nodejs

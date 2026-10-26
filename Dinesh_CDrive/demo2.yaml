@@ -1,0 +1,67 @@
+name: MyProject
+variables:
+- constant:
+    name: demo_host
+    value: neoload-rest.saas.neotys.com
+- file:
+    name: demo_tokens_file
+    path: /Users/neotys/Desktop/list_of_tokens.csv
+    is_first_line_column_names: true
+    change_policy: each_iteration
+- constant:
+    name: run_test_project_id
+    value: 5c2ce26f2ee6ba0001347b1f
+- constant:
+    name: run_test_scenario_name
+    value: WANImpact
+servers:
+- name: demo_server
+  host: ${demo_host}
+  scheme: https
+user_paths:
+- name: demo_api
+  actions:
+    steps:
+    - request:
+        url: /v1/tests?limit=50&offset=0
+        server: demo_server
+        method: GET
+        headers:
+        - accountToken: ${demo_tokens_file.TokenID}
+    - delay: 5s
+    - request:
+        url: /v1/projects/${run_test_project_id}/run?name=TestasCode&scenarioName=__encodeURL(${run_test_scenario_name})
+        server: demo_server
+        method: POST
+        headers:
+        - accept: application/json
+        - accountToken: ${demo_tokens_file.TokenID}
+        extractors:
+        - name: running_test_id
+          jsonpath: .testId
+    - delay: 30s
+    - request:
+        url: /v1/tests/${running_test_id}
+        server: demo_server
+        method: GET
+        headers:
+        - accountToken: ${demo_tokens_file.TokenID}
+    - delay: 1m 30s
+    - request:
+        url: /v1/tests/${running_test_id}
+        server: demo_server
+        method: DELETE
+        headers:
+        - accountToken: ${demo_tokens_file.TokenID}
+populations:
+- name: MyPopulation
+  user_paths:
+  - name: demo_api
+    distribution: 100%
+scenarios:
+- name: WANImpact
+  populations:
+  - name: MyPopulation
+    constant_load:
+      users: 5
+      duration: 1 iteration

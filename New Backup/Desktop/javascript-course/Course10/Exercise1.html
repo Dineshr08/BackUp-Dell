@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles/Exercise1.css">
+    <link rel="stylesheet" href="styles/Exercise2.css">
+    <title>
+      Exercise1
+    </title>
+    <body>
+      <p>Amazon Button</p>
+      <button class="amazon-button">Add to Cart</button>
+      <body>
+      <p>Uber Button</p>
+      <button class="uber-button-request js-uber-button">Request now</button>
+      <button class="uber-button-schedule">Schedule for later</button>
+      <p>Toggle button</p>
+      <button class="gaming-button js-gaming-button" onclick="isToggled('.js-gaming-button');">Gaming</button>
+      <button class="gaming-button js-music-button" onclick="isToggled('.js-music-button');">Music</button>
+      <button class="gaming-button js-tech-button" onclick="isToggled('.js-tech-button');">Tech</button>
+      <p>Amazon Shipping Calculator</p>
+      <p class>Orders under $40 = +$10 shipping.</p>
+      <p class>Orders over $40 = FREE shipping.</p>
+      <input placeholder="Cost of order" class="js-input cost-input" onkeydown="
+        handleCostKeyDown(event);
+      ">
+      <button onclick="
+        costCalculate();
+      " class="calculate-button">Calculate</button>
+    <p class="js-dollor-result"></p>
+      <script src="scripts/Exercise1.js"></script>
+      <script src="scripts/Exercise2.js"></script>
+    </body>
+  </head>
+</html>

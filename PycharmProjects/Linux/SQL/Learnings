@@ -1,0 +1,8 @@
+PostgreSQL connection string:
+postgresql://USERNAME:PASSWORD@HOST:PORT/DATABASE_NAME
+Login to PostgreSQL suing psql
+psql -u username
+Create DB
+create DATABASE DB_Name;
+Connect to DB
+\c DB_Name

@@ -1,0 +1,309 @@
+Functions are Values:
+We can save the function as values to the variable like below
+const fun1 = function function1() {
+  console.log('Hello');
+}; //Here we gave ; since we need to save the variable with ; . so here we fn is a value and assigned to the variable fun1
+
+We can save funcation as ananymous fun to the variable like below ie remove the fn name and save to variable
+const fun1 = function() {
+  console.log('Hello');
+};
+
+Call function like this
+const add = function() {
+  console.log(2+3);
+};
+
+add();
+add();
+
+Since fn are values fun1 contain the values we can store the fun to the object ie we usually store the values to the obj right same way we can store the function to the object
+
+const obj1 = {
+  num1: 2,
+  fun: function function1() {
+  console.log('Hello');
+};
+}
+
+or we can store the ananymous fn as well
+const obj1 = {
+  num1: 2,
+  fun: function() {
+  console.log('Hello');
+}  
+}
+
+When we call the property we can call like below
+obj1.fun();
+
+How we pass the values to fun like below we can pass fn to function as well
+
+PAss values:
+function function1(param) {
+  console.log(param);
+}; 
+function1(2);
+Pass fn to fn
+function display(param) {
+  param();
+}
+
+//Here i am passing the function as param to display function. in display i can call it  inside function using param name like param();
+display(function() {
+  console.log('hello');
+})
+
+from line num 48 to 55 what is happening is we are creating fn inside the fn and at 53 we are calling that ie display and passing fn inside the display. so at 48 param ie parameter name and that we be a function and can call or use inside the function like param(); holds the function that we pass at 53 ie function() {
+  console.log('hello');
+} = param();
+
+setTimeout() - This will take 2 input, fun and time in millisecond based on that time it will run the passed function in delay
+setTimeout(function() {
+  console.log('Hai')
+}, 3000); 
+The above function will run after 3 sec
+
+setTimeout(function() {
+  console.log('Hai')
+}, 3000); 
+
+console.log('pass');
+
+If we have code like above pass wil print first then only hai will print as setTimeout is asyncronous code , so it wont wait until it 3 sec to complete it start and go to rest line
+
+setInterval() - Same as above setTimeout the only differance here is the time 3000 menas on every 3 sec it will run this function again. This set interval will return random number we can use that id and pass the clearInterval(id) fn to stop the interbal which is running
+
+let interval;
+interval = setInterval(function() {
+  console.log('Hai')
+}, 3000); 
+
+clearInterval(interval);  - Stops the interval
+
+forEach - It used to itearte through array. 
+Syntax:
+const array = [1, 2, 3];
+array.forEach(function(value,index)) {
+  console.log(value);
+  console.log(index);
+} // here its not mandatory to pass both value and index can have one
+It will iterate the each item inside the array. if we want to use continue inside the forEach need to use return statement
+
+array.forEach(function(value,index)) {
+
+  if( value == 1) {
+    return; it will skip the iteration and loop to next value in array.it will end the  function for that value and go to next value in the array
+  }
+  console.log(value);
+  console.log(index);
+} 
+
+
+Arrow Function - Shorter way to write a function.
+
+const arrowFunction = (param, param2) => {
+  conslole.log('hello'); 
+  return 5;
+}
+The above is same as regular function
+const regularFunction = function(param1, param2) {
+  conslole.log('hello'); 
+  return 5
+}
+
+If we have only one param we can make even it shorter, can remove ()
+const arrowFunctionOneParam = param => {
+  conslole.log(param); 
+  return 5;
+} 
+Above is same AS  below
+const arrowFunctionOneParam = (param) => {
+  conslole.log(param); 
+  return 5;
+} 
+
+If the function has one line we can make it evemn shorter we can remove {}. here we remove return as well, by default it will return. if we call like console.log(arrowFunctionLine()); it will return 5, no need to use return
+const arrowFunctionLine = () => 2+3; 
+Above is same AS  below
+const arrowFunctionLine = () => {
+  return 2+3; 
+}
+Same can do with one param as well
+
+const arrowFunctionLine = (param) => {
+  return param+3; 
+}
+op below
+const arrowFunctionLine = (param) => param+3; 
+
+Mostly we will use this arrow function inside forEach or setInterbal, setTimeout , when we pass fn inside another function etc all setinterval, timeout and foreach is fn inside the fn
+
+array.forEach(function(value,index)) {
+  console.log(value);
+  console.log(index);
+}
+instead like above do like below
+
+array.forEach((value,index) => {
+  console.log(value);
+  console.log(index);
+}) Ehat we have done here is passing function inside the function
+
+forEach() is functionb and passing function inside the function
+
+addEventListner() - It dose the same of what onclick="" will do. For eg if we click the button we need to run some javascript for the click we write the js inside there on onclikc or else under script we create a function and call it or directly write code inside script by calling class name using document.querySelector() of the button and get the element and we perform. so instead of that we can use addEventListner().
+It take two paramater
+addEventListner(event, function);
+event - like click we say what type of even when perform this event listener need to perform. eg onclick, here click is the event. 
+function - When event is performed what interactive way need to perform the js need to write here
+
+<body>
+<button class="js-button"></button>
+<script>
+buttonElement  = document.querySelector('.js-button');// for all the  object we can add addEventListner and removeEventListner method
+buttonElement.addEventListner('click', () => {
+  console.log('hai');
+});
+buttonElement.remove('click', () => {
+  console.log('hai');
+});
+buttonElement.addEventListner('click', () => {
+  console.log('hello');
+});
+</script>
+</body>
+
+We can save the fn to var like below
+const eventListner = () => {
+  console.log('hai');
+}
+ and we can use above
+
+ buttonElement.addEventListner('click', eventListner);
+buttonElement.remove('click', eventListner);
+
+And if we do after add if we remove when we click only from our example 3rd event only run. So for one  click we can run multiple event using the addEventListner. so better use this instead of onclick
+
+
+Eg: we have made below button like this 
+from this to 
+<button onclick="
+      playGame('rock');
+    " class="move-button">
+    <img src="images/rock-emoji.png" class="move-icon">
+    ></button>
+This
+<button class="move-button js-rock-move">
+    <img src="images/rock-emoji.png" class="move-icon">
+    ></button>
+
+So in button we called fn like this  playGame('rock'); but same cannot be defined like below 
+
+ document.querySelector('.js-rock-move').addEventListener('click',playerMove('rock'););
+
+Should be like below. When we call the fn inside addEventListner it should be like, create a function () => {} then call the function () => {playerMove('rock');}
+
+document.querySelector('.js-rock-move').addEventListener('click', () => {
+        playerMove('rock');
+      } );
+onclick we call function same function should call like above
+
+
+How to get to know the event for addEventListner, so on button onclick, here click is the event, sameway onkeydown, keydown is the event. whatever after on is the event
+
+on rock paper scissor game when we click the keyboard r, s, p respocetive rockm scissor and paper needs to be click , how doe we do that using addEventListner
+What hap here is when we clcik on body of html page and click button r then it will click rock button.
+So here addEventListner will send obj event to  param function from that we can get what key is pressed
+document.body.addEventListner('keydown', (event) => {
+  if (event.key === 'r') {
+    playerMove('rock');
+      } else if (event.key === 'p') {
+    playerMove('paper');
+      } else if (event.key === 's') {
+    playerMove('scissor');
+      }
+})
+
+Older code:
+What we did here is on todo list project after we added new item we construct the html page like below and displaying in UI using  document.querySelector('.js-todo-list')
+    .innerHTML = todoListHTML;  code.
+
+But what we do here is we want to delete the displaying list. so when we click on delete it should delete it. using addEvent Listner we are going tohandle it. Check the step 1 2 etc in below
+
+const html = `
+      <div>${name}</div>
+      <div>${dueDate}</div>
+      <button onclick="
+        todoList.splice(${i}, 1);
+        renderTodoList();
+      " class="delete-todo-button">Delete</button> 
+    `;
+    todoListHTML += html;
+  }
+
+  document.querySelector('.js-todo-list')
+    .innerHTML = todoListHTML;
+}
+
+
+New code:
+
+
+    const html = `
+      <div>${name}</div>
+      <div>${dueDate}</div>
+      <button class="delete-todo-button js-delete-todo-button">Delete</button> 
+    `;
+    todoListHTML += html;
+  });
+
+  document.querySelector('.js-todo-list')
+    .innerHTML = todoListHTML;
+
+Step1: why we added event listner below is , only we can perform event listner once its display in page so in above code only we are adding element page so we added this line here.
+
+Step2: document.querySelectorAll('.js-delete-todo-button') we use queryselector all, becuase queryselector will take only first element, so all will take all the element which match the class and store in the array.
+
+Step3:since element is in array it will have element as value and each value stored in index, so using forEach we iterate through each element , so deleteButton will have the element value of the array ie each delete button element for that we adde eventlistner  so when we click that it will perform below 
+todoList.splice(${i}, 1);
+        renderTodoList(); ie which will do the actual delete operation. that is what we added in the function. in new function we add index as integer, since we are getting as integare
+Step4: removed that line function from the new code
+
+  document.querySelectorAll('.js-delete-todo-button')
+    .forEach((deleteButton, index) => {
+      deleteButton.addEventListener('click', () => {
+        todoList.splice(index, 1);
+        renderTodoList();
+      });
+    });
+}
+
+filter:
+It same as forEach all the syntax, what it will do is it will create a new array and store the return if return is true
+[1, -3. 5].filter((value, index) => {
+
+  if (value >= 0) {
+    return true;
+  } else {
+    return false
+  }
+})
+the op of above is [1, 5] it create a new array and store the value in that array which return true. For above we can write in shorter
+[1, -3. 5].filter((value, index) => {
+
+  return value >=0; 
+}) which is same as above but here we have done truthy falsy concept
+
+
+map:
+This also same as forEach with all syntax, but what it do on compare with filter is aslo create the new array and store the value which is return. ie it store the return value in the new array
+
+[1, -3. 5].map((value, index) => {
+  reuuen value*2;
+})
+op of above is [2,-6, 10] it create a new array and store the return value. we can do short hand ofr that with arrow one line fn, as we are not using index here so remove it
+[1, -3. 5].map((value) => {
+  reuuen value*2;
+}) can write in shorter way like below
+[1, -3, 5].map(value => value*2) as this by default do return if we have one line code in fn so we remove return and { } is also optional so we removed and for paramenter ie value () is optional so we removed

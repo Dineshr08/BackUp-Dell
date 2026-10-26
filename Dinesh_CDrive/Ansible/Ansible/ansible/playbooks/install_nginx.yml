@@ -1,0 +1,10 @@
+--- 
+- 
+  hosts: "{{ ansible_limit | default('no_hosts')}}"
+  gather_facts: yes
+  roles: 
+    - role: common
+    - role: nginx
+
+# By default, this would install nginx/1.16.1.
+#test push to dev

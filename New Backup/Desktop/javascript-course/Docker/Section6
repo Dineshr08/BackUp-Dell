@@ -1,0 +1,42 @@
+DockerEngine:
+
+When we install docker on host it install 3 component
+dockerd - It used to store all the docker objects ie image, container, volume, network etc
+restapi - Its a program send the command that we run on docker cli
+docker cli  - it used to run a command
+
+If we want to run docker run command from laptop to other machine where docker is installed need to use below command
+docker -H=ip:2378 --tls-verify run nginx
+
+When we run command this is the process actually it will follow
+docker cli - run command
+rest api  - Take command
+dockerd - Manages all docker objects, the it pass to cibatiner d
+containerd - It just pull image, manage lifercycle of container and supervise it,then it pass to run c
+runc - Its take image and confif and connect with kernel and setup namespace and cgroup to run the container.
+In kubernites the dockerd step will not be there it will be directly containerd thats why kubernites wont use docker.
+
+Namespace:
+When we boot the system it will create a parent process id ie 1 and under that all other process of the system boot up ie 2, 3 etc we dont have duplicate process id. but for container it has own mount, process, volume etc. So container will create namespace if we run nginx it will start with pid 1 but correspondence nginx will have pid of 300 ie random id based on host that will link to conatiner 1 , that what namespace will do , each containwer can have process id start with 1
+
+cgroup:
+To allocate the resource we can use cgroup.
+docker run --cpu=0.5 ubuntu - Here we mention 50% of cpu for container when we boot the container
+docker run --memory=100m ubuntu - Here we mention 100m for container when we boot the container
+If we dont mention container will use all 100%
+
+Docker Storage
+All docker data will stored under below filesyatem in host
+File System:
+/var/lib/docker - Under this it will have folder called images, containers, volumes etc image conatine all image files, container containes all container files and volume conttain all volume files. On volume 2 type. Type1 if use the -v /var/lib/docker/volumes/data: /var/lib/mysql , the sql data  will store in volumes of docker . But if we store in someother places like -v data: /var/lib/mysql, somewhere in host we call it as bind
+
+Command to create a volume
+docker volume create datavaolume
+
+For handleing all the docker storage , the storage driver will be responsible.
+All below are file systems. In one of below filesystem all the docker data will be stored
+overlay2
+btrfs
+zfs
+fuse-overlayfs
+vfs

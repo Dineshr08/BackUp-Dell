@@ -1,0 +1,26 @@
+/* Step5: Here App.css will have all the App component related files and index.css will have all the webiste related files. If we have any website related code eg body class that need to moved to index.css file
+
+This body alone webiste ie overall website related file so moving to index.css
+body {
+        font-family: Arial;
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
+
+      */
+
+      
+
+      .app-container {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      
+
+      

@@ -1,0 +1,625 @@
+
+Telemetry data
+MTTD - Detection
+MTTR - Resolve
+Service layer - red
+Infra layer - use
+Observability - When where and why issue are happening and no need to monitot the expected, unknow unknow can be monitored
+types of metric collection
+Push and scrap
+statd
+
+Types of telemetry data
+MELT - metrics, event, log, trace
+event - action happened at given time
+metrics - aggregated value representing event in a period of time ie 100 chips per min at vending machine
+prometheus port 9090
+
+sudo wget https://github.com/prometheus/prometheus/releases/download/v3.14.0/prometheus-3.14.0.linux-amd64.tar.gz
+tar -xvz prometheus-3.14.0.linux-amd64.tar.gz
+sudo groupadd --system prometheus
+sudo useradd -s /sbin/nologin --system -g prometheus prometheus
+
+mkdir /var/lib/prometheus
+rules:
+mkdir /etc/prometheus/rules
+mkdir /etc/prometheus/rules.s
+mkdir /etc/prometheus/files_sd
+
+mv prometheus promtool /usr/local/bin
+prometheus --version
+mv prometheus.yml /etc/prometheus
+
+
+/etc/systemd/system/prometheus.service
+[Unit]
+Description=Prometheus
+Documentation=https://prometheus.io/docs/introduction/overview/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/prometheus \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --storage.tsdb.path=/var/lib/prometheus \
+  --web.console.templates=/etc/prometheus/consoles \
+  --web.console.libraries=/etc/prometheus/console_libraries \
+  --web.listen-address=0.0.0.0:9090 \
+  --web.external-url=
+
+SyslogIdentifier=prometheus
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+chown -R prometheus:prometheus /etc/prometheus
+chown -R prometheus:prometheus /etc/prometheus/*
+chmod -R 775 /etc/prometheus
+chmod -R 775 /etc/prometheus/*
+chown -R prometheus:prometheus /var/lib/prometheus
+chown -R prometheus:prometheus /var/lib/prometheus/*
+systemctl daemon-reload
+systemctl start prometheus
+systemctl enablle prometheus
+systemctl status prometheus
+
+Exporter
+Prometheus pull for every 15 sec
+Node exporter - unix and linux machine 
+wget https://github.com/prometheus/node_exporter/releases/download/v1.12.1/node_exporter-1.12.1.linux-amd64.tar.gz
+./node_exporter
+Enable port 9100 on application server where we collect data
+start node exporter without service ./node_exporter
+update prometheus.yml on prometheus server here first scrape_configs is for collecting prometheus installed sever collecting metrics and job_name: "app-server" where node exporter is installed on app server and its details and static_configs has the traget details
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "prometheus"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["localhost:9090"]
+       # The label name is added as a label `label_name=<label_value>` to any timeseries scraped from this config.
+        labels:
+          app: "prometheus"
+    scrape_native_histograms: true
+  - job_name: "app-server"
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ["10.207.101.54:9100"]
+       # The label name is added as a label `label_name=<label_value>` to any timeseries scraped from this config.
+        labels:
+          app: "prometheus"
+    scrape_native_histograms: true
+
+
+Create a node exporter service
+mkdir -p /var/lib/node/
+mv node_exporter /var/lib/node/
+chown -R prometheus:prometheus  /var/lib/node/
+chmod -R 777 /var/lib/node/
+cd /etc/systemd/system
+vi node.service
+systemctl daemon-reload
+systemctl start node
+systemctl enable node
+Created symlink /etc/systemd/system/multi-user.target.wants/node.service → /etc/systemd/system/node.service.
+systemctl status node
+
+node.service
+
+[Unit]
+Description=Prometheus Node Exporter
+Documentation=https://prometheus.io/docs/introduction/overview/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/var/lib/node/node_exporter
+
+SyslogIdentifier=prometheus_node_exporter
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+Data Model
+Prometheus stores the data(metrics) in time series ie every metrics stores with timetsamp along with one or more lable . label is key value pair
+<metric name>{key=value, key=value}
+
+Datatypes
+Help in storing and retrieving the data in prometheus
+promql - query language to query data in prometheus
+1. scalar - float and string
+store
+prometheus_http_request{status="200", job="prometheus"}
+query
+prometheus_http_request{status="2.*", job="prometheus"}
+2. instant vector
+It will provide only one output
+Eg if we give metric name along with lable like prometheus_http_request{status="2.*", job="prometheus"} - it will filter with 2XX with job=prometheus and give total count so instant vector only provide one op of metric
+3. Range vector - It will provide the list of data available for that metric in that range 
+eg prometheus_http_request[5m] - for this metric past 5 min how many data are available and on prometheus.yml we have given scrapping interval based on that only number of data scrapped from server is stored in prometheus timeseries db.
+
+Operator
+
+For metric if we apply arithemtic operator like +, - etc an dif metric has multiple value then it will apply to all values in metric eg prometheus_http_request + 2 and if prometheus_http_request has many value because of different lablel then +2 apply to all unique metric
+Both equal return 1 else 0
+and or unless operator only used with instant vector
+and if both a and b instnt vector value match that value it print
+or in both table all are unique it will print
+unless  - if value in a not present in b it will print
+
+filter
+=
+!=
+=~
+!~
+prometheus_http_request{status=~"2.*", job="prometheus"}
+
+Aggregate
+sum
+min
+max
+avg
+count
+group always return 1
+topk
+bottomk
+count_values
+
+synatx
+aggregate fn(instantvector)
+sum(instantvector)
+sum(instantvector) by (label)
+sum(instantvector) without (label)
+
+instant and range
+
+Below with range
+rate()
+increase()
+avg_over_time()
+max_over_time()
+min_over_time()
+
+Aggregation with instant
+
+
+A metric is a measurement that Prometheus collects and stores over time.
+CPU usage = 60%
+This is a measurement.
+Prometheus may collect it repeatedly:
+10:00:00 → CPU = 60%
+10:00:15 → CPU = 65%
+10:00:30 → CPU = 70%
+10:00:45 → CPU = 55%
+This measurement data is called a metric.
+
+Metric + Labels = Time Series
+For example:
+
+Metric:
+http_requests_total
+
+It may have:
+
+Time Series 1:
+method=GET
+status=200
+server=server1
+Time Series 2:
+method=POST
+status=200
+server=server1
+Time Series 3:
+method=GET
+status=500
+server=server1
+They all have the same metric name:
+
+http_requests_total
+
+But different labels mean they are different time series.
+                    METRIC
+                       |
+                       v
+
+              http_requests_total
+                       |
+          -------------------------
+          |           |           |
+          v           v           v
+
+     {server1,    {server1,    {server2,
+      GET,200}     POST,200}    GET,200}
+          |           |           |
+          v           v           v
+
+     Time Series  Time Series  Time Series
+
+     Metric names:
+     node_memory_MemAvailable_bytes
+     node_memory
+      ↓
+Related to Node Exporter/Linux memory
+
+MemAvailable
+      ↓
+Available memory
+
+_bytes
+      ↓
+Unit = bytes
+
+Counter - A counter usually increases.'
+gauge - A gauge can go up and down.
+
+offset - prometheus_http_request offset 10m
+
+Instant Vector
+
+A collection of the values of matching time series at one evaluation point in time.
+
+Range Vector
+
+A collection of the historical samples of matching time series over a specified time window.
+http_requests_total{server="server1"} 5000 @ 10:00
+
+ 
+functions:
+abserbt(instant_vector)
+absent_over_time(rangevector)
+abs(instantvector)
+ceil(instantvector)
+floor(instantvector)
+clamp(instantvector), min, max)
+clamp_min(instantvector, min)
+clamp_max(instantvector, max)
+day_of_month(instantvector)
+day_of_week(insgtantvector)
+sort(instantvector)
+sort_desc(instantvector)
+timestamp(instantvector)
+
+Grafana:
+sudo apt-get install adduser libfontconfigl musl
+wget https://dl.grafana.com/grafana/release/13.2.0/grafana_13.2.0_32077357341_linux_amd64.deb
+sudo dpkg -i grafana_13.2.0_32077357341_linux_amd64.deb
+systemctl daemon-reload
+systemctl start grafana-server
+systemctl enable grafana-server
+systemctl status grafana-server
+port 3000
+admin/admin
+
+
+sudo yum install -y https://dl.grafana.com/grafana/release/13.2.0/grafana_13.2.0_32077357341_linux_amd64.rpm
+systemctl start grafana-server
+systemctl enable grafana-server
+systemctl status grafana-server
+sudo firewall-cmd --permanent --add-port=3000/tcp
+ 
+# Reload firewall to apply changes
+sudo firewall-cmd --reload
+ 
+# Verify the rule was added
+sudo firewall-cmd --list-ports
+
+/etc/grafana
+Can push grafana data to seperate postgresql or sql database for that need to update the config files on above location
+
+Create data source
+
+Create New folder and save the dashoard - Add rows and then add visulizations
+Create a panel with time series with query or builder and add to rows
+
+Creating panel and write a query
+Standard option to change the display name
+option  - legend - cuatom
+Can add more query on one panel shoe, heal, chapple etc and the  rate of all in one panel ie add many rows with row names as a, b, c etc
+
+Data transformations
+Manipulating the rows to get a data ie add many rows to get a data 
+
+rate(metrice{key=value}[$__interval] offset 1m)
+
+Set thereshold on graph
+
+Dynamic variables
+Custom option
+Classic query - label_values(Showhub_payments{PaymentMethod="Card"}, CountryCode)
+Repeat option
+$variablename
+
+Axis - >logramathic and Symlog
+
+Alerts
+To update smpt configuration need to do in grafana.ini file in /etc/grafana
+
+Silence alerts - No notification will be sent
+
+Annotations
+Dot and Range anatotion
+Dashboard setting to enable and disable annatotion
+
+
+
+Install loki and promtail on linux
+loki install 
+yum install loki
+port is 3100
+promtail
+github.com/grafana/loki/releases - Assets with more numbers
+wget https://github.com/grafana/loki/releases/download/v3.7.7/logcli-linux-amd64.zip
+yum install zip
+unzip 
+
+
+OpenTelemetry:
+What is observability:
+To define the application is stable, stability defined from application NFR's like availability, reliability and performance. If the application is stable the user is not facing any issues. How do we know if the application is stable, that usually define from state of the system, how do we know the state ie using output mesurement of the system. The process of using iutput mesurement and define the state of the system is called observability.What output mesurement we see is metrics, logs and traces.With this output mesurement we define the stability of system if any issue we fix the application based on output mesurements. These metrics, logs and traces we called as telemetrt signals
+
+Telemetry signals:
+Metrics: Numeric msururemets collected over time. Single mesurement collected at a moment eg cpu of LG at 5:34 PM or acumalated data ie number req/sec.
+Logs - Actual logs of the system
+Teaces - Request path with trace id to other microservices with its response time will shown in trace
+
+Monitoring Vs Observability:
+Monitoring:
+It will check the health of the system and raise the incidednt based on static threshold we set and wont provide what cause this issue. Monitoring happen through metrics and logs.
+Observability: It to the same but it give what cause the issue based on trace data and have dynamic threshold for incident based on AI and ML model. It monitor metrics, logs and traces.
+
+Reliability Metrics:
+MTTD - Mean time to detect. When issue happen how much time we took to detect
+MTTR - Mean time to Resolve. After the issue is detected how much time we took to resolve.
+MTBR - Mean time between failure. After we fix the issue how much time application was stable until the next failure happen.Time between MTTR to Failure is MTBR
+MTTF- Mean time to Failure. The total time from first failure to second failure. 
+If we have observability in picture, MTTR will be quick so MTBR woont happen and MTTR also will be less.Because of tracing feature we will fix it permenantly and quickly
+
+Observability Solutions:
+We have 3 component
+Software system - Where we collect the telemetry data using agent, api/sdk ie writing code on application code
+Transmitting data - Here the collected data will be transmitted to backend service via http or other protocal. It use two ways direct and proxy. If proxy it will process, aggregate and compress the collected data and send to backend.
+Backend - Where we will process and analyse the data.
+Opentelemetry will come into the picture of first two system, backed we can choose which we want to use to process and analyse the data.
+
+OpenTelemetry Collector:
+It an OpenTelemetry component and act as intermediate between application datasource and backend which will collect , process and export to backend.
+
+
+OpenTelemetry:
+Its an opensource, it generate, collect and export the telemetry data.
+What data it generate and collect:
+It generate and collect logs, traces and metrics and how it will do is through zero code, library and code based which called as instrumentation.Api and sdk will come come into picture of zero code and code based.
+How data is exported to backend:
+The generated and collected data are received , proceessed and exported to backend using the OTLP ie opentelemetry proctcol with collector ie proxy to backend services. OTLP is opentelemetry protocal to transmit the data to backend and we have other protacol to transmit the data to backend apart from OTLP which is developed by other source to export the instrume nted data.
+
+Instrumentation:
+3 Instrumentation
+Zero Code - Install agent it will collect all data
+Code based - Write custom code on application code to collect data
+Library - External libarary to collect data, need manual intervention
+
+Zero Code agent - Installing the agent , it will collect all the http and database connections ie inbound and outbound connections to the applications but not the custom code logic. Only with limited language support and wont collect all database data
+eBPF - Also an agent installed at kernal level, only support linux and capture more detailed metric but for custom code it wont capture. Support more language, protacol and databases
+
+Implementation of Zero code agent in Java side of hello telemetry application:
+1. Update the docker file of tomcat which we add the line to download the java opentelemetry agent and place in location
+2. On docker compose file add on environment add the java agent to jvm so it will collect the data. Refer the this page on how to download and place the agent in environment variable to collect the metrics for java application. Just 2 things we need to do download the java agent and setup in tomact jvm through environment variable and how to do it refer the page for detailed step "https://opentelemetry.io/docs/zero-code/java/" once placed rebuild the application or container
+Added this line in tomcat docker file
+
+# Download the OpenTelemetry Java agent
+ADD --chmod=644 https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v2.25.0/opentelemetry-javaagent.jar /opt/opentelemetry-javaagent.jar
+Docker compose file added below
+   environment:
+      - JAVA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=${JMX_PORT} -Dcom.sun.management.jmxremote.rmi.port=${JMX_RMI_PORT} -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost
+      - JAVA_TOOL_OPTIONS=-javaagent:/opt/opentelemetry-javaagent.jar
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://ht-otel-collector:4318
+      - OTEL_SERVICE_NAME=tomcat-service
+    depends_on:
+
+Implementation of Zero code agent in Python side of hello telemetry application:
+Refer the document page for how to Implement it
+https://opentelemetry.io/docs/zero-code/python/
+1. Install below on VM, our case it docker, so update this in docker file
+pip install opentelemetry-distro opentelemetry-exporter-otlp
+opentelemetry-bootstrap -a install
+
+On requirement add below, becuase we need to pip install this so need to add this on requirement file
+opentelemetry-distro==0.60b1
+opentelemetry-exporter-otlp==1.39.1
+Then on docker file add below
+Here after installed the new packages intslling python bootstrap as per package, Then setting the logging, by default it wont export logging also enable the otlp collector as well like java
+# Install the required packages
+RUN pip install --no-cache-dir -r requirements.txt
+# Run opentelemetry-bootstrap to install instrumentation packages 
+RUN opentelemetry-bootstrap -a install
+# Set the environment variable for OpenTelemetry logging auto-instrumentation 
+ENV OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
+ENV OTEL_EXPORTER_OTLP_ENDPOINT=http://ht-otel-collector:4317
+
+Here to run as per documentation need to add opentelemetry-instrument and also we can either add service name on environment section else like below can be added ie "--service_name", "python-service"
+# Define the command to run the application
+CMD ["opentelemetry-instrument", "--service_name", "python-service", "python", "compute.py"]
+
+As now what we saw is zero code only capture http, jvm , Db (all inbound and out bound data) it wont capture the custom codes. With code based we can add the custom metrics, custom logs and and on traces we can get the traces of the custom codes.In our hello telemetry app on traces we got overall time, then individual db time, python service time, but for custom code we did not have trace to get that we use the code based instrumentations
+
+Telemetry Signals in Depth: Below are the list of telemetrt signals are instrumented by instrumentations like zero code agent, code based etc
+Metrics
+Traces
+Logs
+Baggage
+Profiling
+
+Metrics:
+How opentelemetry collect the metrics. Its one time activity, we will initilize the meter provider and all the codes will go through meter provider. Meter provider will have a meter which will have a metric instrumentation and capture the mesurement ie metrics. Then metric exporter will export to otel collector or backends.Metric instrumentation will have 4 fields name, kind, description, unit these unit and description are optional
+Here Meter provider, meter, metric instrument all will come into picture only if we are using code based instrumentations.
+
+Metric:
+Numeric msururemets collected over time. Single mesurement collected at a moment eg cpu of LG at 5:34 PM or acumalated data ie number req/sec.
+Kind:
+It has below different kinds ie how it will collect the metrics
+Counter - It will increase it ie no of errors over time it will increase
+Async counter - Collect the aggregated metric on interval like 9 , 9:05 etc it will be in incremental
+Updown counter - It will be in up and down eg how many no of tcp connection over time etc
+Asyc updown counter - Same as updown by do it async like time and aggregated
+Gauge - It wont aggregate or increase it only show one number ie %cpu at current time
+Histogram - It will help for comparision ie on x axis like how many response count of 200 on y axis of count
+
+Traces:
+If we hit a api , if it travers to multiple layer for each layer it will create a span and it will show the duration and all span together is a trace (over all duration) ie what we see in Jaeger waterfall trace.
+How opentelemetry collect the Traces. Its one time activity, we will initilize the Trace provider and all the codes will go through Trace provider. Trace provider will have a Tracer which will have a Spans instrumentation and capture the mesurement ie Spans. Then Span exporter will export to otel collector or backends.
+Here Tracer provider, Tracer, Span instrument all will come into picture only if we are using code based instrumentations.
+
+When we click on each span of a trace what details we see
+Name: name of the span
+Context: Trace id, span id etc
+Parent span id - If the span is connected with other span that id
+Start and end time - Overall duration of the span
+Attribute: Key value pair , if we need to pass any custom info
+Event: if we need to pass any additional details to span will passed in This
+Status: unset and ok are succussful indication, error means the span is having error
+Kind: help the trace to arrange the spans in order ie waterfall model.It has below state
+Client - if call goes ie outbound call and its syncronous call
+Server - If incoming call comes its also syncronous call
+Internal : A span within the process
+Producer: Async call which perform a job
+Concumer: Async all perform the job of producer. 
+
+Context Propagation:
+When we run the api, if it traverse to multiple layer, the layer one context will be shared to layer 2 and so on which is called context propagation with this only we were able to see the waterfall model in traces.Here the context we refer is the each span conext details which read above.
+
+Logs:
+Opentelemetry will collect the application log but it will enhance it using log bridge api. All application logging service(log4j) will have log bridge api will use that and enhance the log to opentelemetry model log. What enhancement it will do is along with existing log it will append the trace id, span id ie tracing related details for more detailed analysis.
+
+Baggage:
+Its a key value pair, we can add the baggage data , so it will travers to all the downstream services. Eg if we add the user id in baggage, if user reported the they face slowness, we can filter based on user id and see why it was slow.Want to add multiple data in bagage it can be comma seperated. Baggage we usually add as header ie baggage header ie baggage: userid=123
+
+OTLP and Collectors:
+The generated and collected data are received , proceessed and exported to backend using the OTLP ie opentelemetry proctcol with collector ie proxy to backend services. OTLP is opentelemetry protocal to transmit the data to backend and we have other protacol to transmit the data to backend apart from OTLP which is developed by other source to export the instrume nted data.
+OTLP:
+Its a protacol to transmit the data from application to backend either direct or through proxy ie collectors. Its support gRPC and HTTP1.1 transport to send the data from app collected data to backend
+gRPC:
+Google remote procedure call. It used to communicate between service ie between micro services.Its internally uses http2 transport when communicating between 2 services.on grpc You define a service and method using a .proto file.
+gRPC = Remote Procedure Call
+"Remote" means another machine/service.
+"Procedure call" means it feels conceptually like calling a function/method.
+
+Collector:
+It used to collect the data and export to observability backend.We can use collector in 2 places, one where the application is hosted the same host or we can have seperate host and install collector. Also we use both option as well, install collector on app host and keep another collector on seperate host as well .Collector has 3 components inside ie receiver, processor and exporter all connected together through pipeline. So it will receive the data , process it and export to the observability backend.
+Collector installation:
+Refer Opentelemetry official intsllation page to install the collector for linux.
+https://opentelemetry.io/docs/collector/install/binary/linux/
+We have two versions of collector, ie core and contib versions. Core is stable one and contib is used by wider community and have many additional feature but core is stable and released by opentelemetry. Always use contrinb versions
+
+Configurations:
+Learn about the configuration file , beacuse based on config file data will be received, processed and exported.
+Sample config.yaml file
+receivers:
+  receiver1
+  receiver2
+
+processors:
+  processor1
+  processor2
+
+exporters:
+  exporter1
+  exporter2
+
+extensions:
+  extension1
+service:
+extensions:
+pipelines:
+  metrics:
+    reciver1->processor1->exporter2
+  logs:
+    reciver2->processor1->exporter2
+  traces:
+    reciver2->processor1->exporter1
+  traces/2:
+     reciver2->processor2->exporter2
+Here on receivers section we mention how to receive the telemetry data and on processer section we define to proceess the received data  and on exporter section , how to export the processed data.Then on extension section if we need other data mentioned here. Then we have service section which has extension and pipeline and on extension just map the extension and on pipeline for each signals how to receive process and export will be define here we can define in any order based on our requiremnet in pipeline.Can have multiple signals as well but should give different key name like trace/2
+
+Receivers:
+Receivers collect the data from the instrumentation tool like zero code or code based , then that will be used in pipelines, the collector will automatically parsed it based on the signal.
+On receiver section we can have other collectors as well like prometheus , jagger etc.
+
+Processors:
+It used to process the recieved data, like add, filter even remove. It has many way to process the data like batch: if we keep this it will batch the data and export it
+Default grpc port is 4317 and for http is 4318
+
+Exporters:
+We can have many exporters , like debug, otlp etc. debug will just stdout in collector logs. otlp exporter , it will export to jager or prometheus etc.
+
+Extensions:
+It used to check the health of collector like that other data apart from telemetry signals.
+
+Service and Pipelines:
+Whatever we mentioned in the receiver, processor and exporter, extensions if we use that in services and pipeline then only thise will be enabled.
+
+SLI, SLO and SLA 
+SLI - Service level indicator
+SLO - Service Level objective
+SLA - Service Level Agreement.
+
+Eg : Our api if the user experiance RT of 200ms they will be happy and if they breach and until 300 ms they will still ok and use it and if it breached 300 ms they will be unhappy. So SLA is something that they are ok to have , if it breached then they need to pay penalty.So SLO is the happy threshold we need to try achieve internally.So SLI is measurement to define the reliability
+SLI = ( Good events/Total events ) * 100
+SLI=(900/1000)*100 = 90% and if we give that we will achive reliability of 99.99 then its not achieved.So SLI is to calculate the reliability. To calculate the reliability need to calculate for 4 weeks or 28 days. If 99% then downtime will be 7 hours, if 99.9 then 40 min, if 99.99 then 4 min, if 99.999 then 24 sec.
+Error budget - 100% - Commited reliability target ie 100-99.9= 0.1% if its 0.1 then its acceptable limit.if 100-90% here 90 is achieved SLO then 10% is we achived which is not good.
+
+Application availability SLO calc = good resp/valid resp *100
+latency SLO calc = req under threshold ie <200 ms/total req * 100
+error SLO calc = no of error code 4xx and 5xx/total all codes * 100
+
+SLI - measurement
+SLO - target
+SLA - Commits
+Error budget - Space between target and Perfect state
+
+Grafana Alloy:
+Its same as Opentelemetry collector ie its a compitetor for otlp collector provided by grafana.
+Since data is pushed from application to alloy collector to grafana , need to install the softwars on right side first like backends, alloy etc.
+For installation please refer below page:
+Alloy installation:
+https://grafana.com/docs/alloy/latest/set-up/install/linux/
+
+After installation it will be placed in /etc/alloy folder inside that we will have config.alloy file where we will write all the receivers, processors and exporters and pipelines etc.
+
+Setting up exporter refer below pages
+https://grafana.com/docs/alloy/latest/reference/components/otelcol/otelcol.exporter.prometheus/
+https://github.com/aussiearef/grafana-udemy/blob/main/alloy/config-all-signals.alloy
+https://github.com/aussiearef/grafana-udemy/blob/main/alloy/config.alloy
+
+For Configured config.alloy file refer the chatgpt
+Grafana alloy port: 12345
+
+Grafana Loki:
+Default port is 3100
+Need to follow same above documentation to install loki and configure the receiver, processor and exporter
+Refer Chatgpt observability section for more details
+
+Grafana Tempo:
+It used to strore the traces, it will store the alloy exported trace data on any cloud or on the local disk. Then we can connect tempo datasource with grafana and grafana communicate with tempo using traceql
+Refer Chatgpt for installation and more details
+Default listening port is 3200
+Location where tit was installed is /etc/tempo/config.yml
+On config.yml it will have listening port and on storage section it will have a path where the trace data will be stored.
+
+Also read tracql and Pomql from udemy or above 

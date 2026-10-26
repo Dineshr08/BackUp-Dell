@@ -1,0 +1,139 @@
+YAML
+Yaml aint markup language. Its a data serilization language. 
+What is data serilization language?
+If application are developed in different technology, to transfer data between then they will use data serilization language. Most famous data serilization languages are JSON, XML and YAML.
+Yaml mainly used to create a configuration file for devops tools like docker, kubernites, ansible , prometheus etc and it will be save in .yaml or .yml .Here Yaml is humal redablle format and here it will written like line seperation and indentation. if we miss thease 2 we will get error.
+YAML Syntax:
+Below will be used while creating yaml configuration file
+Key-value pair
+Comments
+Objects
+Boolen
+List
+multilineString
+singlelineString
+env variable
+placeholder
+
+Example below:
+Key-value pair - Onvalue we no need to metion " or ' for string , by default yaml will differentiate. if we add special character in value need to enclose the string with " or '
+appname: qTest-backend
+Comments:
+# app name
+appname: qTest-backend
+Object - Adding group of values together or use group of values together. Here microservices is object and appname, version and port are values. Need to use indentation and new line for each value
+microservices:
+  appname: qTest-backend
+  version: 1.0
+  port: 5001
+Boolen - Here can use true or false, yes or no and on or off as boolen. Here deployed we used boolen datatype
+microservices:
+  appname: qTest-backend
+  version: 1.0
+  port: 5001
+  deployed: false
+List - We can create list as well in yaml. It should differentiate with - .Here microservices is list variable inside that we have 2 list ie which start with -
+microservices:
+  - appname: qTest-backend
+    version: 1.0
+    port: 5001
+    deployed: false
+  - appname: java-backend
+    version: 1.0
+    port: 5002
+    deployed: true
+Can define list with name alone like this. Here microserviceslist have 3 values.
+microservices:
+  - qtest
+  - jira
+  - github
+We can define like below as well ie version has 3 values 1.0, 2.0 and 3.0 else like this as well ["1.0", 2.0, 3.0]. Both same here i just made one as string in the list
+microservices:
+  - appname: qTest-backend
+    version: ["1.0", 2.0, 3.0]
+    port: 5001
+    deployed: false
+  - appname: java-backend
+    version:
+      - 1.0
+      - 2.0
+      - 3.o
+    port: 5002
+    deployed: true
+Can validate yaml file using online validator as well before deploying into devops applications.
+multilineString - for a key if we need to define a multiline string can be define using | . So here appname interrept the below line as multi line string
+appName: |
+  this is my first tutorial on yaml
+  I gained knowledge with this course
+  It really helps
+
+singlelineString - for a key if we need to define a singleline string can be define using > . So here appname interrept the below line as single line string
+appName: >
+  this is my first tutorial on yaml
+  I gained knowledge with this course
+  It really helps
+
+env variable - if we need to access the env variable in yaml need to call using $. eg $port
+placeholder - if we have placeholder in different place and need to call in yaml need to call using {{}} - inside {{}} we will give the key value which get from placeholder in someplace. Passing the variable is placeholder
+appName: {{ .Value.service.name}}
+
+multiple yaml document - to add the multiple component in single yaml file we use --- eg two different configuration in one yaml file
+Eg below
+
+microservices:
+  - appname: qTest-backend
+    version: ["1.0", 2.0, 3.0]
+    port: 5001
+    deployed: false
+  - appname: java-backend
+    version:
+      - 1.0
+      - 2.0
+      - 3.o
+    port: 5002
+    deployed: true
+---
+microservices1:
+  - appname: qTest-backend
+    version: ["1.0", 2.0, 3.0]
+    port: 5001
+    deployed: false
+  - appname: java-backend
+    version:
+      - 1.0
+      - 2.0
+      - 3.o
+    port: 5002
+    deployed: true
+
+YAML different course:
+Its human readable data serilization language.Consider we have a server like above and developer is asking for configuration of that server, if we just send in text format like qtest-backed, 5001, false 1.0 etc they wont understand and if they want that data to be used as input to script they cant parse it, but if we write in yaml everything have key value pair so easy to read and parse the data.
+Adv of ymal compared to json is in json everything written like {} and , for developer it easy to understand but for devops engineer it hard to interpert and we can add comments but in json cant do that.
+Where yaml user: all devps tools like kubernites, docker, ansible, github actions 
+Best practice allways start writing yaml file with ---
+---
+microservices:
+  - appname: qTest-backend
+    version: ["1.0", 2.0, 3.0]
+    port: 5001
+    deployed: false
+  - appname: java-backend
+    version:
+      - 1.0
+      - 2.0
+      - 3.o
+    port: 5002
+    deployed: true
+---
+microservices1:
+  - appname: qTest-backend
+    version: ["1.0", 2.0, 3.0]
+    port: 5001
+    deployed: false
+  - appname: java-backend
+    version:
+      - 1.0
+      - 2.0
+      - 3.o
+    port: 5002
+    deployed: true

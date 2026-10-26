@@ -1,0 +1,35 @@
+- name: "Check if firewalld is installed"
+  package_facts:
+    manager: "auto"
+
+- name: "firewalld test result"
+  debug:
+    msg: "firewalld found"
+  when: "'firewalld' in ansible_facts.packages"
+
+- name: "firewalld test result"
+  debug:
+    msg: "firewalld NOT found"
+  when: "'firewalld' not in ansible_facts.packages"
+
+- name: get service facts
+  service_facts:
+- name: check the firewalld status
+  debug:
+    var: ansible_facts.services["firewalld.service"]
+  when: "'firewalld' in ansible_facts.packages"
+
+- name: install firewalld
+  yum:
+    name: firewalld
+    state: present
+  when: "'firewalld' not in ansible_facts.packages"
+
+- name: ensure that firewalld is started and enable at boot
+  service: name=firewalld enabled=yes state=started
+  when: "'firewalld' in ansible_facts.packages"
+
+- name: open firewall port
+  firewalld: port=5432/tcp zone=public permanent=true state=enabled immediate=yes
+  notify: restart firewalld
+

@@ -1,0 +1,94 @@
+Docker Image:
+
+We can create our own images and can deploy in different environment without any compayobality issue.
+Command to build the image. Here . referance where the Docker file is present, if we build the image where docker file is present can mention.
+docker build -t username/imagename .
+Dockerfile - Its contain all the instructions and arguments. Like RUN FROM CMD are instructions and arguments are FROM ubuntu CMD pm2 start script.js here ubuntu and pm2 start script.js are arguments. On docker file we write the instaruction and arguments. Eg when we deploy the application we will have all the manual steps rights the same we will write in DockeFile and when you build each instruction will form as step and finally create an image. If some step fails , it when we build again it will resume from where we left ie it will cache and from failed it will resume.Each instruction is step, so it will perform step by step ie instruction by instruction.
+
+Some common instructions are below
+FROM - Used to mention the base ie base os is ubuntu or postgresql ie from which base image our image need to start.Eg first take base ubuntu on top install next like that
+RUN - Used to run the commands slike sudo apt update
+COPY - To copy the files
+ENV - To setup env variable
+ENTRYPOINT - Final command to run the application ie pm2 start script.js we give in entry point or CMD instruction. Will see the difference between two on below.
+
+To push the image to doker hub:
+docker push imagename
+
+Traditional builds Rough edges:
+When we use the tradition build the image using docker build -t username/imagename . we will face some below issues. 
+
+package redownload - When you build second instruction is install package and 3 instruction is something else, when 3rs step fail, when you rebuild the 2nd step will download again will take time. For download it wont take from cache.
+secrete leak - When you build the application, if it has some secrets like password or token after you build the image and push to hub and when other pull it and look for history all the data will be leaked . History can see using docker history --no-trunc imagename.
+architecture lock in - When you create a image on amd64 chip server or computer and when someone pull image and use in arm64 chip server or computer it will fail.
+swquential stages  - On one docker file if you have multiple stages , each is not having any connection to other , it will run sequentially.
+Eg 
+FROM ubuntu
+RUN sudo apt update
+
+FROM mysql
+RUN sudo apt update
+
+To solve above four issue docker comeup with buildkit
+Below command used to build using new buildkit which fix above 4 issue
+docker buildx build -t username/imagename .  - This is normal build using buildx
+
+To fix the Secret:
+
+# syntax=docker/dockerfile:1 - If you create a image always start writing docker file with this so it will apply all buildx feature.
+FROM python:3
+RUN --mount=type=cache,target=/root/.cache/pip \
+  pip install flask flask-mysql
+
+Secrete mounts: - Setting up the secret. Here below run command will pass the secret when creating the image
+RUN --mount=type=secret,id=mykey \
+  curl -H "Authorization: Bearer $(cat /run/secrets/mykey)" \
+  https://api.example.com/private
+Here while building the secrets are passed.
+docker buildx build --secret id=mykey,src=./key.txt -t imagename .
+
+Multi platform build:
+
+To build the image with multiplatofrm mention all platform while building using --platform command. when user pull image automatically based on server it will run. eg if arm download that , if amd download that
+docker buildx build --platform linux/amd64 linux/arm64 -t username/imagename --push .
+
+Parallel stage: - If dockerfile contain multiple, it will create parallel, no need to explicitly mention anyrthing.
+FROM
+RUN
+
+FROM
+RUN
+
+To check the history of image:
+docker history app
+
+We no need to create a dockerfile by ourself. if we cd to the code folder if we run docker init, it will scan by itself and create a docker file then we need to do little modifications.
+cd app folder
+docker init
+
+Command vs Entrypoint
+Command: All image file will have command ie after creating image when you run what it has to perform that we will mention in cmd.
+By default ubuntu will have bash on cmd  and as soon as we run ubuntu it end because it dose not run any process and eventhough we give bash in cmd it wont open terminal becuase docker dont open terminal by default. So it will exit asoon as it run. Below command we mention to run the ubuntu container for 10 sec, We can explicitly pass the command as well, so it run on bash. 
+docker run ubuntu sleep 10
+If we give like above and and inside our own image we wronte like this , what it will do is it will overwrite 5 sec of sleep to 10.
+FROM ubuntu
+CMD ["sleep", "5] - We need to mention in json format only. CMD ["command", "arg"]
+
+There are some case i dont want mention everytime docker run ubuntu sleep 10 like this instead docker run ubuntu 10, what entrypoint will do is it will append with command ie sleep 10.
+FROM ubuntu
+ENTRYPOINT ["sleep"]
+
+If there is case if i just missed to mention 10 then it will throw error in trhat case we can do like below, if we dont metion it will take cmd 5 and append to entrypoint and run. bestpractice always use both.
+FROM ubuntu
+ENTRYPOINT ["sleep"]
+CMD ["5"]
+
+If we want to give some different value to entrypoint can do like using --entrypoint, here sleep 2.0 will pass to sleep.
+docker run --entrypoint sleep 2.0 ubuntu-sleeper 10
+
+Environment Variable:
+Using -e we can pass the cnv var to image . here app_colour is var name. To check the list of env var we find using inspect command.
+docker run -e app_colour=blue ubuntu
+docker inspect ubuntu
+
+

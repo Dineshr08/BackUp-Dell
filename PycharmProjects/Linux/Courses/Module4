@@ -1,0 +1,322 @@
+Command Syntax:
+Command have command options or group of options and arguments
+Syntax
+command option or group of options argument
+Eg
+ls -l or ltr abinaya (l is option , ltr is group of option and abinaya is argument).This command only fetch list of files and directory of abinaya argument
+rm -r abinaya (-r or -R is recursive, which is used to delete all the sub files and folder inside abinaya)
+man ls or man command( which used to provide the options which available for command)
+
+Changing Files and Directory Permission:
+When we do ls -ltr we get to know what permission we have for files and directory, the output of above will give like below
+-rwxrw-r--
+drwxrwxrwx
+There are 3 types of permission
+r-read
+w-write
+x-execute(program file)
+Above rwx can be give to below
+u - user permission
+g - group permission
+o - others permission
+Below two what it indicate is
+-rwxrw-r--
+- is file first rwx ie first 3 is user which have all read write and execute access.if x present in file then it may be program file, second 3(rw-) which indicate group, which have only read and write access and dose not have execute access. last three(r--) which indicate others, which have only read access and dose not have write and execute access
+drwxrwxrwx
+d means directory above is same applicable for directory. in directory if x is present, it means it dosent have any program file, it means it allow to cd into this directory. if x dosent have it wont allow you to go inside
+
+chmod - change mod - this command help you to provide permission or remove permisssion to files and directory
++ To add permisssion
+- To remove permission
+
+To add write permisssion to file or directory for user
+chmod u+w kala(here kala is file)
+To add write permisssion to file or directory for group
+chmod g+w kala(here kala is file)
+To add write and read permisssion to file or directory for group
+chmod g+rw kala(here kala is file)
+To add write and read and execute permisssion to file or directory for group. same for other and user as well, just change u and o instead of g
+chmod g+rwx kala(here kala is file)
+To give all user, group and other any permission just use a
+chmod a+rwx kala
+All combinations are possible like below
+chmod ugo+rwx kala
+
+To remove permission just same as add , just use - instead of +
+chmod a-rwx kala
+
+Change File or Directory permission using numbers:
+0 - No permission
+1 - Execute
+2 - Write
+3 - Execute+Write
+4 - Read
+5 - Read+Execute
+6 - Read+Write
+7 - Read+Write+Execute
+It is same as above
+chmod 777 file first 7 is user, second 7 is group and third 7 is other. So from this example all user, group and other will have all rwx access
+chmod 765 kala(file or directory name), user have all rwx, group have rw, and other have rx
+
+File Ownership:
+Ownership of a file or directory can be with user and group. if we do ls-ltr it will show which user and which group have ownership of that file and directory
+To change the ownership of file and directory, only root user can be able to do
+First switch to root user
+su -
+Change Ownership of file or directory:
+chown username filename
+chown root abinaya
+Change Group of file or directory:
+chgrp username filename
+chgrp root abinaya
+
+If we are in /home/drajendran folder that is the user folder not a root folder, post we changed the above file user and group to root, if we try to remove the file, it will delete, eventhough it was changed to root. The reason is it was inside the drajendran folder, so the drajendran user will still have access to delete the file
+
+Access Control List:
+ACL will be used , when we need to give a specific permission to particular user or group.Eg there is file called abinaya, if we need to give access to that file , it can give on user group level or other level, but not on particular user. if we give access to that file om other or group, all user and all group will get access to that file. inorder to overcome that we have this acl
+To give permission or remove we can use setfacl (set file acl)
+to list the permission we can use getfacl (get file acl)
+setfacl permission
+Give rwx permission to user
+setfacl -m u:drajendran:rwx /path of file with file name here u is user, drajendran is username , rwx is read write and execute permission
+Give rwx permission to group
+setfacl -m g:drajendran:rmx /pathof file with file name here g is user, drajendran is username , rwx is read write and execute permission
+Give all subfolder file permission
+setfacl -Rm u:drajendran:rmx /pathof file with file name here is R is recursive
+To remove user
+setfacl -x u:drajendran / path of file with file name
+to remove all user
+setfacl -b /PATH OF FILE NAME
+To get the what are permission that file have
+getfacl filename
+
+Help Command Linux:
+3 help command
+whatis command  eg whatis ls
+command --help eg ls --help
+man command eg man ls
+
+Tab completion and UP arrow key:
+Enter half name and click tab it will autocomplete
+Enter half name and click tab it will display all file and directory start with that name
+up arrow - display all used command
+
+Writing data to file.:
+It can be done in 3 ways
+    1. Vi command
+    2. Redirects > and >>
+    3. using command and redirects
+Vi Command:
+It used to create and add the data to file
+echo:
+It used to print back output
+echo "This is my first linux learning"
+Redirect > and >> :
+echo "This is my first linux learning" > writing-to-file
+It will create the file with name writing-to-file and add the data
+echo "I love linux learning" >> writing-to-file
+It will append the data at bottom of the file
+echo "I love linux learning" > writing-to-file
+> it will overwrite all the content in the file
+Using command and redirect
+If we want to write the output of the command to file
+date >> writing-to-file
+ls -ltr >> writing-to-file
+Viewing file
+cat writing-to-file
+
+Input and output Redirect
+3 input and output redirects are there
+Standard input(stdin) and code is 0
+Standard output(stdout) and code is 1
+Standard error(stderr) and code is 2
+stdin here we can use both < and << redirect,.it used to view files and it also used to attach some data to command.like mail < input file.So mail description place we can use this
+stdout , here we can use > abd >> same like above , writing data to file
+stderr, if we want to write only error to file we can try like this, ls -ltr /root 2> errorfile
+if we logged in as normal user and try access ls -ltr /root folder, it will provide permission denied.When we give above command 2> which indicate only error data write in output file.here 2 indicate errro
+
+Tee Command:
+It will be used to print and store the output at the same time. > or >> only store the output to file. But tee command will print the output on cli and store the output to file.
+ls -ltr | tee filename or ls -ltr | tee testfile .
+This command will store and print the output to file and cli. This is same as > redirect
+If we want to append the output to file using tee command need to use below command
+ls -ltr | tee -a filename
+We can able to store output to multiple files at same time using tee command
+ls -ltr | tee -a file1 file2 file3
+To check how many character in file:
+wc -c filename or wc -c file1
+
+Pipe Command |
+It is used to connect two command or the output of one command to input of another command.
+Syntax:
+command1 option or group of option or argument | command2 option or group of option or argument
+ls -ltr | wc -c
+Here it its run ls -ltr then it will output that to wc -c ie input to this and provide the output as total number of character of ls -ltr like 115
+other examples:
+ls -ltr | more
+more command:
+if we are in /etc folder and it has 1000 files. if we use ls -ltr | more, the more command only display the max output can shown in that page. like 10 lines.the if we want to see rest lines need to enter space bar. If we want to exit then press q. More command is used to display current content of the page
+Here ls -ltr is output is input to more command or we are connecting two commands
+Other example
+ls -ltr | tail -1 or ls -ltr | tail -5
+if 1 above only display last line and 5 only display last 5 lines
+
+File Maintenance command:
+cp
+rm
+mv
+mkdir
+rmdir
+chmod
+chown
+chgrp
+Above this learned already in above. New thing here is rename the file
+mv oldname newname
+Move file
+mv filename /path of file system
+mv riya /tmp to move one file and directory to temp folder
+Move directory
+mv /path of directory /path of file system
+If we want to chnge both ownership and group of the file at same time. First we need to be sudo user
+su -
+Then chown drajendran:drajendran filename
+To remove the directory forcefully with all subfolder and its content
+rm -rf /path of directory or rm -r /path of the directory
+
+File Display Commands:
+cat - Used to displayall the content of the file
+cat filename
+more - used to display current content of the page
+more filename
+less - used to display current content of the page along with able to navigate line by line
+less filename
+Then give up and down arrow which allow you to navigate up and down lines one by one
+head - used to display first few lines of the file
+head -5 filename
+tail - used to display last few lines of the file
+tail -5 filename
+
+Text Processing Commands:
+cut
+awk
+grep and egrep
+sort
+uniq
+wc
+
+Cut Command:
+Cut command is used to extract a part of line from file or piped data and print output in cli.We can cut the lines in cut command by using delimiter, character, and byte size
+To get version of cut command cut --version
+To display the all lines first character alone
+cut -c1 filename
+To display the all lines first 5 character
+cut -c1-5 filename
+To display the all lines last 5 character
+cut -c-5 filename
+To display the all lines first 5 character and last 5 character
+cut -c1-5 -c-5 filename
+To display the all lines last 5 character and first 5 character
+cut -c-5 -c1-5 filename
+To Display all lines 1,5 ,7 character
+cut -c1,5,7 filename
+To display all lines based on character range
+cut -c1-5, 7-9 filename
+To Display all lines based on bytes position
+cut -b1 filename
+To Display all lines based on bytes position with range
+cut -b1-3 filename
+To display based on delimiter
+cut -d: -f1 filename here f1 is field 1 ie column 1, : is delimiter used here
+To display based on delimiter with range
+cut -d: -f1-3 filename ie column i to 3
+To display based on piped output
+ls -ltr | cut -d: -f1
+
+awk Command:
+awk is used to extract the data or field from file or piped data
+synatax awk 'search criteria {action}' filename
+eg:
+awk '{print $1}' file this will print first column in file
+awk '{print $1, $4}' file  This will print first and 4th column in file
+awk '{print $0}' file   This $0 will print everything
+awk '/Desk/ ${print $0}' file This will print lines which contains desk
+awk -F- '{print $1}' file  This will print first column with delimiter -
+awk 'total($0)>15' file This will print lines which total is greater than 15
+Based on piped data
+ls -ltr | awk '{print $1}' same as above but it will print first column based on piped data.rest all above can be used with piped data
+Can use IF condiions
+ls -ltr | awk '{if($9='Desktop') print $0}'  this will print lines which contains Desktop on the column 9
+cat file | awk '{$2="new"; print $0}' This will replace 2nd column with new
+ls -ltr | awk '{print $NF}' This will print last column
+ls -ltr | awk '{print NF}' this will print each line has how many columns
+
+grep/egrep Command:
+It used to search particular from file or piped data(ie output)
+syntax grep keyword file
+grep kala filename search kala from file name and print back output of that line
+grep -c kala filename search kala from file name and print back count of the occurrence
+grep -i kala filename which ignore case sensitive and print result with both kala and Kala
+grep -n kala filename search for kala and print the line with line number
+grep -v kala filename print except kala result
+grep -vi kala filename ignore case sensitive and print except kala results
+grep -v kala filename | awk '{print $1}' | cut -c1-3 here apart from kala take everything then this as input and passed to awk '{print $1}', this awk will take first column and pass as input to cut command and that cut command will take first three character and print the output
+ls -ltr | grep -i desktop search ignored case sensitive desktop from output of ls -ltr and print result
+egrep:
+It used to search two or more keywords at a time
+egrep -i "keyword1|keyword2| keyword3" filename
+all above can be done using egrep too
+
+sort/uniq command:
+sort  - used to sort in alphabetical order both file and piped data(ie output)
+uniq - used to remove duplicates
+syntax - sort filename which sort in alphabetical order
+sort -r filename sort in reverse alphabetical order
+sort -k2 filename it sort based on second field or column in alphabetical order
+ls -ltr | sort | awk '{print $NF}' this will do ls -ltr then that op pass as input to sort, it will sort based on last column with alphabetical order. since awk '{print $NF}' will consider the last column. which is same as sort -K9 filename
+uniq - cannot use unique alone .if we need to use uniq need to use sort before
+sort filename | uniq it will show only uniq value
+sort filename | uniq -c it will show all the uniq value and its count
+sort filename | uniq -d it will show what are the duplicate value present in the file
+
+wc command:
+It used to count the number of words, lines and byte count in file and piped data ie command output
+syntax:
+wc filename it will will give all line, word and bytes count
+wc -l filename will give only line count
+wc -w filename give only word count
+wc -c filename give only bytes count
+It can be used with piped data as well
+ls -ltr | wc -l by doing this it will give number of files and directory in specified folder. always minus one with total count hence ls -ltr output give first line with total count which should be ignored which is not file and directory
+ls -ltr | grep drw| wc -l this will give only directory count. we are greping only drw which is d is directory with rand w permission then getting that count alone using wc -l
+
+diff and cmp command
+diff  -  it will find the difference in both file line by line
+cmp - it will find difference in both file bytes by bytes
+diff file1 file2
+cmp file1 file2
+
+Compress and uncompress files and directory:
+take example of qtest, when tricentis ask for log we will zip and send right to do that we need to follow below things
+tar - move file into folder
+gzip  - zip the above tar folder
+gzip -d  - to unzip the above zipped folder
+
+step1 tar cvf filename.tar /home/drajendran  here iam moving all the files and folder inside drajendran to filename.tar. instead of /home/drajandran you can use . which is relative path, if we already inside /home/drajendran then we can use . directly like below
+tar cvf filename.tar . Now all the file and directory inside drajendran will copy and created file called filename.tar.to un tar it we can do below command
+To zip
+gzip filename.tar
+to un zip
+gzip -d filename.tar.gz
+
+Truncate and Extend file
+Truncate is used to reduce the file size. if we reduce the file size the data win the file will be lost and cannot be recovered
+extend is used to increase the size of the file. if we extend the existing file linux will just add @ at the end of the file
+truncat syntax
+truncate -s 50 filename 50 is the size of bytes which you will reduce to
+truncate -s 400 filename for existing file 400 bytest we are increasing.
+
+Combine and Splitting files
+Combine file - To combine some 3 or more files into one file
+cat filename1 filename2 filename3 .. etc >> filename
+Split files: split files into multiple files
+split -l 10 filename filenameofsplitted

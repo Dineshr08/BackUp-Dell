@@ -1,0 +1,111 @@
+Whenever we loop through an array like this we need to give each element a key prop
+Key help in track the changes in the array and it should be unique
+
+axios
+axios is a cleaner way to make a requests to backend. Earlier we used fetch as its promise we used then to get resoponse then again we used then to get response.json() to get the  response data , but using axios with one then we can get the response data, so it is much cleaner when we send request to backend
+axios.get('endpoint').then((respone) => {
+  console.log(respone.data)
+});
+
+To install axios:
+npm install axios@1.8.4
+
+
+To add / inforont of all relative urls
+<base href="/" />
+Eg: Relative url
+images/products/shirt.png this will convert to below if we add <base href="/" /> in index.html below <meta element
+/images/products/shirt.png
+
+On vite.config.js if we add this under plugin, on giving end point to axiso.get no need to mention the full end point mainly baseurl, insitead of base url we can start giving with /api/path of the api since the base url was configured here
+server: {
+  proxy: {
+    '/api': {
+      target:'http://localhost:3000'
+    },
+    '/image': {
+      target: 'http://localhost:3000'
+    }
+  }
+}
+
+Once we update the vite.config file need to restart the server by running npm run dev
+
+Find: 
+It will loop the array and if it matched it will return
+const selectDeliveryOption = deliveryOptions.find((deliveryOption) => {
+                return deliveryOption.id === cartItem.deliveryOptionId
+              })
+
+if we are using async await inside the useEffect, we should do like below. We have to create a function then need to call the function. If we use asynce inside useeffect like this useEffect(async () => { it will become promise , so always inisde useEffect it should be the normal function. Here within useeffect function we have created another fn and used asynce so still useeffect fn is normal fn
+
+useEffect(() => {
+
+      const payment = async() => {
+        const response = await axios.get('/api/payment-summary');
+        setPaymentSummary(response.data);
+
+      }
+      payment();
+      
+  }, []);
+
+On state use initail value as null if the paymentSummary ie current data is object, if its is array then use [] empty array as initial value in state.
+  const [paymentSummary, setPaymentSummary] = useState(null); used null as initila value as the input of payment summary will be object instead of array
+
+We have used <Fragment></Fragment> element here to group the multiple element inside return the reason we used <Fragement> element instead of <> this fragement  is we cant use key inside <> so we used fragment element
+  <div className="product-image-container">
+                <img src="images/products/athletic-cotton-socks-6-pairs.jpg" />
+              </div>
+
+              <div className="product-details">
+                <div className="product-name">
+                  Black and Gray Athletic Cotton Socks - 6 Pairs
+                </div>
+                <div className="product-delivery-date">
+                  Arriving on: August 15
+                </div>
+                <div className="product-quantity">
+                  Quantity: 1
+                </div>
+                <button className="buy-again-button button-primary">
+                  <img className="buy-again-icon" src="images/icons/buy-again.png" />
+                  <span className="buy-again-message">Add to Cart</span>
+                </button>
+              </div>
+
+              <div className="product-actions">
+                <Link to="/tracking">
+                  <button className="track-package-button button-secondary">
+                    Track package
+                  </button>
+                </Link >
+              </div>
+
+              <div className="product-image-container">
+                <img src="images/products/adults-plain-cotton-tshirt-2-pack-teal.jpg" />
+              </div>
+
+              <div className="product-details">
+                <div className="product-name">
+                  Adults Plain Cotton T-Shirt - 2 Pack
+                </div>
+                <div className="product-delivery-date">
+                  Arriving on: August 19
+                </div>
+                <div className="product-quantity">
+                  Quantity: 2
+                </div>
+                <button className="buy-again-button button-primary">
+                  <img className="buy-again-icon" src="images/icons/buy-again.png" />
+                  <span className="buy-again-message">Add to Cart</span>
+                </button>
+              </div>
+
+              <div className="product-actions">
+                <Link to="/tracking">
+                  <button className="track-package-button button-secondary">
+                    Track package
+                  </button>
+                </Link >
+              </div>

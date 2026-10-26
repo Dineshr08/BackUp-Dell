@@ -1,0 +1,48 @@
+Virtual Box:
+If we want to perform on different OS, without disturbing host OS, we can use Virtual box and virtual box is a software.There are lot of virtual box available.Most commonly used are below two
+1.Vmware player
+2.Oracle Virtual box
+ Using virtual box we can create multiple virtual machine on the same hardware(host machine hardware) same like our computer and on that we can create and install our linux OS or any other OS
+
+CentOS vs CentOS Stream
+
+Earlier all updates follow below way
+Fedora -> RHEL -> CentOS
+Now Its following below way
+Fedora -> CentOS Stream ->RHEL (Here now updates come from CentOS to RHEL, here CentOS is upstream for updates to RHEL, so they called as CentOS Stream).
+Both RHEL and CentOS is identical
+
+Different ways to install OS.
+1.Through CD drive - Just install the DVD which has OS and boot the system
+2.Through ISO image - Just download the iso image of the OS and attach to virtual disc then access that virtual disc through console access.Every manufacture have console access, for dell its idrac.using that we can attach iso image to virtual disc and install OS to the system.
+3.Through Network port - It will be useful when you want to install OS for 100's of computers. You access all machine IP and go to particular location through NFS or samba server and perform installation
+
+Creating VM:
+Creating VM is the straight forward using oracle virtual box.Once you created VM, For that VM, go to setting just enable network setting from NAT to bridge adapter. Bridge adapter will help the OS inside that VM to access the host machine network access(internet)
+
+Download and Install LinuxOs on Virtual machine
+Download and install is straight forward like creating VM.Here we are going to download and install linux distribution centOS 7 OS.Because 80% of IT uses RHEL and centOS is same as RHEL. we can use other linux distribution as well like ubuntu, debin etc
+Credentials used in VM which I create:
+Root username:root
+Root Password: password
+Username: Dinesh Rajendran
+LoginUsername: drajendran
+Login Password: password changed to Password
+hostname: linuxvm
+IP address of the machine which I working currently 192.168.1.36
+
+AWS Account:
+user email:dineshjune08@gmail.com
+Password: Dinesh@93
+Username: Dinesh
+Account ID: 635531510988
+
+Virtual Machine Snapshot:
+It allow to take snapshot of the current state of the machine.Sometime the machine may corrupt, by that time we can use that snapshot and restore the machine. Always take snapshot when the machine is powered off.
+
+VM Management:
+Most of the company manage the application using VM.like our qTest and my neoload controller and LG.If we want to increase the system resource, this can done by VM management.Every organization have their own VM management like Oracle virtual box, VM ware etc.Using that they will manage the VM. Like increase the system resources(CPU, RAM, Disk) etc
+
+What is Actual Size and Virtual Size in VM:
+Virtual Size: Amount of size we allocated during creation of VM eg 20GB
+Actual Size: Only few percentage of size only allocated from Virtual size to VM. like out of 20 only 4 GB allocated to VM.But during runtime if we need more size, it will automatically get from host disk

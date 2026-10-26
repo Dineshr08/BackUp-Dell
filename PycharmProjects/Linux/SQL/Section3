@@ -1,0 +1,39 @@
+1. Aggregate function - Take multiple input, provide single output. Common aggregate functions
+    -AVG
+    -COUNT
+    -SUM
+    -MIN
+    -MAX
+Aggregate function always use in SELECT and HAVING statement
+Syntax - SELECT SUM(column_name) FROM table_name;
+We cannot do like below
+SELECT SUM(column_name),column_name2 FROM table_name;  - It wont work as its not logically correct, as we are summing everything in one column and getting result and trying to display another colum, where it dose not have any logic - If we want to perform like this then need to use GROUP BY function
+AVG function will give many decimal, to round of it we can use ROUND function
+SELECT ROUND(AVG(film_id),2) FROM film;
+
+2.GROUP BY and HAVING
+If you want to group the some relevent things and its aggregate function. Eg I need to group employees in the company based on designation and need to average the salary. This kind of scenario we will have group by function. In select statement we have to keep both group by column name and aggregate function column name like below.
+While performing group by as a db guy we need to find the categorical column ie column that we can able to group by
+Syntax - SELECT Categorical_col, AggregateFunction(Column_name) from table_name GROUP BY Categorical_col;
+Syntax - SELECT designation, AVG(salary) from table_name GROUP BY designation;
+Group by should come right after from statement or right after where statement
+Eg for from above is the example for Where SELECT Categorical_col, AggregateFunction(Column_name) from table_name WHERE condition GROUP BY Categorical_col;
+We can also have multiple columns in group by like below
+Where SELECT Categorical_col1,Categorical_col2, AggregateFunction(Column_name) from table_name WHERE condition GROUP BY Categorical_col1,Categorical_col2 ; - Its perform same like order by first it group by Categorical_col1, then Categorical_col2. Always agg fn should be there in select statement when we perform group by.
+Here in group by when we finally perform order by statement, that order by column should present in select eg from above example we can order by using these 3 "Categorical_col1,Categorical_col2, AggregateFunction(Column_name)"
+
+If we group by date which are in timestamp formate then we need to use DATE function like below.What it will dose is it will convert timestamp to proper data format like 2025-03-12
+
+SELECT DATE(payment_date), SUM(salary) FROM table_name GROUP BY DATE(payment_date) ORDER BY SUM(salary) - Remember what we have mentioned in select statement same should be used in Group by and order by eg DATE(payment_date) & SUM(salary)
+In select statement only we can keep group by column and aggregate column , cant keep other , because logically its not correct
+Having - If you want to filter the result of group by column, we will use having.Eg I want to filter thw designation column where avarage salary is >10 lakhs
+The result of group by we want more filter and that can be applied by having and also we can say want to apply filter on aggregate function need to use having
+Syntax - SELECT designation, AVG(salary) from table_name GROUP BY designation having AVG(salary) > 1000000
+
+Order of execution:
+Where
+Group by
+Having
+Order by
+AS
+Limit

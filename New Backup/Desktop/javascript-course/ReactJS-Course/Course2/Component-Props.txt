@@ -1,0 +1,145 @@
+Component:
+A piece of website. Like we have chatbot application input and send we can consider as piece of website of chatbot application, then on each user input as each piece then each chatbot response we can consider as a piece.So creating aplication into piece we can make website easier which is core concept of react
+When we create a component it should be as function and function name as pascalcase.
+Eg below for chatbot input entering piece
+function ChatInput() {
+        return (
+          <>
+            <input 
+              placeholder= "Send a message to Chatbot" 
+              size="30" />
+            <button>Send</button>
+          </>
+        );
+      }
+The design we do for that piece ie html element should be inisde the return statement, so we can call when we combine to make a complete application.
+Using component we can create our own html instead of just regular html elements like button, input etc.Eg fn ChatInput() become an html element now  we can call it like <ChatInput/> here i am made selfclosing which means the ChatInput element donsent have any name so instead of <ChatInput></ChatInput> we can give like <ChatInput /> which is self closing
+Fragment:
+Earlier to add multiple element next to eachother we use div instead we can use fragment which is <> and </>
+Eg below:
+          <>
+            <input 
+              placeholder= "Send a message to Chatbot" 
+              size="30" />
+            <button>Send</button>
+          </>
+But if we need a new line and our data needs to display then we need to use <div> since its occupy the complete line
+Props:
+Help us to reuse the component.Eg below code
+function ChatMessage({message, sender}) {
+        
+        // const message=  props.message;
+        // const sender = props.sender
+        // const {message} = props;
+        // const {sender} = props;
+
+        return (
+          <div>
+            {sender === 'robot' && (<img src="robot.png" width="30"/>)}
+            {message}
+            {sender === 'user' && (<img src="user.png" width="30"/>)}
+          </div>
+        );
+      }
+If i want use the same piece of code again and again for different set of message i can use that using probs.Eg below
+            <ChatMessage 
+              message="hello" 
+              sender="user" 
+            />
+            <ChatMessage 
+              message="flipcoin" 
+              sender="user" 
+            />
+When i enter hello the same chatmessage piece of code need to be displayed and for flipcoin same piece of code needs to be displayed, instead of creating 2 new component i can use the same component so where i call the chatmessge html element i can pass the attribute that i can call using probs and use it in my chatmessage function. props will be an object it will store all the attribute we pass in html element as property and value and we can access it. Here function ChatMessage({message, sender}) we have applied destructuring , function ChatMessage({message, sender})  which is same as below
+
+This {message, sender} is simplier way for below and most react we do like this
+        // const message=  props.message;
+        // const sender = props.sender
+Above is simplier way for below
+        // const {message} = props;
+        // const {sender} = props;
+
+If we want to apply if condition isside JSX need to here we use gaurd operator &&. What we did is if sender is = to robot the first image will display then message if sender=user message first then image of user
+return (
+          <div>
+            {sender === 'robot' && (<img src="robot.png" width="30"/>)}
+            {message}
+            {sender === 'user' && (<img src="user.png" width="30"/>)}
+          </div>
+        );
+
+On function App() what we did is we have used all the created HTML and formed a webapplication and now that will become one component that we directly passed in render(<App />)
+
+On return and someplace we use () which is to enclose all into inside
+
+
+Complete code:
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React Basics</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">
+
+      function ChatInput() {
+        return (
+          <>
+            <input 
+              placeholder= "Send a message to Chatbot" 
+              size="30" />
+            <button>Send</button>
+          </>
+        );
+      }
+
+      function ChatMessage({message, sender}) {
+        
+        // const message=  props.message;
+        // const sender = props.sender
+        // const {message} = props;
+        // const {sender} = props;
+
+        return (
+          <div>
+            {sender === 'robot' && (<img src="robot.png" width="30"/>)}
+            {message}
+            {sender === 'user' && (<img src="user.png" width="30"/>)}
+          </div>
+        );
+      }
+    //Here we have grouped every piece as each piece is single html now
+      function App() {
+        return (
+          <>
+            <ChatInput />
+            <ChatMessage 
+              message="hello" 
+              sender="user" 
+            />
+            <ChatMessage 
+              message="Hello! How can I help you?" 
+              sender="robot"
+            /> 
+            <ChatMessage 
+              message="flipcoin" 
+              sender="user" 
+            />
+            <ChatMessage 
+              message="Sure! You got tails" 
+              sender="robot"
+            /> 
+          </>
+      );
+      }
+      const container = document.querySelector('.js-container');
+      ReactDOM.createRoot(container).render(<App />);
+    </script>
+  </body>
+</html>

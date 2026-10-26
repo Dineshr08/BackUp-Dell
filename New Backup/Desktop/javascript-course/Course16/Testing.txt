@@ -1,0 +1,221 @@
+Testing:
+We can create folder called tests and place the js file inside it ie the testing js file and we should also have test.html file as well since we can load the js file into html and see it in console as we cannot run the js file directly
+if we have multiple test case we should group it together using test suite : name then all the test case under it
+console.log('test suite: formatCurrency');
+To name each test case need to follow like this. we need to use console.log for both group the test case and name the tets case. grouping is just give one common console.log and  give name and under it keep all the relevent test case under it
+console.log('converts cents into dollars');
+
+Testing Framework:
+Its an external library, it help us to write automated test case easier
+Download jasmine testing framework unzip and move inside the folder ie under the project and renmae to tests-jasmine.So whatever we did above on testing like giving test suite, test name, createing test case , comparing value everything can be done in automated way. Even jasmine testing framework is the external libarary it will contain lot of files, if any external library contain lot of files just load it inside the project like we did for jasmine
+Here spec = test specrunner.html is testrunner .html we need to use this file to run the tests. All the test case will be under spec, inside specrunner.html  <!-- include source files here... --> is where we load all the js source file  <!-- include spec files here... --> is where we load all our test files the source file is the function or code that we will be testing in test file
+
+So here What we do is we create a test case in js and load that in html file and open that html file in browser ie what we did for testing without jasmine but same is we do here in jasmine as well but few changes
+We can remove spec and src folder as we dont keep it seperately just keep lib alone and all files we keep under tests-jasmine
+
+I am going to keep moneyTests.js which is the testcase file under tests-jasmine and load the same into specrunner.html in that plcase as i said earlier i willl remove above src and spec files and do below
+<script src="moneyTests.js" type="module"></script> as i gave  type="module" because i am going to load the function into moneyTests.js
+
+import { formatCurrency } from "../scripts/utils/money.js"; // used import as we using this function inside our describe
+
+describe('test suote name', () => {}) will help us in create a test suite , '' give test suite name () => {} inside {} write test case . to write test case use it(); function '' give tets case name () => {}
+ inside bracket give test case actual code. expect function is used to compare the values and it will become an object and it has method toEqual to compare, we can add as many test case inside the describe
+ 
+ describe('test suite: formatCurrency', () => {
+  it('convert cents into doller', () => {
+    expect(formatCurrency(2095)).toEqual('20.95');
+  });
+  it('work with 0', () => {
+    expect(formatCurrency(0)).toEqual('0.00');
+  });
+  it('rounds up to the nearest cent', () => {
+    expect(formatCurrency(2000.5)).toEqual('20.01');
+  });
+
+});
+
+We can have describe inside describe as well
+When we create a testcase we need to name js filename followed by Test.js for example we have fn inside the money.js then the file name as moneyTest.js it should be also be created under same folder eg if money.js is under utils then moneyTest.js should be alos under test-jsamine then utils then moneyTest.js. 
+data folder ealier we have we have placed under main folder but its should be under scripts folder we made it woring initially
+If we have if else code when we test we need to test each conditions like both if and else because of test coverage.
+Test coverage: How much amount of code we tested, we need to test maximum code
+
+Mock:
+Lets us replace the method with fake version to anything we want.Below is the example of mock.
+We are testing addToCart function by adding one product to cart and make sure it equal to 1 but the problem is on carts.js we have stored the carts intolocal storage so there might be the data inside it , so we cant get the expeted results and  if no data inside the localStorage carts then we are adding default 2 values to cart. so we cannot go and update the script in order to fix it for our testing we have created the mock.
+Mock can be created using spyOn
+spyOn(localStorage, 'getItem').and.callFake(() => {
+      return JSON.stringify([]);
+    }); - What we do here is spyOn will take 2 parameter, object and its method, here localStorage is object and getItem is method and mthod shoulbe be inside '' and spyOn(localStorage, 'getItem') will become an object and it has property called and and spyOn(localStorage, 'getItem').and. will become object and it has method callFake where we write what the fake output should look like else the return. for our case we need this to be in empty array, so if the cart is empty array we can do this expect(carts.length).toEqual(1); ie carts.length === 1 then we can make the test case pass. so in below example we are returning the carts as [] abd the localstorage op will be string so we convert to string . so here i have called this function loadFromStorage(); go to carts.js file and look for the steps. The reason we converted to fn is after we modified the carts to empty array we need to load it back to orginal carts.js so  saying now ist empty so the rest of the code in carts.js think its an empty array and perform its action. now expect(carts.length).toEqual(1); will pass, then we add spyOn(localStorage, 'setItem'); line beacuse after addToCart fn run its store the data to localStorage but we dont want to add our testing data to carts so we have mocked it and we did not use .and.callFake(() as we no need to return annything and we have add expect(localStorage.setItem).toHaveBeenCalledTimes(1); this is to validate after each time data is added to cart the localStorage.setItem is the data is added that we validate with toHaveBeenCalledTimes(1);this will tell how many time this method is called after mocked ie spyOn(localStorage.setItem) this is method. to perform this we set mock for this spyOn(localStorage, 'setItem');Each test can have multiple expect, if all expect pass then only test will be passed
+
+
+
+import {carts, addToCart, loadFromStorage} from '../../data/carts.js';
+
+
+describe('test suite: add to cart', () => {
+  it('adding one product to cart', () => {
+
+    spyOn(localStorage, 'setItem');
+    spyOn(localStorage, 'getItem').and.callFake(() => {
+      return JSON.stringify([]);
+    });
+
+    loadFromStorage();
+
+    addToCart('e43638ce-6aa0-4b85-b27f-e1d07eb678c6');
+    expect(carts.length).toEqual(1);
+    expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+
+  });
+});
+
+Added one more example ie test case adding existing product to cart again and testing it, refer cartsTests.js, here added on return we have added an object to carts instead of empty because our objective is to test of the cart has an existing project whether that scenario is working or not, so need to add same way how the carts will looks like so added productID, quantity and deliveryOptionId. so below 2 what we doing is 
+expect(carts[0].productId).toEqual('e43638ce-6aa0-4b85-b27f-e1d07eb678c6'); - validating on carts fiest product is equal to the product  we add
+expect(carts[0].quantity).toEqual(2); - after we add the existing product qty increase to 2
+
+Important thing we need to remember is it will go and run the orginal function  only but whatever place we need to modify the data based on our req that we mock using spyOn
+
+it('adding one existing  product to cart', () => {
+
+    spyOn(localStorage, 'setItem');
+    spyOn(localStorage, 'getItem').and.callFake(() => {
+      return JSON.stringify([{
+        productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+        quantity: 1,
+        deliveryOptionId: '1'
+      }]);
+    });
+
+    loadFromStorage();
+
+    addToCart('e43638ce-6aa0-4b85-b27f-e1d07eb678c6');
+    expect(carts.length).toEqual(1);
+    expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+    expect(carts[0].productId).toEqual('e43638ce-6aa0-4b85-b27f-e1d07eb678c6');
+    expect(carts[0].quantity).toEqual(2);
+
+  });
+
+  Unit Test - One piece of the code we tested ie above till now we test only one function which is called unit test
+  Integration Test - Testing complete webpage or part of webpage. ie testing multiple unit/piece of code working together
+
+  When we do the integration testing ie we test a page or part of a page, so when we test a page we need to test 2 things
+  1. how the page looks
+  2. how the page behaves
+
+   1. how the page looks - We are going to test the renderCheckoutPage function which is responsible for checkout carts page.
+   What we did here is on spyOn i just loaded with one product in cart so based on that i am validating all the data loads fine, so using mock i loaded one product and productId1i created varible and passed inside object becuase that variable id we use further steps. then this step document.querySelector('.js-test-container').innerHTML = `<div class="js-order-summary"></div>` what we did is in our orginal code this class we insert the html file we generated , but in coure specrunner.html we dont have html content in body , so we create one test container which is div and inside it we create another div container with js-order-summary class so when we run renderCheckoutPage(); what it will dose in orginal code is it is responsible for load the cart data so while running that <div class="js-order-summary"></div> this will get inserted with cart content. Then we have added 2 check ie expect
+   expect(document.querySelectorAll('.js-cart-item-container').length).toEqual(1); - we have added this class in the element js-cart-item-container then using queryselector all get all the oelement inside it and using lenth we are comparing which is equal to 1 as we have one item in our mocked cart
+    expect(document.querySelector(`.js-product-quantity-${productId1}`).innerText).toContain('Quantity: 1'); - here in the qty element we added this class js-product-quantity-${productId1} in orginal html element js-product-quantity-${cartItems.productId} we added this which is for each cart we are adding product id , so here we store the product id in the variable and passing directly so we can get that element and from that we are getting innertext and using toContain we are checking if the data is present inside the element
+
+
+   import {renderCheckoutPage} from '../../scripts/checkout/orderSummary.js';
+import {loadFromStorage} from '../../data/carts.js';
+
+describe('test suite: renderCheckoutPage', () => {
+
+  
+
+  it('How the page looks', () => {
+    const productId1 = 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6'
+    spyOn(localStorage, 'getItem').and.callFake(() => {
+        return JSON.stringify([{
+          productId: productId1,
+          quantity: 1,
+          deliveryOptionId: '1'
+        }]);
+      });
+    loadFromStorage();
+
+    document.querySelector('.js-test-container').innerHTML = `<div class="js-order-summary"></div>`
+
+    renderCheckoutPage();
+
+    expect(document.querySelectorAll('.js-cart-item-container').length).toEqual(1);
+    expect(document.querySelector(`.js-product-quantity-${productId1}`).innerText).toContain('Quantity: 1');
+
+  });
+});
+
+ 2. how the page behaves. Below is the example of when we click the something how it behave, eg when click on delete will it delete is happen properly and updating the cart too. just added this class js-delete-quantity-${cartItems.productId} in element then document.querySelector(`.js-delete-quantity-${productId1}`).click(); running this by passing the product id and using click method to click then using expect checking using queryselector alll and comparing the length and the same after delete just checking the carts length as well
+
+
+ it('How the page behaves when we click delete button', () => {
+    spyOn(localStorage, 'setItem');
+    const productId1 = 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6'
+    spyOn(localStorage, 'getItem').and.callFake(() => {
+        return JSON.stringify([{
+          productId: productId1,
+          quantity: 1,
+          deliveryOptionId: '1'
+        }]);
+      });
+    loadFromStorage();
+
+    document.querySelector('.js-test-container').innerHTML = `<div class="js-order-summary"></div>`
+
+    renderCheckoutPage();
+
+    document.querySelector(`.js-delete-quantity-${productId1}`).click();
+    expect(document.querySelectorAll(`.js-delete-quantity`).length).toEqual(0);
+    expect(carts.length).toEqual(0);
+
+
+
+  });
+
+  Hook:
+  It help us in reuse the code. so in both test case whatever i have mentioned in beforeEach is commenly used in both tests such code we can keep it beforeEach so before the test case run it will execute firest then the whatever in the test case taht will run, so the common code which in all testcase can be added in before each
+
+  afterEach - it is after test case is executed if we want to perform some cleanup we can have that code here . our eg document.querySelector('.js-test-container').innerHTML = ''; this code will just clear the html content which shows in jasmine result html ui
+
+  import {renderCheckoutPage} from '../../scripts/checkout/orderSummary.js';
+import {loadFromStorage, carts} from '../../data/carts.js';
+
+describe('test suite: renderCheckoutPage', () => {
+ const productId1 = 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6'
+  beforeEach(() => {
+    spyOn(localStorage, 'setItem');
+    
+    spyOn(localStorage, 'getItem').and.callFake(() => {
+        return JSON.stringify([{
+          productId: productId1,
+          quantity: 1,
+          deliveryOptionId: '1'
+        }]);
+      });
+    loadFromStorage();
+
+    document.querySelector('.js-test-container').innerHTML = `<div class="js-order-summary"></div>`
+
+    renderCheckoutPage();
+  });
+
+  afterEach(() => {
+    document.querySelector('.js-test-container').innerHTML = '';
+  });
+  
+
+  it('How the page looks', () => {
+
+    expect(document.querySelectorAll('.js-cart-item-container').length).toEqual(1);
+    expect(document.querySelector(`.js-product-quantity-${productId1}`).innerText).toContain('Quantity: 1');
+
+  });
+
+  it('How the page behaves when we click delete button', () => {
+    
+
+    document.querySelector(`.js-delete-quantity-${productId1}`).click();
+    expect(document.querySelectorAll(`.js-delete-quantity`).length).toEqual(0);
+    expect(carts.length).toEqual(0);
+    
+
+
+
+  });
+});
+
+One thing to remember we should have tests folder instead of tests-jasmine when we do realtime
+If we update code and make sure rerun test and all work good

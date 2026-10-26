@@ -1,0 +1,42 @@
+Variable is container to store the value
+Syntax:
+let variablename = value;
+let var1=5;
+Variable should declared inside the script element in html script. But on html under html atributes we can also use or call the variable names. Refer 05-Variables-CartQuantityExercise.html for more referance
+
+There are 3 ways to create a Variables
+1. using let . We use let when we reassign and increment the var
+2. using const. When we use const is if the variable wont chnage ie we are not incrementing or reassigning that case we use const varibale
+const var2=5;
+3. using var. We dont use var, because latest js it wont work
+var var3=2;
+
+Variable naming convention:
+1. camelcase - twowords thilaga and dine - thilagaDine - Firstword all letter small and second word first letter caps. In java script almost everywhere we use this like naming variable etc. On naming variable dont use like c=5 ie too small or too big use medium sized variable name with camelcase
+2. Pascal case - ThilagaDine - Both first letter caps, we use this in only one place in js
+3.kebab-case - thilaga-dine - both are small with - inbetween we use this for name the files and on html
+4. snake case - thilaga_dine - we use this in other programming languages
+
+Other ways of increment
+cartQuan = cartQuan+2; is same as cartQuan+=2; same applicable for all +,-,* and /
+cartQuan = cartQuan+1 is same as cartQuan++; same for cartQuan--
+
+On Exercise2  - We have learned 2 new concept. if we want to list down button one by one need to add inside <p></p> like below. And eval('2+2') will give output of 4, it will just conver string to js code
+<p>
+      <button onclick="
+      calculation+='1';
+      console.log(calculation);
+      ">1</button>
+    <button onclick="
+      calculation+='2';
+      console.log(calculation);
+    ">2</button>
+    <button onclick="
+      calculation+='3';
+      console.log(calculation);
+    ">3</button>
+    <button onclick="
+      calculation+='+';
+      console.log(calculation);
+    ">+</button>
+    </p>

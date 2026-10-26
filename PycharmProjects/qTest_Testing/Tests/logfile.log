@@ -1,0 +1,6 @@
+2023-09-14 17:13:07,012 : INFO : test_Insights_ScheduleReport : //td[normalize-space()=15]
+2023-09-14 17:13:07,013 : INFO : test_Insights_ScheduleReport : //span[@class='hour hour_pm'][normalize-space()=5]
+2023-09-14 17:13:07,013 : INFO : test_Insights_ScheduleReport : //span[normalize-space()='5:15']
+2023-09-14 17:17:47,900 : INFO : test_Insights_ScheduleReport : //td[normalize-space()=15]
+2023-09-14 17:17:47,900 : INFO : test_Insights_ScheduleReport : //span[@class='hour hour_pm'][normalize-space()=5]
+2023-09-14 17:17:47,901 : INFO : test_Insights_ScheduleReport : //span[normalize-space()='5:20']

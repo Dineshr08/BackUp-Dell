@@ -1,0 +1,27 @@
+What is OS?
+Operating system is software, which act as middleman or bridge between computer hardware and user.OS provides UI, whatever user perform operation(like running function or application using keyboard, mouse), the OS communicate with hardware and provide the output in UI.
+Eg:If we want to print the file, using keyboard and mouse we will give print, but OS will take that input and communicate with computer hardware printer and print the file. Same if we want to access something on internet, we give our input on keyboard and mouse, the OS will take input and use hardware and perform operation and provide the output in UI console.
+
+Different Type of OS:
+Desktop based OS:Windows, Ubuntu, MacOS which have UI
+Server based OS: Windows server, Unix, Linux Distributions
+Mobile based OS: Android, Windows mobile, IOS
+
+What is Linux:
+Linux is an OS. Which is free(not all free, redhat is enterprise) and Open source(developer have access to code, so they can customise the OS based on their need).Linux is secure and Reliable(no need to reboot the system frequently)
+
+Linux Distribution:
+Redhat(Not free, they will provide support)
+CentOS(Same as redhat, but they wont provide support)
+Debian
+Ubuntu
+Fedora(Part of redhat)
+
+Unix vs Linux:
+Before Unix was invented the OS which was available during the time was not able to perform multi tasking and wont allow multi user.So unix was developed.But unix was enterprise one , so Linux was invented with same feature of unix with Free and opensource.
+
+Unix Distribution:
+Solaris(Owned by Oracle)
+Some HP unix OS also available
+
+

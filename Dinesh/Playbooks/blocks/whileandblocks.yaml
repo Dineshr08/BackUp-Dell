@@ -1,0 +1,15 @@
+---
+ - name: while and block statement
+   hosts: client
+   vars:
+    x: 8
+    y: 9
+   tasks:
+   - block:
+     - name: make when condition 1
+       debug: 
+         msg: "when condition passed"
+       when:  x == y
+     - name: make when conditon 2
+       debug:
+          msg: "When condition failed"

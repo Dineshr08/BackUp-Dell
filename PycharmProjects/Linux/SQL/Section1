@@ -1,0 +1,32 @@
+1.SQL introduction
+The SQL the syntax we learn here can be applied on below databases or software that use SQL
+Database:
+    -PostgreSQL
+    -Amazon Redshift
+    -Microsoft SQL Server
+    -MySQL
+    -Oracle Database
+Softwares:
+    -Hadoop
+    -Google BigQuery
+
+2. What is Database:
+Database is the system that allows the user to store and organize the data. Database really helpful when we manager large scale data
+3. Database users
+Person who handles data, like analyst(Business, sales),software engineers, Data scientist, Webdeveloper
+4. Comparision between Spreadsheet and Database
+SpreadSheet:
+    -Onetime analysis
+    -Cant handle large data
+    -Prepare charts
+Database:
+    -Automate and analyse the data
+    -Combine different data types
+    -Handle large data
+    -Data integrity - Cant go and update the cell values easily like we do in excel
+5. Learn from spreadsheet to database
+In spreadsheet we have multiple tabs ie is sheets, each tab we will have columns and rows. Here in database, tabs = tabel and each tabel will have columns and rows.So Database is made up of multiple tables and each table will have columns and rows. Columns has its own datatypes and rows will be the data points of the columns.
+SQL - Structured query language - Its a programing language, it will helps to communicate to database, like to get the data from database and insert data to database
+6.PostgreSQL - Its a database or sql engine , its store the data, reads the query and returns the information
+7.PgAdmin - Its a GUI , which sits at top of PostgresSQL and connect to PostgresSQL directly, where we can write and execute the queries
+8. psql - Its a command line tool like, it do what pgadmin dose . \du show list of users, \l show list of databases.Current 80 machine username is postgres and password is password. Port is 5432 and to het port SHOW port;

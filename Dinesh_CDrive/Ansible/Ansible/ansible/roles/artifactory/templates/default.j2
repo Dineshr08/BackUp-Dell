@@ -1,0 +1,18 @@
+#!/bin/sh
+
+#Default values
+export ARTIFACTORY_HOME=/var/opt/jfrog/artifactory
+export ARTIFACTORY_USER=artifactory
+export JAVA_HOME=/usr/lib/jvm/{{ java_version }}/jre/
+#export REPLICATOR_ENABLED=true
+
+export TOMCAT_HOME=/opt/jfrog/artifactory/tomcat
+export ARTIFACTORY_PID=/var/run/artifactory.pid
+
+
+export JAVA_OPTIONS="-server -Xms2048m -Xmx24g -Xss256k -XX:+UseG1GC -XX:OnOutOfMemoryError=\"kill -9 %p\""
+
+export JAVA_OPTIONS="$JAVA_OPTIONS -Djruby.compile.invokedynamic=false -Dfile.encoding=UTF8 -Dartdist=rpm -Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true -Djava.security.egd=file:/dev/./urandom -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv4Addresses=true "
+
+# Timeout waiting for artifactory to start
+START_TMO=120

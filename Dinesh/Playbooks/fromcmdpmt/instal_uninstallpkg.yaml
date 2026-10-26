@@ -1,0 +1,9 @@
+---
+ - name: install and unstall package using cmdprmt variable
+   hosts: all
+   become: true
+   tasks:
+   - name: install and uninstall package from cmd prompt
+     yum:
+       name: "{{pkg}}"
+       state: "{{req_state}}"

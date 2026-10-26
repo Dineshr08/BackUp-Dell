@@ -1,0 +1,414 @@
+OOPS:
+Object oriented programming
+Its is organizing the code inside the object. eg our carts.js we are moving the code inside the object. we group the data and function together into the object data means declaring the variable
+const carts = {} - Its an object, so here we are gng to learn how we are going to move the code in carts.js into the object
+
+When moving the the varibake inside the object. eg export let carts; is variable that is undefine we are going to change as export let carts = undefined; and we are moving this inisde the object. So we cant keep the varibale inside the object and cant keep export and let so converting the variable into property and value which only object support
+
+const carts = {
+  //export let carts = undefined;  - converted this like below. if we have the variable inside the function we can keep as it is. only if we use export and let variable name and value which is the data that needs to converted as property and value
+  carts: undefined,
+}
+
+if want to access carts inside the object it will be carts.carts it will be confuisng so convets like below
+
+const carts = {
+  //export let carts = undefined;  - converted this like below
+  cartsItems: undefined,
+}
+
+Now we are moving the function inside the object. below is the orginal fuction  which we are moving inside the object
+export function loadFromStorage() {
+
+  carts = JSON.parse(localStorage.getItem('carts'));
+  if(!carts) {
+    carts = [{
+      productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+      quantity: 2,
+      deliveryOptionId:'1'
+    }, {
+      productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
+      quantity: 1,
+      deliveryOptionId:'2'
+    }];
+  }
+  
+}
+
+const carts = {
+  cartsItems: undefined,
+  //loadFromStorage: function() { - We can keep like this or we can use the shorthand method like this as well loadFromStorage() here in our example we are going to use shorthand method
+
+  loadFromStorage() {
+  carts = JSON.parse(localStorage.getItem('carts'));
+  if(!carts) {
+    carts = [{
+      productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+      quantity: 2,
+      deliveryOptionId:'1'
+    }, {
+      productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
+      quantity: 1,
+      deliveryOptionId:'2'
+    }];
+  }
+  
+}
+}
+Now we have moved the function inside the object. but we have modified the carts to cartsItems, so all carts need to replaced to cartsItems inside the function and cant change directly to cartsItems because, now the cartsItems is inside the object carts, so if we access that property inside the function need to change like carts.cartsItems. changing JSON.parse(localStorage.getItem('carts')); to JSON.parse(localStorage.getItem('carts-oop')); as we have our orginal carts.js in local storage so dont want to distrub so changing to carts-oop
+
+const carts = {
+  cartsItems: undefined,
+  loadFromStorage() {
+  carts.cartsItems = JSON.parse(localStorage.getItem('carts-oop'));
+  if(!carts.cartsItems) {
+    carts.cartsItems = [{
+      productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+      quantity: 2,
+      deliveryOptionId:'1'
+    }, {
+      productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
+      quantity: 1,
+      deliveryOptionId:'2'
+    }];
+  }
+  
+}
+}
+
+If the object name ir carts in our example changed means everytime we need to come inside the object and need to update to fix that we use this property, this refers to object which we currenly in so here this refer to carts
+
+const carts = {
+  cartsItems: undefined,
+  loadFromStorage() {
+  this.cartsItems = JSON.parse(localStorage.getItem('carts-oop'));
+  if(!this.cartsItems) {
+    this.cartsItems = [{
+      productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+      quantity: 2,
+      deliveryOptionId:'1'
+    }, {
+      productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
+      quantity: 1,
+      deliveryOptionId:'2'
+    }];
+  }
+  
+}
+}
+
+Here carts-oop.js is example code for this exercise, so below is moved all the function and data which is variable insode the object and here  this.saveToStorage(); line we used this the reason is we have saveToStorage() this method inside the object , if we calling then need to use this.methodname. Then finally carts.loadFromStorage(); which is not the variable or function we just called that function in the file so the function now moved inside the carts object so need to call that objectname.methodename.
+
+const carts = {
+  cartsItems: undefined,
+  loadFromStorage() {
+  this.cartsItems = JSON.parse(localStorage.getItem('carts-oop'));
+  if(!this.cartsItems) {
+    this.cartsItems = [{
+      productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+      quantity: 2,
+      deliveryOptionId:'1'
+    }, {
+      productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
+      quantity: 1,
+      deliveryOptionId:'2'
+    }];
+  }
+  
+},
+
+saveToStorage() {
+    localStorage.setItem('carts-oop', JSON.stringify(carts));
+
+  },
+updateDeliveryOption(productId, deliveryOptionId) {
+    let matchingItem;
+
+    this.cartsItems.forEach((cartItem) => {
+      if (productId === cartItem.productId) {
+        matchingItem = cartItem;
+      }
+    });
+
+    matchingItem.deliveryOptionId = deliveryOptionId;
+
+    this.saveToStorage();
+}
+}
+
+
+carts.loadFromStorage();
+
+So here  we group the data and function together into the object data means declaring the variable which is the oops
+
+Why we use object:
+To represent the real world. eg supermarket we have object ie cart or trolly we can keep the item ie variable and we can add item and remove item which is function , same in oops we have digital or js object cart we have varible ie data and function ie add and remove function.
+Its also easy to create the multiple object by using function 
+
+
+function Carts(localStorageKey) {
+  const carts = {
+  cartsItems: undefined,
+  loadFromStorage() {
+  this.cartsItems = JSON.parse(localStorage.getItem('carts-oop'));
+  if(!this.cartsItems) {
+    this.cartsItems = [{
+      productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+      quantity: 2,
+      deliveryOptionId:'1'
+    }, {
+      productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
+      quantity: 1,
+      deliveryOptionId:'2'
+    }];
+  }
+  
+},
+
+saveToStorage() {
+    localStorage.setItem('carts-oop', JSON.stringify(carts));
+
+  },
+
+addToCart (productId) {
+
+  let matchingItem;
+
+    this.cartsItems.forEach((item) => {
+      if(productId === item.productId) {
+        matchingItem = item;
+      }
+    });
+  
+    if (matchingItem) {
+      matchingItem.quantity += 1;
+
+    } else {
+      this.cartsItems.push({
+        productId: productId,
+        quantity: 1,
+        deliveryOptionId: 1
+      })
+      
+    }
+    this.saveToStorage();
+  
+},
+removeItemFromCart(productId) {
+ 
+
+  let newCart = [];
+  this.cartsItems.forEach((cartItems) => {
+    if (productId !== cartItems.productId) {
+      newCart.push(cartItems);
+
+    }
+  });
+  this.cartsItems = newCart;
+  
+  this.saveToStorage();
+  
+
+},
+
+updateDeliveryOption(productId, deliveryOptionId) {
+    let matchingItem;
+
+    this.cartsItems.forEach((cartItem) => {
+      if (productId === cartItem.productId) {
+        matchingItem = cartItem;
+      }
+    });
+
+    matchingItem.deliveryOptionId = deliveryOptionId;
+
+    this.saveToStorage();
+}
+
+}
+
+return carts;
+
+}
+
+const carts = Carts();
+const businessCarts = Carts();
+
+carts.loadFromStorage();
+businessCarts.loadFromStorage();
+
+What we have done above is we have moved the object into the function and the fn name in pascalcase when we create a function for oops. then created the multiple objects like below
+const carts = Carts();
+const businessCarts = Carts();
+
+carts.loadFromStorage();
+businessCarts.loadFromStorage();
+
+We can pass the parameter as well like below , the reason is when we console the object of above and see both has same content of cart details, because take the data from localStorage carts-oop which has the data, even after adding the data to carts object by calling addTocarts function, because businessCarts still refer to same local storage, so here we passing the different name to localstorage cart name , so both will have different data, because while creating obj we will set the different local storage name , so after that if we modify the two object will not impact
+const carts = Carts('carts-oop');
+const businessCarts = Carts('business-cart');
+
+carts.loadFromStorage();
+businessCarts.loadFromStorage();
+
+
+Class:
+Class = object generatore, which help us to generate the object. till until class we learned in opps how we organize the code into object , then for creating multiple object we used function, but to create a object we need to use class.
+What weverthing we used to create a object that should be in the pascal class, we use class to create an obj, so class name should be in pascalclass
+Eg:
+class ClassName {
+
+}
+Now ae are converting the above function to class. class usually have data ie variable and functions. See carts-class.js for class related example
+
+Here inside the class we will create the variable like varibale name = value; in object its property:value
+cartsItems = undefined;
+Then all function are same but dont end up in ,
+Creating the object using class. The object we creating from class is called instance
+const objName = new ClassName();
+const carts = new Carts();
+Run function inside the class
+objName.functionName();
+carts.loadFromStorage();
+Passing the value to the varibale
+objName.variableName = 'Values';
+carts.localStorageKey = 'carts-oop'
+console.log(carts instanceof Carts); this command is to check if the object is instance of class. Refer carts-class.js for example of class we created.
+In class all the variable ie data we call properties and functions as method
+Consttructor: to run the setup code for the object. Whenever the object created the constructor run first and we can put our setup code here to setup the object. in our example below after the object is created we pass the value to the object an d run the function so this can be put inside the constructor or else we can say all the variables that we pass to class when object is created that needs to be declared here and if the varibale is undefined like  cartsItems = undefined; can change to cartsItems;
+
+carts.localStorageKey = 'carts-oop'
+businessCarts.localStorageKey = 'businesscart-carts-oop'
+carts.loadFromStorage();
+businessCarts.loadFromStorage();
+
+Updated code - 
+ cartsItems;
+  localStorageKey;
+  constructor(localStorageKey) { //- Here as we are passing parameter to the class  for this object, so it shoule be this.variableName = varibaleName;then for the object we run the function, so this.fn name this refer the current object
+    this.localStorageKey = localStorageKey
+    this.loadFromStorage();
+  }
+const carts = new Class('carts-oop')
+
+Constructor canot have return type and cant use someother function name apart from constructor
+
+Private property and methods:
+if we want to make our property and method as private to class ie accessible only inside the class, then need to add #
+Eg:
+class Carts {
+
+  cartsItems;
+  #localStorageKey;
+
+  constructor(localStorageKey) {
+    this.#localStorageKey = localStorageKey
+    this.#loadFromStorage();
+  }
+
+  #loadFromStorage() {
+  this.cartsItems = JSON.parse(localStorage.getItem(this.localStorageKey)); //replaced this with parameter so every object will have its own localstorage
+  if(!this.cartsItems) {
+    this.cartsItems = [{
+      productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
+      quantity: 2,
+      deliveryOptionId:'1'
+    }, {
+      productId: '15b6fc6f-327a-4ec4-896f-486349e85a3d',
+      quantity: 1,
+      deliveryOptionId:'2'
+    }];
+  }
+
+}
+}
+
+ if i try to update outside like below
+ const carts = new Carts('carts-oop'); 
+ After creating the object and i try to update the property like below outside the class it woent work
+ carts.localStorageKey = '111'; - it will thrown an error
+ When we create a class the variable we use inside the class should be declared, then the variable which take parameter that need to use inside the constructor or setup code for the object should placed inside the constructor
+
+Check product.js for steps how we apply class concept here
+  
+Inheritance:
+Lets reuse the code between the classes.if we have 2 class and want to use the parent class properties and method to chile class we can use Inheritance. Clothings is child class and Products is parent class. Which scenario we use inheritance. in our homepage we have lot of products. so consider we have 10 products and 10 use the same properties and method and out fo 10 , 2 products like clothing products need extra property called size so in that case we can just add size property alone in child class and inherit all the parent property and methods. 
+syntax:
+class Clothings extends Products {
+
+}
+if parent class has constructor we dont need to explictly mention in child by default it will take but as best practise call the same construictor with parameter passed in the constructor. so below we have created constructor for our new class whoch has some setup code and calling constructor of parent class can be done like super(parameterName) - parameterName is same as parent class parameeter name. if we want call explicitly the paraent class methoid can call like super.method(); but it will default call by itself
+class Clothings extends Products {
+
+  constructor(param) {
+    super(parameterName)
+
+  }
+  super.method(parameterName);
+}
+
+Refer steps in product.js which will be istep
+  
+Method Overriding:
+now we have same method in parent and child class , so what it will do when we inherit the child method will override the parent method which is called method overriding
+
+Polymorphism:
+then on amazon.js we have added  ${productItem.getSizeHTML()} so when this is called we dont know this method id part of which class this called polymorphism
+  
+this:
+'this' lets an objects access its own properties . this can be used anywhere in the code. if we do lis this 
+conslole.lig(this);  - this return undefines, becuase its not refer to any object
+if its inside the method we can use this which is pointing to object, if its not inside the method like below and above . on below we just creating an object and b: this.a this line after we save only it will become an object, so its not point to object so it thrown an error. so if its inside the method we can use this which is pointing to object. 
+const obj1 = {
+  a:1,
+  b: this.a
+}
+
+Use this inside the function:
+function logThis() {
+  console.log(this);
+}
+
+logThis() - It still return undefine, becuase its not used in object.
+We can change this to whatever we want inside the function. a function has method called .call() this .call() will still run the function but we can change this to whatever we want
+logThis.call('hello'); - Hello will point to this which is inside the function
+
+function logThis(param1, param2) {
+  console.log(this);
+}
+
+logThis.call('hello', param1, param2); - if we give like this the first parameter ie hello in our case will always point to this eventhough if we not mentioned in the function
+
+use of this in arrow function
+this
+const obj = {
+  method: () => {
+    console.log(this);
+  }
+}
+Here i have declared this which is undefined then inside the object inside the arrow functioin we have this.so what will hap is this indie the arrow function will alwayd refer the outside this
+
+Soin below we have console.log(this); which refer to obj but in for each console.log(this); refer to undefined, becuse the this inside the fn become undefine but we want that this to refer to obj to solve this problem we have arrow fun
+const obj = {
+  method: () => {
+    console.log(this);
+
+    [1,2,3].forEach(function() {
+      console.log(this);
+      
+    })
+  }
+}
+Here foreach this refer to outside methiod this and method this refer to obj , so undefined issue resolved
+const obj = {
+  method: () => {
+    console.log(this);
+
+    [1,2,3].forEach(() => {
+      console.log(this);
+      
+    })
+  }
+}
+
+So here we learned oops but without oops with procedural programming like step by step we have done for creating the website . with both oop and procedural proigramming we can create a website but its upto us to which to use. in js we prefer doing through procedural programming, util oops we did that way

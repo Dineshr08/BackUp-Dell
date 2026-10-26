@@ -1,0 +1,15 @@
+---
+ - name: Display output
+   hosts: all
+   become: true
+   tasks:
+   - name: run shell command
+     shell: |
+        nproc
+     register: Before 
+     register: before1
+   - name: print op
+     debug:
+       #msg: "the output of above"
+       var: Before.stdout_lines
+       var: before1.stdout_lines

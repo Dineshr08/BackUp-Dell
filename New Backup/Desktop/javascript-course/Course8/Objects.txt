@@ -1,0 +1,141 @@
+Objects: Its used to group the values together or use the values together
+Syntax
+const objName = {
+  propertyName1: value1,
+  propertyName2: value2
+};
+Objects always enclosed by {}.Obj will have property:value, if we need to get the value need to call by property Name
+console.log(objName.propertyName);
+Add new value to Objects:
+objName.propertyName3 = value3;
+Update values to Object
+objName.propertyName2 = newValue;
+Delete the value in the Object
+delete objName.propertyName3;
+Eg:
+const product = {
+  name: 'Socks',
+  price: 100
+};
+
+objName.propertyName3 = value3; by doing this is dot notation. We can also do the same using [] bracket notation. Mostly we use . notation, but sometime we use [] notations during below scenarios
+ const product = {
+          name : 'Socks',
+          'delivery-time' : '1 Day'
+        }
+if we call like delivery-time : '1 Day' it wont work as js think its a minus sign, so during such scenario we need to create a property by '' and call using bracket notation  like below
+console.log(product['delivery-time'])
+We can also create a nested object 
+const product = {
+          name : 'Socks',
+          'delivery-time' : '1 Day',
+          rating: {
+            overallRating: '5',
+            count: 99
+          }
+        } Here rating is nested objects , created child object inside the parent object. How to call this. 
+        product.rating.count
+We can also call function inside the object
+const product = {
+          name : 'Socks',
+          'delivery-time' : '1 Day',
+          rating: {
+            overallRating: 5,
+            count: 99
+          },
+          fun: function functionName() {
+            console.log('Calling function inside the obejct');
+          }
+        }
+If we call function inside object then its a method.Eg Math.random() - Here math is object and random is the function inside the object = method. Same console.log - console is object and log is function inside the object
+To call this function which is inside the object do like below
+product.fun(); from our example
+
+Built in Objects:
+Math.random(), console.log() are built in js objects, others are json built in objects and local storage
+JSON - javascript object notation. All string here enclosed in "" double quotes and it wont take functions. ie it has less feature. Why we use json eventhough its has less feature is it support all programming languages. and can send the data between applications which developed in different languages and store data as well.
+Convert JS object to json
+JSON.stringify(product); - Stringify is function of json object. its store as string
+jsonString = JSON.stringify(product);
+product = {
+          "name" : "Socks",
+          "delivery-time" : "1 Day",
+          "rating": {
+            "overallRating": 5,
+            "count": 99
+          }
+To convert back to JS onjects
+JSON.parse(jsonString);
+
+localStorage: 
+All the variable we create and assign values are temporary.If we refresh the page or close the page it will reset or deleted. Inorder to prevent that we use localStorage, it will store variable more permenantely.It will take string as input
+Here we have 3 functions in localStorage object.
+localStorage.setItem('name', 'value'); - Used to assign the value to variable name
+From Exercise2 = localStorage.setItem(('score', JSON.stringify(score))); - It will convert the js object into string and store into local storage score, it only have {} object values not object name with values. Because we are storing the score object value here
+localStorage.getItem('name'); - Used to get the value from local storage
+From Exercise2 = localStorage.getItem('score'); - It will get the values of the score which will bein string
+localStorage.removeItem('name'); - Remove the localStorage name itself ie score in ourcase
+From Exercise2 = localStorage.removeItem('score');Remove the score from localstorage and it will become null. Score will not be availabe lin local storage
+
+If we reassign the variable we need to use let .eg const temp = 5; and inside the loop i am reassign temp = 0; in this case need to declare temp as let instead of const
+
+Difference between null and undefined.
+If we explocently mention something null means to variable its null, if we not define a value to variable means its undefined
+
+Autoboxing:
+Object will have property and functions. in js we can also have string value, number and boolen as can have property and function or methods. 
+console.log('hello'.length) - length is property to string hello, what it will do is js will automatically convert the string to special object where we can use .length and .toUpperCase() function. Same for integer and boolean  we can use .toSting() function, but the same autoboxing cannot be implemented in null and undefined 
+
+Object are referance:
+const obj1 = {
+  name: 'Dinesh',
+  age: 30
+}
+When we create a object it stored in a computer memory , basically obj1 dosent hold the value ie {
+  name: 'Dinesh',
+  age: 30
+}, what it will dose is obj1 will hold the reference or address where the value is stored
+
+const obj2 = obj1 so here obj1 value is not copied to obj2 , its just share the same address. both obj1 and 2 point to same address or referances. its a copy by referances
+if we do console.log(obj1 === obj2) it will return  true as we are comparing both address and both are same so return true
+ const obj3 = {
+  name: 'Dinesh',
+  age: 30
+} it store in some different address in computer memory if console.log(obj1 === obj3) it return false as address will be different and here its compare address not value
+if we do obj1.name = 'Thilaga' it will update as its const as we are updating the value not the referance
+
+Destructuring:
+if variable name and property name both are same then we can use destructing. eg
+const name = obj1.name - here variable name property name are same, so here we can apply destructing ie shortest wat to define this
+ const { name } = obj1;
+ if we have multiple need to be declared or ssign to other variable can be do like this
+ const { name, age} = obj1 this is same as const name = obj1.name; and const age = obj1.age;
+
+ Shorthand property:
+ If we have varible like below
+ const name = obj1.name; then when we creating a object like below with same name of variable name as property then instead of writing code like below
+ const onj4 = {
+  name : name - > var name
+ } we can do like this
+
+ const obj4 = {
+  name
+ }
+
+  Shorthand Method:
+  const obj4 = {
+  name,
+  method: function function1() {
+    console.log('hello fn);
+  }
+ }
+instead of creating object like this if we have a method inside the object can write like below
+
+const obj4 = {
+
+  name,
+  method() {
+    console.log('hello fn);
+  }
+
+} here we dont want to give the method name and call function explicitly. method is the property name

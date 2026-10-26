@@ -1,0 +1,8 @@
+2023-04-25 15:37:02,634 : INFO : test_logging1 : Tilaga
+2023-04-25 15:37:02,650 : INFO : test_edit : ['Dinesh', 'Tilaga', 'Amma', 'Appa', 'Abi', 'Tamil']
+2023-04-25 15:37:02,650 : INFO : test_edit : Tilaga
+2023-04-25 15:37:02,662 : DEBUG : test_course-78to80 : Print all debug messages
+2023-04-25 15:37:02,662 : INFO : test_course-78to80 : Print Information statements
+2023-04-25 15:37:02,662 : WARNING : test_course-78to80 : Print warning messages
+2023-04-25 15:37:02,662 : ERROR : test_course-78to80 : Can print all assertion messages
+2023-04-25 15:37:02,662 : CRITICAL : test_course-78to80 : can print some issue which halt complete framework to stop

@@ -1,0 +1,4 @@
+#vars for jfrog
+
+pgsql_version: '11'
+java_version: 'java-1.8.0-openjdk-1.8.0.242.b08-1.el7.x86_64'

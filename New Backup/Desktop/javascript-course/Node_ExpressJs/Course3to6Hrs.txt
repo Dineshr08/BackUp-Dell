@@ -1,0 +1,283 @@
+Express JS:
+Its an external module from node js or framework used to create a backend in simpler way. We will use this to create a backend.
+We need to create a file name as App.js but for course i have written like Course3to6.js
+Need to install express using npm install express then need to import to use express framework. Need to create an app using express const app = exp();, then using exp creating the listen so all req will be listen through this port.
+
+When the req comes what response need to send can be done like below
+app.get('/', (req, res)=>{
+  res.sendFile('./pages/index.html', {root:__dirname});
+}) - when / path comes, it will run call back in call back we will give req and res, then if the req comes we will send res with the html page using sendfile res.sendFile('./pages/index.html', {root:__dirname});, here needto give 2 param one is relative path of the file and second one is the absolute path here {root:__dirname} __dirname will give absolute path. For redirect need to use .redirect fn like below 
+app.get('/home', (req, res)=>{
+  res.redirect('./pages/index.html', {root:__dirname});
+}) if we get the req like /home we will redirect the response to index.html.
+To handle notfound ie if some different end point comes we used below
+app.use((req, res)=>{
+  res.sendFile('./pages/notFound.html', {root: __dirname});
+}) - It should always use in end what it will do is if we send incorrect url it will check one by one like all above get if none get match then this use will run if we keep at top then at first only it will go to use and wont go to other get req, ie it will end the response.we use app.use for handeling the middleware ie when we send the req, before we get res we need to process someother thing then we use app.use. it will take one ananymouse fn as input
+
+//Express JS
+
+const exp = require('express');
+const app = exp();
+app.listen(3000);
+app.get('/', (req, res)=>{
+  res.sendFile('./pages/index.html', {root:__dirname});
+})
+
+app.get('/home', (req, res)=>{
+  res.redirect('./pages/index.html', {root:__dirname});
+})
+
+app.get('/contact', (req, res)=>{
+  res.sendFile('./pages/contact.html', {root:__dirname});
+})
+
+app.get('/about', (req, res)=>{
+  res.sendFile('./pages/about.html', {root:__dirname});
+})
+
+app.use((req, res)=>{
+  res.sendFile('./pages/notFound.html', {root: __dirname});
+})
+
+Middleware:
+
+//Middleware
+
+Browser->Request->Server(Middleware)->Response->Browser
+When we send the req we will send from browser the it send to server, before we are getting back response if we need to perform something that is middleware.Usuallly middleware dosent need to send any response, its work is just ptrocees the if we give next it will go to next step. in express everything will run from top to down approch. We usually define middleware using use, on use we need to give next, usually use take ananymous fn ie call back it will take 3 arguments req, res and next using that next we will tell if middleware executed go to next , Eg if we kept middlewarwe1 inbetween /home and /contact and middleware 2 inbetween /about and notfound and if we perform any get req like /contact it only execute middleware 1 as middleware 2 wont execute as already we sent response back so it wont execute midddleware 2 , but if we keep both midd 1 and 2 before contact both will execute becuase we yet to send the response back to server, all middle will execute until we send response back. Earlier not found we kep at last the reason is we usually send the response with not fpound use thats why if we kept at top no other req will execute.
+const exp = require('express');
+const morgan = require('morgan');
+const app = exp();
+app.listen(3000);
+
+app.get('/', (req, res)=>{
+  res.sendFile('./pages/index.html', {root:__dirname});
+})
+
+app.get('/home', (req, res)=>{
+  res.redirect('./pages/index.html', {root:__dirname});
+})
+
+app.use(morgan('dev'));
+
+app.use((req, res, next)=>{
+  console.log('Middleware1');
+  next();
+})
+
+app.get('/contact', (req, res)=>{
+  res.sendFile('./pages/contact.html', {root:__dirname});
+})
+
+app.get('/about', (req, res)=>{
+  res.sendFile('./pages/about.html', {root:__dirname});
+})
+
+app.use((req, res, next)=>{
+  console.log('Middleware2');
+  next();
+})
+
+
+app.use((req, res)=>{
+  res.sendFile('./pages/notFound.html', {root: __dirname});
+})
+
+//Route Param:
+
+Here we will discuss how to create the api with parameter. Refer index.mjs
+Before we go through the example we have made some changes in packahe.json file
+"type":"module" - We are till now used require to import module , but now we are going to use import statement so we need to mention type as module so we can use the import module, if we are using require then need to keep type as common js
+  "main": "index.mjs", - .mjs why m is since we used import module so need to use .mjs and this is the main file where we write the code so kept that inside the src folder
+  Then on below script we have added start:dev and start, so here we mention the script location , so while running we can use npm run star:dev or npm run start it will run the index.mjs file
+ "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon ./src/index.mjs",
+    "start": "node ./src/index.mjs"
+  },
+
+Script:
+Here we have used import, then we have define the port varibale then used that in listen and listen we have used ananymous fn too just to print the app is running as best practise, listen will take 2 param one is port and callback ie ananymousfn
+Here we have used the user array and stored the user details but in realtime this details we will get from db.
+WE have used app.get with /api/users this api will return complete user details, always for best practce and differentialt use api/param to tell this is api.
+app.get("/api/users/:id", (req, res) => { -  this get call we have done "/api/users/:id is we have passed the parameter ie http://localhost:3000/api/users/1 if we send like this const userID = parseInt(req.params.id); we are getting id from this code and convert that to integer then if nan then we are sending res as bad req, if it not in users list then we are saying as not found here we have used find fn to get the user info based on id ie 1 then if we give the proper id we are sending proper response back res.status(404).send({ msg: "User Not Found" });. also we have used return as well just to end the api, no need to run further.
+
+Route parameter is get the value based on the id ie after /1 eg if id is 1 get that value refer below users array
+
+import express from "express";
+
+const app = express();
+
+const PORT = 3000;
+
+app.listen(PORT, () => {
+  console.log("Application is Running");
+});
+
+const users = [
+  { id: 1, userName: "Dinesh" },
+  { id: 2, userName: "Thilaga" },
+  { id: 3, userName: "Diya" },
+  { id: 4, userName: "Rajendran" },
+  { id: 5, userName: "Kala" },
+  { id: 6, userName: "Abinaya" },
+  { id: 7, userName: "Tamil" },
+];
+
+app.get("/api/users", (req, res) => {
+  res.send(users);
+});
+app.get("/api/users/:id", (req, res) => {
+  const userID = parseInt(req.params.id);
+
+  if (isNaN(userID)) {
+    return res
+      .status(400)
+      .send({ msg: "Bad Request, Please check the input user id" });
+  }
+
+  const user = users.find((user) => user.id === userID);
+  if (user) {
+    return res.send(user);
+  }
+
+  res.status(404).send({ msg: "User Not Found" });
+});
+
+Query PArameter:
+for route paremener if we give the direct input in api url and it give result its route parameter ie /api/users/1 here 1 is input
+but on query parameter just take example on youtube if we search with react it will give all result of react ie what query parameter willl do ie after ? whatever we give is query parameter ir basically we do filtering. on below filter=productName&value=mo; we are do double fltering first we filter with product name and that product name contain the value called mo. for more details refer index.mjs file on src folder on query oarameter section
+//api/products?filter=productName&value=mo;
+//api/users?filter=userName&value=di;
+
+POST Request:
+When we send or submitting something on DB eg like submitting form we usually use post req. Here we are going to use users array to add the data , but in realtime we will create in DB.
+
+PUT Request:
+Put request usually to update the complete record, for eg if we want to update the user id 1 if the user has many argument like userName, age, so it will update the complete record, ie if we update the username alone also it will update the complete record ie new userName and old age
+
+PATCH and DELETE Request:
+If we want to update only one argument in record we will use patch for eg for user 1 if it has user name and age and i want to update the age alone we will use patch. Delete is to delete the particular record.
+
+Different way of handeling middleware:
+
+Generally in below earlier delete example, when we send the req ie /api/users/:id until we send the response back ie res.status(200).send(users); inbetween what we commented are are we are performing in middle ie is actually a middleware, so that we created as a middleware ie a function created as ananymous fn with 3 param, req, res and next , becayse we are creating the middleware so we need next to go to next step, that middleware we have passed here even all the http methods usually take 3 param , like below we can give our middleware invetween the req param and request handeller, instead of using app.use we can handle like below. We gave middleware then we are getting the value we returned in middleware. in middleware we have appened the the return value back to req, so that we are getting like this ie const userIndex = req.userIndex; ie req.userIndex has the userindex value ie what we appended that we are getting back.Refere //Different way of handeling middleware Step2 for code and how we appended back to req.
+app.delete("/api/users/:id", getIndexByID, (req, res) => {
+  const userIndex = req.userIndex;
+  // const userID = parseInt(req.params.id);
+
+  // if (isNaN(userID)) {
+  //   return res
+  //     .status(400)
+  //     .send({ msg: "Bad Request, Please check the input user id" });
+  // }
+
+  // const userIndex = users.findIndex((user) => user.id === userID);
+  // if (userIndex === -1) {
+  //   res.status(404).send({ msg: "User Not Found" });
+  // }
+
+  const { body } = req;
+  users.splice(userIndex, 1);
+  return res.status(200).send(users);
+});
+
+
+Validation:(No need to read this as we will cover this with joi)
+
+Validator is used to validate the request data we are sending or getting(from ui) before we processing ie submitting to DB or any db operation.So first we need to insatll the express-validator, then we need to create a schema is where we will till the validation for each api. here we are writing validator for post request ie inserting user to db that request boday validation we are doing here but in same schema we can write multiple validator. I created utils folder under src and created a file called validationSchemas.mjx which means we written in plural file name so we will writing multiple validators.We used export for validator, so we use that validator in index.mjs file.syntax const validator name={fieldname1 ie username:{},fieldname2 ie age:{},}  - we can write multiple fieldname based on the req body and we can have the fieldname. Then inside the fieldname need to write the validation ie const validator name={filedname1 ie username:{notEmpty: {errorMessage: "user name should not be empty"}},filedname2 ie age:{},} like this we can have comma seperated and have multiple validation for each field name. Refer the validator in orginal schema file.Then we need to import import { checkSchema, validationResult, matchedData } from "express-validator"; as we will be using this . The all method will take 3 argument we know the path and req handler, but inbetween we can have the checkSchema(createUserValidation) which will act as middleware its initaial place where validation take place we will pass the our created validator to here, then on the req handler const result = validationResult(req); we are passing the request, what it will do is it will compare the req with validator and return the result, if all passed then return empty error else it will return the array with all the error msg detals like which filed , location , error msg etclike this
+
+/*
+{
+  "error": [
+    {
+      "type": "field",
+      "value": "q",
+      "msg": "user name length must be between 3 to 12 character length",
+      "path": "userName",
+      "location": "body"
+    }
+  ]
+}*/ //Then that we are send as response as well if the validation was not successful.If we have multiple filed validationfailed all it will have it in array and will send everything.One more thing if we send the req body with only username and if our validator dosent have age , then what it will do is its only update the username alone because we use body like this ie const body = matchedData(req); the req only matched data we are sending to body. if we did not metion the field in validator even if we pass that in req that will ignore when we push to db.
+
+export const createUserValidation = {
+  userName: {
+    notEmpty: {
+      errorMessage: "username must not be empty",
+    },
+    isLength: {
+      options: {
+        min: 3,
+        max: 12,
+      },
+      errorMessage: "user name length must be between 3 to 12 character length",
+    },
+    isString: {
+      errorMessage: "user name must be string",
+    },
+    age: {
+      notEmpty: {
+        errorMessage: "username must not be empty",
+      },
+    },
+  },
+};
+
+
+app.use(express.json());
+app.post("/api/users", checkSchema(createUserValidation),
+  (req, res) => {
+
+    const result = validationResult(req);
+    console.log(result);
+    if(!result.isEmpty()) {
+      return res.status(400).send({error:result.array()});
+    }
+  console.log(req.body);
+  // const { body } = req;
+
+  const body = matchedData(req);
+  const newUser = { id: users[users.length - 1].id + 1, ...body };
+  console.log(newUser);
+  users.push(newUser);
+  console.log(users);
+  res.status(201).send(users);
+});
+
+Route:
+For code check check routes folder which we created newly and under that we created router, products and users file, on utils we created middleware, constants file and on main index.mjs we commented full code ie from //Route course comment start here to //Route course comment end here. Also on index.mjs we did below changes
+app.use(express.json()); - pushed this to top, so all the req body it will convert to json when we get
+app.use(routers); - Here we have used the routes.
+Routes - Earlier we have all the user api and product api in single index.mjs file which is the one we will use it to run. Now we haave segerigated and added all the user api in src/routes/user file and same like products api as well. Routes is used to segrigate all the related api in one file, then call in main index.mjs. When we create routes need to import router from express then need to create the obj for that router, then instead of app.get or other methods just use router.get or other methods that is what we need to do. Once we move user or product to it own file then change all the app.methods to router.method , here router is the name we define
+
+import { Router } from "express";
+import { products } from "../utils/constants.mjs";
+
+const router = Router();
+
+router.get("/api/products", (req, res) => { - Here changed app to router
+  console.log(req.query);
+  const { filter, value } = req.query;
+  console.log(filter, value);
+  let result = products;
+
+  if (filter && value) {
+    result = products.filter((product) => {
+      return product[filter].toLowerCase().includes(value.toLocaleLowerCase());
+    });
+  }
+  res.send(result);
+});
+Same for both user and product.mjs , then we created a constant file and move both user and products array but in realtime we will use db but for practise we moved there, then the middleware we moved to middleware file under utils then handeled all the imports in all the files. if we do default export then on import we can use different import name as well, no need to use the same name that we default export
+Then we have main router.mjs file as well that is the main file for router that will have all routes file ie user.mjs and product.mjs connected to that like below
+const router = Router();
+
+router.use(userRouter);
+router.use(productRouter);
+
+export default router; - Again we export this
+
+On index.mjs folder we commented all the code and only kept below 
+app.use(express.json());
+app.use(routers); - We have used the main router file here so if any call we are receiving this will route to main router.mjs file that will redirect to user and products route files.

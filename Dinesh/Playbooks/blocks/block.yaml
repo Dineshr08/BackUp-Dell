@@ -1,0 +1,15 @@
+---
+ - name: blocks
+   hosts: all
+   tasks:
+   - block:
+      - name: open the folder1
+        command: "ls /root/testing"
+        register: op1
+      - name: open folder2
+        command: "ls /root/test"
+        register: op2
+      - name: open folder2
+        command: "ls /root/script"
+        register: op3
+     ignore_errors: true

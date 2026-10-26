@@ -1,0 +1,41 @@
+1. Psycopg2 - It used to connect to PostgresSQL db from python.Refer Psycopg2 python for more details
+2. Index - It will help us the get the results faster when we do the select statement. For example we have table and col_name as fname and it dosent have index and it has data of 1 million when i try to search with a name which is at last then it will go and search one by one and it will finally fecth the data.So overall time will be high.So such case we will create index.But index cant create on all column, only required column need to create an index.the reason is all the indexed column, there will be seperate table and memory will be maintained. So in such case when we do insert and delete operation, it has to perform in both tthe tables, so it will take time.So only create whenever its really required.
+To Show index
+SHOW INDEX FROM table_name
+By default if our table has pk,fk and column with unique constraints then it will consider that as index.
+To Create index:
+CREATE INDEX index_name
+ON table_name(col_name)
+To Drop index
+ALTER TABLE table_name
+DROP INDEX index_name
+While creating index, we can specify the type of index
+CREATE INDEX index_name
+ON table_name USING index_type (column_name);
+If index is there the search will be faster. Eg i have one description colum there i can use full text inded, where we can search with keyword, so just in select statement if we give keyword then it will search and display the result. and it will be fast. Use index only if required else it will create slowness
+
+3. Schema - On general its an overall design of the db. The exact term of schema is organization and structure of db. ie the data in data base is organized and structured. Schema has schema objects.
+In schema will have many tables and each has column and each columns have data types, each table has relationship like one to many , many to one and many to many, pk, fk, constraints, views , stored procedure etc. On general schema is overall design of db
+A Schema is a logical container inside a database. It organizes objects like tables, views, indexes, procedures, and more.
+You can think of a schema as a folder inside a database
+Instance runs the database system.
+One instance can manage multiple databases.
+Each database can have multiple schemas.
+Each schema contains tables, views, procedures, etc.
+
+CREATE SCHEMA sales;
+Creating table customer under sales schema
+CREATE TABLE sales.customers (
+  id INT,
+  name TEXT
+);
+
+[Instance: PostgreSQL]
+ └── [Database: sales_db]
+      ├── [Schema: public]
+      │     └── Table: customers
+      ├── [Schema: hr]
+      │     └── Table: employees
+      └── [Schema: analytics]
+            └── View: sales_summary
+In many databases (like PostgreSQL), if you don’t specify a schema, the default is often public.

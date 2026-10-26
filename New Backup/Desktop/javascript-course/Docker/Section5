@@ -1,0 +1,69 @@
+DockerCompose:
+
+if our application are build with different services ie consider we have 2 front end ie vote and result app and for vote redis backedn and result its postgres backend and both redis and pogtgres are connnected iwth worker such case use docker compose. Using  docker compose create a configuration.yaml file. Here eg architectrure is 
+vote result
+|     |
+redis postgres
+  |      |
+  worker
+
+Consider we have 5 services to run to run our overall application so earlier we run docker run for each service and make it up then once all 5 service up our complete app will ru, instead we can add all the application in docker compose and if we up dockercompose file our app will be up, intead of managing each services.
+
+Here sample docker compose configuration file:
+Start with services, then mention all the services name ie vote, result etc that is our given name, then on each service metion image: and mention the image name else use build: ./vote here vote is folder name , inside the folder need to kep Dockerfile, So when you run the docker compose up it will build the image from dockerfile and run the container.Then if the container has port need to metion that and its list and if network created need to mention the network on same indent as parent services and keep the all network name in object, then on each service need to metion the networks: here if the service has multiple network can mention in list else we can keep one in list. To add environment variablke need to use envieonment ket on service and mention all environment in key value pair on environment object . For volume , need to do like network first create volume object on same indent as services and mention the host mount name as object then on service need to mention on volume object and mention the full path ie - data-db:/var/lib/postgresql/data
+services:
+  vote:
+    image:vote
+    or
+    build:./vote
+    ports:
+      -"5001:80"
+    networks:["fornt-end","back-end"]
+  redis:
+    image:redis
+    ports:
+      -"5002:80"
+    networks:["back-end"]
+  worker:
+    image:worker
+    ports:
+      -"5003:80"
+    networks:["back-end"]
+  postgres:
+    image:postgres
+    ports:
+      -"5004:5432"
+    networks:["back-end"]
+    volumes:
+      - data-db:/var/lib/postgresql/data
+    environment:
+      Postgres_User: postgres
+      Postgres_Password: password
+
+  result:
+    image:result
+    ports:
+      -"5005:80"
+    networks:["fornt-end","back-end"]
+networks:
+  fornt-end:
+  back-end:
+volumes:
+  data-db:
+
+Command to create a network
+docker network create nm_name
+Command to list the available network
+docker newtwok ls
+command to remove the network:
+docker network rm id
+
+Command to run the dockercompose file:
+docker compose -f configuration.yml up
+Command to stop the docker compose
+docker compose -f configuration.yml down
+
+Running individual container using network:
+dcoker run -d --name vote --network nw_name -p 8080:80 vote
+
+When build: ./vote - It will build image and run when do docker compose up, need to keep Dockerfile inside the folder

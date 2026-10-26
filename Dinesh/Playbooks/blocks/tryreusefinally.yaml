@@ -1,0 +1,18 @@
+---
+ - name: using try resue and finally
+   hosts: all
+   tasks:
+   - block:
+     - name: this is try block
+       command: "ls /root/"
+       register: op1
+     - debug:
+        msg: "opened successfully"
+     rescue:
+       - name: rescue fn
+         debug:
+           msg: "unable to open or find directory"
+     always:
+       - name: always fn
+         debug:
+            msg: "Completed script"

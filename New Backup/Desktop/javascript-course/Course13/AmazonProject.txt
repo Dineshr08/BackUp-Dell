@@ -1,0 +1,19 @@
+The main idea of js
+1. Generate data
+2. Create html
+3. Make it interactive
+
+1. Generate data:
+Data is information. Information is the data inside the webpage. eg in amazone website , the products will be there right that data for eg name, erating, price etc all are data. we can call it as the data inside the button. 
+We generate the data store inside the data folder and save the file as .js. For each data create a seperate file like products.js, cart.js etc.
+After creating the data file load it using script like below
+<script src="path\file.js"></script>
+<script src="path\file1.js"></script>
+Load the file in proper order, because the file load first then file1. if we have data file inside the file,then load that first then the data that will be using inside the actual javascript that needs to load second.
+
+Data attribute:
+We can provide the unique information to the each element, so using this data attribute we can get the information about the element. eg we have add to cart button available for each product , but on clicking add to cart on ui , js how will it know we have clicked on which product and how can we store that to cart array , for that we have this data attribute, using that we can give some unique id and by that we can determine which product we have clicked. On the product array we have mentioned each product with unique product id
+Synatx:
+data-product-id = "actual product id"
+All the attribute we need to start with data then -product-id can be the relevent property name
+const productID = cart.dataset.productID; - dataset will hold all the data attribute information of the button on that we are getting productID, data-product-id this kebab case will convert to like this when its inside the js object

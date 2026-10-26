@@ -1,0 +1,16 @@
+Jenkins
+Download jenkins.war(generic java package)
+to run jenkins
+java -jar jenkins.war -httpPort=8090 if want port can give elso 8080 drfault
+
+For parametrise:
+Choose this project is parametrized and choose choise parameter
+
+for give directory:
+Use custom workspce - if we give this, we give project path here, jenkins will refer from thios plcace
+Run jenkins in build section
+cd tests
+py.test test_Course-98.py --html=$WORKSPACE\reports\report.html -v --junitxml="result.xml"
+
+In post build , junit
+tests/*.xml

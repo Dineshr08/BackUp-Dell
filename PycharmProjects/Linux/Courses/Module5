@@ -1,0 +1,398 @@
+Vi Editor
+Create a file using VI editor
+vi filename
+Enter data into file - Click i
+Save and exit - wq!
+exit without save - q!
+Save without exit :w and enter
+navigation use all up, down, left and right navigation key
+To come out of insert mode  - click esc
+In esc mode can do below things
+x - to delete word one by one
+d - to cut line or delete line
+u - to undo operation
+r - to replace the current arrowed character
+o - to new line and with insert mode automatically
+/any text - to search the word in file or :s/any text
+Search and replace in cursor line ie at which line cursor is pointing
+:s/searchtext/replace text
+To search and replace in all occurance
+:%s/searchtext/replacetext/
+To copy and paste
+click v then select the word or line to copy(use arrow key to select) then click y to copy then go to position where you want to paste click p
+To cut and paste
+click v then select the word or line to cut(use arrow key to select) then click d to cut then go to position where you want to paste click p
+In insert mode need to remove the data just click backspace option
+
+sed command:
+It is used to manipulate the data in file.like search and replace, delete the line etc
+Search and Replace the string
+sed -i 's/searchstring/replacestring/g' filename  s is subsitute, g is to global replace -i is to save. s and g will be used only for search and replace time
+Search and replace the word except line 8
+sed -i '8!s/searchstring/replacestring/g' filename
+search and replace tab with space
+sed -i '/s/\t/ /g' filename
+Find and delete the line
+sed -i '/searchstring/d' filename  here d is to delete the line
+delete firstline alone
+sed -i '1d' filename
+delete first 2 line in file
+sed -i '1,2d' filename
+Insert empty line post each line
+sed -i G filename
+Delete empty line
+sed -i '/^$/d' filename  here ^ is starting of line and $ end of line ,  here in our case it start with empty and end with empty
+keep first 10 lines in file
+sed -i -n 1,10p filename p is pick, just pick first 10 line alone
+keep line apart from 2 to 10 in file
+sed -i 3,10d filename
+In VI editor , how to search and replace
+Inside vi editor in esc mode do below
+:%s/searchstring/replacestring/
+
+Account User management
+5 different user managment is available
+useradd - used to add user
+groupadd - add group
+userdel - delete user
+groupdel - delete group
+usermod - modify user like modigy user group etc
+3 files
+/etc/passwd - place where all user related details will be stored
+/etc/group - place where all group related details will be stored
+/etc/shadow - user and its encrypted password and length of password and it expiration details will be stored but all in encrypted format eg below
+thilaga:$6$KQ9nCbJ1$dY4WTkqWv1IMscSOhfHuFWeF.G6YKVZnMm5ZUG6ADdmnHyHYckCMQDX4XTlQ1L2xDEDzfuiITpTVy0Um1Zouj0:19805:0:99999:7:::
+Adding user to group
+useradd username will add user.
+To validate that user is created
+id usernme which will give uid=1001(thilaga) gid=1002(family) groups=1002(family) ie its user id and group its belong and its id.whenever you are creating user, it will automatically create group for it
+We can also check in file the user is created or not in /etc/passwd it will sow in bottom
+thilaga:x:1001:1002:familyuser and group:/home/thilaga:/bin/bash thilaga user:x is password:1001 is user id of user: group the user belong that id: description of the user: home directory of user: shell location that user belongs
+Adding group to user
+groupadd groupnmae
+To validate group is created or not check in /etc/group family:x:1002:
+here family is group:x is pasword:1002 is id of gropp: any usernmae is ther it means it belong to that user is belongs to that user
+Delete user
+userdel username
+Delete group
+groupdel groupnmae
+User mofify
+usermod -G groupname username here we are changing group to the user
+We can also change group by doing below
+chgrp -r or R groupname username
+In it industry they use below to create user and assign to group, shell, home directory and description. before doing that create group
+useradd -g groupname -s /bin/bash or shell location -c "description" -m -d /home/username or homedirectory usernmae
+
+Enable Password Ageing
+For the server , there will many user account will be there. if we want to set passoword expiry mechanism we can achieve using this.like force changing password after this many days.like we get for our dell account
+
+/etc/login.defs is the file will have all password mechanism of the server.like what is the within how many daya after last password change the password needs to expire, how many days before it should shown the warning, once we change the password how many days we need to wait for to change the password.after how many days the password expired and inactive it can become disable can be given here. along with that when we create user or group using useradd/groupadd for that user /group we will get id right that range can be specified here, what type of encrypted mechanism set to password , automatically home directory for user can be created or not when the new user created, everything can be given here
+/etc/shadow will show the user have how many days expiry , minimum , max, inactive details
+
+/etc/shadow file op
+thilaga:$6$KQ9nCbJ1$dY4WTkqWv1IMscSOhfHuFWeF.G6YKVZnMm5ZUG6ADdmnHyHYckCMQDX4XTlQ1L2xDEDzfuiITpTVy0Um1Zouj0:19805:0:99999:7:::
+
+To set the all user in server o follow password changing policy we can edit in /etc/login.defs file but if we need to set for individual or few user, that can be done using chage command
+change -m 5 -M 90 -W 7 -I 10 username
+-m minimum days after we change the last passowrd , we cant set new password. we have to wait 5 days post we change the last password
+-M maximum days our password wont expire
+-W no of days before the warning msg will show us to change password
+-I after password expirt, how many days it will wait to become user to disable
+
+su and sudo command
+su is switch user
+From normal user to root user need to switch
+su - then give root password
+from root to switch to normal user
+su - username, when you are in root user switch to normal, no need to give password
+exit will logout the user
+When you are normal user, but when you are running command that need root permission eg fdisk -l, so for normal user it will give permission denied, but for root user we can able to perform this command.For this case you only need access which have root but not root user but by normal user can perform all the thing that done by root user.for achieve this we can edit visudo file in that file where wheel group will be there, that wheel group , who are all the people associated to that group can perform all command that root user can perform. so for that we need to add our user to wheel group.then we can perform any command .but when root user perform fdisk -l can give directly .but for user mapped to wheel need to give command like sudo fdisk -l
+add user to wheel group
+usermod -aG wheel drajendran(username)  Need root user to perform this action
+
+User monitor command
+It will help us to see how many user logged in currently and history of user loggedin, from which ip and ther idle time etc
+who
+it will list current running user how they logged in if putty it will show pty if ui it will show o and time logged in
+last
+it will show what the user have logged in this machine.ie history
+w
+it will give same as who but along with that some additional info like which ip it logged in how long idele and whcih process it ran etc
+id
+it will give what is the id of user and which group it belongs etc
+finger
+it will give same as who but with detailed one.it wont come by default to install this do below
+yum install finger -y from centos8 its pinky
+
+Talking to users:
+In single server, there will be many people using like in single server app is hosted, db is hosted. so app different people will work, for db different people will work.and many other people also logged in server and perform their task.so we need to communicate the people who logged in to the server can be done using three commands. eg if db people made some change to sever, so they need to communicate to other can can do wall command , it will write to all user who logged in to the server right, their screen it will write comment. if we want to communicate to one particular user that can be done using write command. to list all user who logged in can be seen using users command
+After entered message give ctrl+d to send message
+wall
+type wall and click enter then start typing command to post that click ctrl+d
+write username then enter, then start writing command , to end the conversation give ctrl+d
+users will print all user logged in to the server
+
+
+Linux Directory Service - Account Authentication:
+There are 2 types of account
+1.Local account - the account which we directly creating to the server using useradd
+2.Directory account - consider we have 1000 user and 1000 server, we cant go and add all 1000 user in 1000 servers manually right.for that we have directory account. will have one server and have directory service installed in that. and all server will connected to this server.the directory server will have all user details configured.when the user tried to login to one server it will initiate the authentication to directory server, if data present there, it make authentication and connection will established to the server.In windows we have active directory which is directory server or service. like that we have many directory service.directory service installed in vm its directory server
+If we want to communicate to server we use ssh secure shell protocol and if we want to communicate to directory server then we use ldap protocol
+
+List of directory service:
+active directory - its Windows product
+idm(identity manager)  -  its is redhat one
+winbind - used in linux to communicate with windows. also called as samba server.here we have all linux server and we have active directory which has all user details, then using this samba server, we will connect to windows and get authenticated
+openldap - is open source directory server for linux or unix os
+ibm directory server - product by ibm for directory service
+jump cloud another directory service
+LDAP - its light weight directory access protocol, it is used to communicate between client server(linux or windows) to directory server and vice versa
+
+System Utility command:
+date - which provide current date with timezone
+uptime - it will give current time, along with how long server was up, how many active session, then load average. in load average 0.75,0.3,0.1 means the average number of job in system run queue for past 1,5 and 15 minutes
+which - it will give the file for the command is present in which location eg which top
+uname - which will give which operating system we are working
+uname -a which will give os, hostname, when we created os all details
+hostname - will give hostname of the system
+cal - it will provide calender
+bc  - it will take you to calculator mode we can perform any mathematical operation. to come out enter quit
+
+Basic names used in linux:
+Application = service, application or service means the app which running on the server like nfs, apache, chrome etc. we call app as service and vice versa
+Scrips - All app, command will have scripts, which only we are running to make that as application or command
+process - for all application we will running have one process or multiple process  with its process id
+threads - for all the application the process will be there and it will have multiple threads. like if multiple user access that application then that many threads will be created
+demon - it will run continuously in background until we interrupted.it will monitor both incoming and outgoing traffics
+job - using scheduler if we schedule a application then we called that as job
+
+systemctl command:
+To do all these thing should be root user or under sudo privelage
+It is used to managed the application, like start, stop, enable , restart application, poweroff , halt or reboot machine. in windows we have icon , we can directly click that so we can install the app and using service we can enable or disable the service.but in linux to do all those we need to use systemctl command
+Here we can manage 3rd party application also using systemctl command
+To start, stop and get status of the service or application
+systemctl start or stop or status servicename.service
+
+systemctl status firewalld.service
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since Wed 2024-03-27 11:50:03 IST; 1h 43min ago
+     Docs: man:firewalld(1)
+ Main PID: 763 (firewalld)
+    Tasks: 2
+   CGroup: /system.slice/firewalld.service
+           └─763 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
+
+Mar 27 11:50:01 LinuxVM systemd[1]: Starting firewalld - dynamic firewall d.....
+Mar 27 11:50:03 LinuxVM systemd[1]: Started firewalld - dynamic firewall daemon.
+Mar 27 11:50:04 LinuxVM firewalld[763]: WARNING: AllowZoneDrifting is enable....
+Hint: Some lines were ellipsized, use -l to show in full.
+
+if we run above command it will give like this
+Loaded - it was able to reach the config file and it was loaded
+Active - current status
+Main PID - pid of service
+enabled - service is enabled, so when machine booted, it will automatically up and run
+and below are few logs associated to that command
+
+To enable and disable service - which means , when we enable the service using systemctl commad, when system went to poweroff and cameback, what ever service were enabled , it will will automatically start its service, we no need to start manually.We can also disable this
+systemctl enable servicename.service
+systemctl disable servicename
+To restart or reload the service - when we changed the configuration file and need to restart the service that can be done using this
+systemctl restart or reload servicename.service
+To get all the active service running in server
+systemctl list-units
+To get all the active and inactive service running in server
+systemctl list-units -all
+If we want to add or manage any third part service under systemctl command(so we can do all above things) need to add that service in below path
+/etc/systemd/system/servicename.service refer other servicename.service file and add service
+To reboot the server
+systemctl reboot
+To halt the server
+systemctl halt
+To poweroff the server
+systemctl poweroff
+
+ps command:
+process status. it will show all the current running process in the server
+ps - only give the current shell running command details
+ps -e it will give all running process in server
+ps -ef most people used.it will give detailed info like which user running which command, its process id, parent process id, start time, the amount of cpu is using in time  and command is running for each process
+ps aux - gave same like above
+ps -u usernmae  - the given user running what process can be seen here
+Same like in windows , in task manager in process and service, we can see right how much each process is taking cpu memory disk etc and in process section, whether the process is running and its pid and other details. same can be seen here as well
+
+top command:
+Its used to list the process and real time view of the system. Once we give top it will go into interactive mode to come out press q.top provide current time, up time of the system, no of user active in system, then load average, total task running, out of that how many active, sleeping , waiting and zombie.Zombie means, if the task has parent process, that parent process was killed then that process will be in zombie.It will provide cpu details, what is ideal cpu, system cpu,user cpu, waiting cpu.It will provide physical and virtual memory details.mem means physical, swap means virtual. in mem it will show total, used , free etc.It will list top running process list. in that it will show process id(pid), which user is running that process, PR which is priority scheduling, NR is nice value, if nr +ve then low priority and -ve its high priority.it will provide for each process what is the virt virtual mem used, rem what is the ram mem used, shr what is the shared mem used, and it will provide what is the out of total what percentage of cpu and mem of the process and it show what command that process is running
+To see particular user running process
+top -u usernmae
+To get the abosilute path of command running in  each process, when in interactive mode click c
+To sort the process based on high mem usage press MP
+To kill some process in interactive mode click k and give process id
+
+kill command:
+It is used to kill the process based on pid
+syntax
+kill option pid
+to get all option
+kill -l
+to kill process
+kill pid
+using option to restart service
+kill -1 pid
+using option to do ctrl+c
+kill -2 pid
+using option to forcefully kill process
+kill -9 pid - this option we use when we try all kill option , but still it was not killed then we use this
+using option kill gracefully
+kill -15 pid
+kill process by name
+pkill name of process
+crontab command:
+It is used to schedule a task
+Cron tab service will run in all the machine the  service name is crond
+To check the status of crond
+systemctl status crond or crond.service
+to edit crontab
+crontab -e which will take inside we can enter our scheduling here. it has 5 * like  * * * * * <commnad or shell script>. 1st * rep minuites in 0-29 , second rep hours 0-23 , 3rd rep days 1-31 4th rep month 1-12 th rep days 0-6 or 0-7 sunday to saturday.
+20 10 * 3 * echo "hello dinesh" >> cron-entry this command means it will run at 20th min at 10 am all day at month of 3 and all days which print echo in file
+we can add multiple entry while giving crontab -e
+To list all entry crontab -l
+to clear all crontab entry crontab -r
+
+at command:
+used to schedule only once
+syntax:  it understand user english
+at HH:MM PM/AM enter it then give command or shell script to come out ctrl+d. it will schedule on given time
+to list schedule
+atq
+to remove schedule atrm # every schedule will have number that can be view in atq
+atd is the service name of at command
+As it understand human speak english
+at 10 PM Sun it will run pn sun 10PM
+at now +5 hours it will run down the line in 5 hours
+at 10 AM + 4 days
+at 10:20 PM 10112024 it will run on oct 11 2024
+
+Additional Cronjob
+Here we have 4 options
+hourly
+daily
+weekly
+monthly
+If we want to run a file or script on hourly, daily, monthly and weekly we can keep our script inside those directory. then time specified for each folder and all script inside those folder will run automatically.
+All folder will present inside
+cd /etc/cron.hourly or daily or monthly or weekly
+the time can be specified for daily, weekly and monthly in below file
+/etc/anacrontab
+the time can be specified for hourly in below file
+/etc/cron.d/0hourly
+
+Process management commands:
+back ground - ctrl+z, jobs, bg
+When we run a process in terminal , it will run in foreground , then we will not get our prompt back to do other operation, so run command in background we can run command first then do ctrl+z which will get our terminal back and stop our process then to see list of stopped process then enter jobs then click bg to run stopped process in back ground. all background process attached to terminal.if we close terminal the process which run in background will stops
+here we take example of sleep 100 sec and run in terminal ir foreground then stop by doing ctrl+z then giving jobs to get status the bg to run in back ground
+foreground fg
+the command which run in background to come in foreground just enter fg, all command run in bg will be in front, we will not get our terminal now
+nonub command
+It used to run in background even the terminal closes
+nohup process or command or shell script &
+when we give this command it will give some warning or error  to ignore that give below command
+nohup process > /dev/null 2>&1 &
+To view the warning or error  it will written in nohup.out file
+nice - this is to set priority of file or command .consider we have one core or cpu machine and we have multiple program , so 1 core machine will run one program at time. so we can say our machine which program to run first ir give priority
+-20 is high and 19 is low
+nice -n 20 process or shell script or command
+nice -n 5 sleep 10 here we are setting priority to command
+
+System monitoring command
+top - list porcess and real time view of system
+df or df -h -  show disk partition and its usage
+du  - used to remove data in disk
+dmesg - used to see any error related to system.it will store all cpu , mem leak or mother board issues here
+iostat or iostat1 -  it will monitor all the inout output of the system.ie monitor all system pheripherals io .iostat 1 it will refresh for every 1 sec
+netstat or netstat -rnv - network related info mostly netstat -nv will show detailed one
+free -  show memory related details
+cat /proc/cpuinfo -  all cpu details of system will stored here
+cat /proc/meminfo -  all mem details of system will stored here
+Read all the commands individually in details
+
+logs:
+all logs to the system will stored here /var/logs it include app, system , service everything. for application if we explicitely specified anything in config file that will be stored in given location
+ll command is used to list files and directory in alphabetical order
+boot log - all system booted info will be stored here.when we restart the system the new will be created and overwrited
+sendmail - sending mail and receiving mail related log will be stored here
+secure  - all login related to that server stored here
+tail -f file name will look for last current log which is generated.all new log which generate will store at bottom that. if open consolde with tail -f filename it will show realtime view of generating log
+messages -  it will have all the logs like app logs, hardware logs , process logs etc. all system activities will be stored here. This is the most important one
+httpd - apache application log will stored here.
+cron - all cron job related logs will stored here
+
+System maintenance command:
+to make shutdown, halt and reboot the system
+difference between shutdown and halt is shutdown will wait for all the process to close, halt will immediately close the system
+shutdown -H to halt the system or halt
+shutdown -p to shutdown or shutdown
+shutdown -r to reboot the system or reboot
+init 0-6 commands
+init 1 is to shutdown
+init 6 to reboot
+int 3 multiuser mode
+
+Change system hostname:
+host name will present inside
+/etc/hostname
+we can directly change the above file and reboot it will update else use below command
+hostnamectl set-hostname newhostname
+Always reboot to get hostname reflected back in shell eventhough we did using above command all other thing will updated, but the shell we used to run above command will not gets updated
+
+Finding system info:
+We can get using below 3
+cat /ect/redhat-release it will give os name
+uname -a will give os, hostname, kernal version, when machine created and its architecture
+dmidecode it will give system info with some more details, like  hardware related details
+
+Finding architecture of the system:
+There are two types of architecture
+32 bit processor and 64 bit processor.
+The main diff is the number of calculation per sec they perform. so 64 bit usually have multi core, they are good speed and perform efficently
+command to check architecture
+arch output x86_64 here 64 means 64 bit processor
+uname -a
+
+Control command
+ctrl+c and ctrl+d will help out come out of interactive mode.ctrl+d at any situation will bring out from interactive mode
+ctrl+u if we type command and clear everything at once
+ctrl+z while we run process and need to come out of that process
+
+Terminal commands
+clear - used to clear the terminal
+exit - to exit the shell, to exit the user
+script - to store the commands which we enter and its output , that all activity that happend on terminal will get stored here
+script filename.log it will start capture everything and file will store in user home directory
+to exit script mode
+exit
+
+SOS report
+Whenwe have issue with our system , and we need redhat support, that time we need to run sosreprt which will collect all system and app configuration files, directory and log and whatever required.the generated output will store in /var/tmp
+command: sosreport
+ask for case id, when we ask support with redhat they create case id for us that id need to give here
+
+Environment variable:
+Its a name value pair.it can set at os level.if we set at os level, any application or  program can use it.
+path in env variable
+if we have python and we have not set that in os level. when we try to run python program inside that os, that os will not able to find the python related exe to run the program. if we set the python related exe in path then if you run python program from anyhwere inside os like cmd aor shell or pycharm it will run the program. because it will refer that path and run ur program with help of that exe files
+set env variable at terminal level
+export TEST=1
+print above or get the value of the variable u set
+if we set at terminal level, if we close the terminal it will remove the value
+echo $TEST
+set the env variable at user level ie permenant for user
+vi .bashrc
+TEST='123' inside vi itshould be within ''
+export TEST
+To set at global level permenant to all user
+edit below files
+/etc/profile or /ect/bashrc and do same above things
+TEST = '123'
+export TEST

@@ -1,0 +1,61 @@
+---
+- include: test.yml
+
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_os_family }}.yml"
+
+- name: install puppet repo
+  yum:
+    name: https://yum.puppetlabs.com/puppetlabs-release-pc1-el-{{ ansible_distribution_major_version }}.noarch.rpm
+    state: present
+
+- name: puppet RPM key
+  rpm_key:
+    state: present
+    key: https://yum.puppetlabs.com/RPM-GPG-KEY-puppet
+
+- name: install puppet agent
+  yum:
+    name: puppet-agent
+    state: present
+    validate_certs: no
+
+- name: Create Puppet Agent configuration file
+  template:
+    src: puppet.j2
+    dest: "{{ puppet_agent_configfile }}"
+  notify:
+    - Restart Puppet Agent service
+  
+- name: Make sure Puppet Agent service is enabled
+  service:
+    name: "{{ puppet_agent_service }}"
+    enabled: yes
+
+- name: Make sure Puppet Agent service is running
+  service:
+    name: "{{ puppet_agent_service }}"
+    state: started
+    
+- name: "install windows agent"
+  win_package:
+    path: https://downloads.puppetlabs.com/windows/puppet-agent-1.10.8-x64.msi
+    product_id: '{B712973F-5232-437B-94CD-F17274EAC4D3}'
+    arguments: "PUPPET_MASTER_SERVER={{ puppet_agent_master_server }} PUPPET_CA_SERVER={{ puppet_agent_master_server }} PUPPET_AGENT_CERTNAME={{ puppet_node_name }} PUPPET_AGENT_ENVIRONMENT={{ puppet_environment }}"
+    state: present
+  when: ansible_os_family == "Windows"
+
+#Puppet version
+- name: Check puppet version
+  yum:
+    list: puppet
+  register: installed_puppet_version
+- set_fact:
+    PUPPET_VERSION: "{{installed_puppet_version|json_query(jsonquery)}}"
+  vars:
+     jsonquery: "results[?yumstate=='installed'].version"
+
+- name: Installed puppet version
+  debug:
+    msg: "Installed puppet version = {{ PUPPET_VERSION }}"

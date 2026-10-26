@@ -1,0 +1,15 @@
+---
+- name: Update Kernel
+  raw: >
+    yum -y --exclude=libreoffice* --exclude=NetworkManager* --exclude=java* --exclude=jfrog* update
+    kernel kernel-devel kernel-headers kernel-tools kernel-tools-libs systemd btrfs-progs yum yum-plugin-fastestmirror
+    python2-pip yum-utils kmod kmod-libs kexec-tools tzdata tzdata-java sudo rsyslog rpm pciutils iscsi-initiator-utils
+    libiscsi device-mapper-multipath pam ntp ntpdate lvm2 logrotate kpatch kpartx git epel-release dhclient curl bash
+    centos-release xfsdump xfsprogs open-vm-tools nmap-ncat polkit epel-release jq oniguruma nginx
+  register: notsplitmodel
+
+- name: debug update
+  debug:
+    var: notsplitmodel
+
+

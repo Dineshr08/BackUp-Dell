@@ -1,0 +1,47 @@
+Container Orchestration:
+When on one host if we run one instance of application conider node js, if suddenly when there is hugh load to server , that case the instance wont able to handle the load and it may go down and host may also crash, we can sit and monitor maually and sping the instance, such case we have container orchistration came, it will auto spin up and spin down the instance based on load , if needed it will spin up additional host and inside it it will spin up the instance as well, it will automatically handle the load balancing between the instances and host, networking, shared storage etc.
+Currently we have 2 container orchestration tool:
+Docker swarm - Easy to setup, nit idle for prod due to lack of scaling
+Kubernetes - Diffucult to setup, but customizable deployment and all public cloud provider support kubernites.
+
+Docker Swarm:(Understand just high level lets leran in detail on kubernites)
+Cluster - Group of host.
+Consider we have 4 machine , out of 4 one is master and rest 3 are worker, workers is where we will deploy all our application. Worker we can called as nodes.
+So on master machine we need to initilize the docker swarm using command it will return the out put that we will run in all worker, so it will become cluster.
+docker swarm init  - command to run on master the op command to run on all nodes to become a cluster.
+Now on deploying the application on all nodes, similarly we have command if we run that all the application will auto deploy on all the nodes.
+
+Kubernetes:
+
+kubectl - kubernetes control - It is user to deploy the application on kubernites cluster and manage the clusters.
+
+Using kubernetes we can scale up and down the instance and infra based on the user load.We can also do the rolling upgrade one by one instance and roll down as well in case of any issues. We can also upgrade few instanbce alone for the testing as well without affecting others.
+
+Node - A machine,  Physical machine or virtual machine, where kubernetes software is installed.
+Cluster  - Group of nodes is cluster
+Pods - On a node each instance os container or pod.
+
+Architecture:
+Here we have a master node ie kubernetes contol plane which manages all the nodes in the cluster, it will monitor all the nodes, when fail it will transfer the workload and make the nodes up etc.
+When we install kubernets on a system ie master node it install below componets
+api server - its act as front end front end,all the users, managment service and cli will talk to api server to interact with kubernets cluster.
+etcd - Its Key value store. Its store all the nodes data to manage the cluster. ie All the master and all the nodes node details store in all nodes and responsible for managing logs without conflicts.
+contoller  - watch all nodes, if any go down it responsible for bring them back
+scheduler - distribute the work to all nodes and and if any new pod added it will add to node
+
+Below is architecture of node
+
+On node we will have kubectl first then  contoller run time interface
+kubelet is aagent  responsible for make sure all container run as expected 
+container runtime interface - we have 2 cri ie contollerd and cri-o it will resposible for run containner.
+
+We can also run the docker conatiner in kubernetes , how node will be is it will have kubelet then cri then cri-dockerd->containerd->runc. So when we are running the doicker container in kubernetes in recent or modern kubernest ignore the  cri-dockerd and directly run containerd as kubernets also have containerd. Thats why now kubernetes is not suing docker.
+
+To het cluster info
+kubectl cluster-info
+To get nodes info
+kubectl get nodes
+to get pods info
+kubectl get pods
+To create a cluster and run the application mage with 1000 instance
+kubectl create deployment my-web-server --image=my-web-server --replicas=1000

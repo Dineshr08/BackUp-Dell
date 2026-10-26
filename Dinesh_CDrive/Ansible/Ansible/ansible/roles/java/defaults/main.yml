@@ -1,0 +1,8 @@
+---
+# Set java_packages if you would like to use a different version than the
+# default for the OS (see defaults per OS in `vars` directory).
+# java_packages: []
+
+java_home: "/usr/lib/jvm/{{ java_version }}/jre/"
+java_version: 'java-1.8.0-openjdk-1.8.0.242.b08-1.el7.x86_64'
+

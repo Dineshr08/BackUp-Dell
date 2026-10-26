@@ -1,0 +1,30 @@
+Backend: its an another computer which store the website data. 
+On amazone ui which is front end if we choose some product and how amazone know which product we choosed, thats where http come into picture
+http - hyper test transfer protacol. Which takes the req and send to the backend server and backend server send back the response. if we send req to server it will send back response. if its https it means its secured
+So in js we have inbuilt class called XMLHttpRequest which will help u in send and recive req and res back and forth to ui and server, we need to create an object for the class first
+
+const xhr  = new XMLHttpRequest();
+to send request to server, first need to mention what type of req we are sending which is get and where we are sending the  address or location here supersimplebackend.dev called as domain name and we can mention path as well , with path its called api. The complete is url - uniform resource locator. we can send the req to any computer which is on the internet
+
+xhr.open('GET', 'https://supersimplebackend.dev')
+to send the req
+xhr.send();
+To fetch the response of the req we send we can use below
+xhr.response but sometime the time will taken to send and get the response back so if we keep xhr.response  immediately after xhr.send(); it will return undefined, because here everything will run in async code xhr.response will not wait for xhr.send() response to come back. to handle that we use addEventListner. this addEventListner should always keep above the xhr.open. addEventListner take 2 parameter , fiest load ie wait until we get response and 2nd is fn
+
+xhr.addEventListner('load', () => {
+  console.log(xhr.response);
+})
+
+full example
+
+const xhr  = new XMLHttpRequest();
+xhr.addEventListner('load', () => {
+  console.log(xhr.response);
+})
+xhr.open('GET', 'https://supersimplebackend.dev')
+xhr.send();
+
+Check products.js for applying this concept in code
+Callback:
+callback means run the function for future or can run the function once we get the response from request we send

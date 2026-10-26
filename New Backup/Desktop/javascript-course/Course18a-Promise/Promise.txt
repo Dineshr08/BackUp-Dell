@@ -1,0 +1,77 @@
+Promise:
+It do the same as callback, it will wait until the code is completed before going to next step. Better way to handle the async code. We always perfer suing promise compare to call back because of its feature(Promise.all) and its flat compare to callback as we need to keep lot of indentation.
+
+Promise is inbuilt js class, so to create a object with promise do new Promise() it has function whatever it inside the function will run immediately
+new Promise(()={
+
+})
+Promise has the parameter like done in jasmine called resolve, if we use resolve it will wait the code to run then once resolved is called then only it go to next step
+  new Promise((resolve)={
+    loadProducts(()=> {
+      resolve();
+    });
+
+})
+to call the next step we need to use then and it has function and we can give our fn which need to run
+
+  new Promise((resolve)={
+    loadProducts(()=> {
+      resolve();
+    });
+
+}).then(()=> {
+  renderOrderSummary();
+});
+If we have scenario first load product needs to run then load carts need to loaded to run then our function need to run to handle this. we can return the   return new Promise((resolve) in then we can follow the same again. 
+
+  new Promise((resolve)={
+    loadProducts(()=> {
+      resolve();
+    });
+
+}).then(()=> {
+  return new Promise((resolve) => {
+    loadCarts(()=> {
+      resolve();
+    })
+  }).then(() => {
+    renderOrderSummary();
+  })
+  
+});
+
+if we have send some value in resolve like below and same can be get in below using value paramenter in tehn then like below
+ new Promise((resolve)={
+    loadProducts(()=> {
+      resolve('value1');
+    });
+
+}).then((value)=> {
+  console.log(value);
+  return new Promise((resolve) => {
+    loadCarts(()=> {
+      resolve();
+    })
+  }).then(() => {
+    renderOrderSummary();
+  })
+  
+});
+Promise has feature called Promise.all, it will run multiple promise to run in parallel and wait all promise to complete before going to then and if resolve has values it will store it in array. we have to give all promise in array
+
+Promise.all([
+   new Promise((resolve)={
+    loadProducts(()=> {
+      resolve('value1');
+    }),
+    new Promise((resolve) => {
+    loadCarts(()=> {
+      resolve();
+    })
+  })
+]).then(()=> {
+  conole.log(value); - Which will be in array
+   renderOrderSummary();
+});
+
+Check checkout.js

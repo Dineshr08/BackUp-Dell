@@ -1,0 +1,12 @@
+---
+ - name: comparision operators
+   hosts: all
+   vars:
+    x: 5
+    y: 6
+   tasks: 
+   - name: just printing comparision operator output in msg
+     debug:
+        msg:
+          - "if x == y then : {{x==y}}"
+          - "if x! = y then : {{x!=y}}"

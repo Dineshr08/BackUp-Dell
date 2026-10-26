@@ -1,0 +1,45 @@
+Tags:
+Tags are versions ie on which verson the image should run. If we did not mention tag it will by default take latest. But when you run on production always use tags. if we dont use tag it will auto upgrade to new versions when available.
+docker run redis:7.4
+
+Interactive Mode:
+Consider we have a app , what it will do is hen you run it it will prompy to ask input and if you input it based on the input  print the output.when you run the same app on docker like  docker run kodekloud/app, it directly op what we have default op, it wont ask for prompt or allows us to input. because host input is not mapped to container input . To do that need to give like below
+docker run -i kodekloud/app
+Still it will only ask to input not promt ie ask to enter the input, the reason is app is giving prompt on app terminal but not on container terminal to enable that -t need to use
+docker run -it kodekloud/app
+Some case we will use both isolated
+-i  - pipe the data to cotainer cat mysql.sql | docker run -i kodekloud/app - Here we are passing the sql data to this image.if we use -it it will faile, pile only allow -i
+-t  - coloured output - just to show the coloured output.
+Eg:
+docker run -it ubuntu - It will run the ubuntu image and with interactive mode and terminal.
+
+Port Mapping:
+On host , we can create any number of container, each has its own ip.consider we have crated 4 conatiner and 2 have webapp1 and webapp2 and 2 has mysql1 and mysql2.If i want to access each app i can access using ip of the container, if i am inside the host, but if i want to access the app in container outside the host need to use port mapping
+Below we can give host and container port , which we define. All the availabe port we can use it. Using hostip:hostport we can acccess the app from outside the host machine.
+docker run -p <host_port>:<container_port> imagename
+From below example we have create 2 webapp with 2 different port and same for mysql as well.
+docker run -p 80:3000 kodekloud/webapp
+docker run -p 8080:3000 kodekloud/webapp
+docker run -p 3306:3306 mysql
+docker run -p 3307:3306 mysql
+All in one host but multiple app on each container. Each container have their own ip
+https://hostip:80 - Web App1
+https://hostip:8080 - Web App2
+https://hostip:3306 - mysql1
+https://hostip:3307 - mysql2
+
+Eg below:
+docker run -d --name blue-app -p 38282:8080 kodekloud/simple-webapp:blue
+
+One thing here container port is the one which might be the application port we define in the code eg nodejs, but can refer the coming course to understanbd better
+
+Volumes and Bind Mounts:
+When we create a container all the files will create on the same container. If we remove the container everything will be deleted. Eg if i created mysql istance and after that i created db, table etc all data stored in /var/lib/mysql, but if i deleted even the data will be deleted. Instead if we delete data dont want to delete, we can mount to host . 
+docker run -v host mount:container mount imagename
+docker run -v /opt/datadir:/var/lib/mysql mysql
+Else done like below as well using --mount option both -v and --mount will work
+docker run --mount type=bind,source=/opt/datadir,target=/var/lib/mysql mysql
+
+Inspect and Logs
+docker inspect container name or id - To get more details about the container
+docker logs contaimer name or id - To get the logs of container.

@@ -1,0 +1,56 @@
+fetch:
+better way to make the http request.We have inbuilt function called fetch() by default it will send get request no need to mention get here can only pass url here. 
+  What we did in loadProducts() is sending the req to server then with help of addEventListener wait until we get the respinse then using callback we perform next step, so instead of doing that we can perform with fecth .
+
+  export function loadProducts(fun) { 
+  const xhr = new XMLHttpRequest();
+  xhr.addEventListener('load', () => {
+    products = JSON.parse(xhr.response).map((productDetails) => {
+ 
+    if (productDetails.type === 'clothing') {
+      return new Clothings(productDetails);
+    }
+    return new Products(productDetails);
+  
+})
+  fun()
+  });
+
+  xhr.open ('GET', 'https://supersimplebackend.dev/products');
+  xhr.send();
+}
+
+The fetch use promise instead of callback
+fetch(https://supersimplebackend.dev/products) - here we send req to server it itself become promise and wait until we get the response before performing next step. so using then we can perform next step , becuase the complete ftech will be the promise. in then we added response parament which store the url response and to get the data in response need to use response.json. if we give console.log(response) - it will give string like we see in network header tab to get all the data of response need to use response.json() and it also convert the data to object and store into array we no need to use JSON.parse(response). response.json() again will become promise as it also will take time to get the data so we make it to return so can pass in to then. productData is return response.json(). removed JSON.parse(xhr.response) to productData so its already contain the array with object then adding it class object
+fetch(https://supersimplebackend.dev/products).then((response) => {
+  return response.json();
+}).then((productData) => {
+
+  products = productData.map((productDetails) => {
+ 
+    if (productDetails.type === 'clothing') {
+      return new Clothings(productDetails);
+    }
+    return new Products(productDetails);
+});
+
+refer products.js for more details
+
+this is final code export function loadProductsFetch() {
+  export function loadProductsFetch() {
+  const promise = fetch('https://supersimplebackend.dev/products').then((response) => {
+    return response.json(); // it become promise
+  }).then((productData) => {
+
+    products = productData.map((productDetails) => {
+ 
+    if (productDetails.type === 'clothing') {
+      return new Clothings(productDetails);
+    }
+    return new Products(productDetails);
+  
+})
+  });
+  return promise;
+}
+Here we store the res to promise variable and returning that so again we can use this function at whatever place we want and make .then and perform next step so the complete fn now become promise

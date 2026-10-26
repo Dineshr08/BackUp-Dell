@@ -1,0 +1,8 @@
+---
+ - name: Debug module using verbosity arguments
+   hosts: all
+   tasks:
+   - name: priniting verbosity by setting verbosity as 2
+     debug:
+      msg: "Using verbosity as 2"
+      verbosity: 2

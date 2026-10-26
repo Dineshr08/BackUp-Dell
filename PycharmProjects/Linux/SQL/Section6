@@ -1,0 +1,215 @@
+1.DataTypes - It will be used when we creating the database and table. For giving datatypes for column
+boolean - True or False
+Numeric - Integrer, Floating
+Character - char,varchar,text
+temporal - date, time, timestamp, interval(which is timestamp with timezone)
+array - Store array for integer or string
+Json - Store json data
+Hstore - Dictonary ie key value pair
+UUID - for unique id for row
+Network ip , geometric data
+Always refer google for choosing datatype , becuase it will give best recommendation.Always when we choose data type choose the datatype which store complete data. Like for storing time, store with date, time, time zone etc.Once we inseted data we cannot revert back
+2.Primary Key - Its a column and used to uniquely indentify the row in the table.Primary key is unique and not null. Example consider an employee table where it has, employeeid, fname, lname, districtid. Here we can choose employeeid as primary key because, we cannot have a duplicate record for employeeid and cant be null, so such thing should be primary key and with primary key we can uniquely identify the data in table. for eg i need to retrieve employee uid 5 info, i can get it by using primary key.
+3.Foreign Key - Its is used to join two table. Foreign key in one parent table will be the primary key in the child table. Eg from above employee table district id is foreign key and in district table we have district id as primary key. Its help us to connect tow table. For example i need to get employeee district info, i can get it by using foreign key.In primary key table itself i can write district info, but employee may be come from same district. Coniser we have 1K employee and all are from 3 districts, i need to duplicate the district name in primary table but instead that i can have district table and i have that district infor and other related info in that table and i can referance that in primary table using foreign key , it will reduce time and memory as well.We can have multiple foreign key in primary table.
+If we run select startement we can get the details which is primary key, but to get the what are all the foreign key in table we need to go to pgadmin and select the table then constraints it will show foreign key info. Else click on same place click on FK and properties, it will show its is referance from which table
+4. Constraints - It is used to apply the conditions on both columns and table ie how the column value to be inseted or how tables to be created.
+Common column constraints:
+NOT NULL - We cant enter the null value in that column if we have not null constraint
+UNIQUE - All the value entered in that column must be unique
+PRIMARY_KEY - Should be the primary key for that table and adher primary key rule
+FOREIGN_KEY - Its is used to join two table.Should  have primary key in another table
+CHECK - If it mach the condition like <20 then only allow us to enter that value
+EXCLUSION -
+Similarly we have table level constraint as well , it will apply for entire table.
+5. CREATE TABLE - Used to create a table
+Syntax:
+CREATE TABLE table_name(
+col_name1 TYPE col_constraint1 col_constraint2,
+col_name2 TYPE col_constraint1 col_constraint2 col_constraint2
+table_constraint table_constraint
+)INHERITS external_table_name;
+Eg: I created 3 table
+Table 1:
+CREATE TABLE account(
+user_id SERIAL PRIMARY KEY,
+username VARCHAR(200) UNIQUE NOT NULL,
+password VARCHAR(200) NOT NULL,
+emailid VARCHAR(200) UNIQUE NOT NULL,
+created_on TIMESTAMP NOT NULL,
+last_login TIMESTAMP
+);
+Table 2:
+CREATE TABLE job(
+jobid SERIAL PRIMARY KEY,
+job_desc VARCHAR(200) NOT NULL
+);
+Table 3:
+CREATE TABLE account_job(
+user_id INTEGER REFERENCES account(user_id),
+jobid INTEGER REFERENCES job(jobid),
+hired_on TIMESTAMP NOT NULL
+);
+Here what i have done is i created 3 table and table 1 i set user_id as primary key and set type as serial, so what this serial will do is its automatically inbcrement the value we no need to manually insert. Always for PK we use serial. for user name we have set constraing as should not be null and unique like the same for table 2 as well.For table 3 what i did is i created a table and set 2 FK here user_id and jobid here on Type i given as integrer the reason is when we create a fk, it should be the same datatype of pk but bot serial. here our case its integrer.in table 3 i created 2 fk along with table unique column and we did not mention pk for table 3
+
+ 6. INSERT - Used to insert data into table
+ Syntax:
+ INSERT INTO table_name(col_name1, col_name2, ....)
+ VALUES
+ (value1, value2, ....),
+ (value1, value2,.....),...;
+ We can also insert using select query output data into table, but the output should match the columns data type and constraints
+ INSERT INTO table_name(col_name1,col_name2,....)
+ SELECT col_name1,col_name2,.... FROM table_name WHERE condition;
+Form above create table example, when you are trying to insert the data to table 3, where its refer 2 fk ie job_id and user_id and if if both table 1 and 2 have only 2 entry ie user_id and job_id value is upto 2 ie 1 and 2 rows and in table 3 when you are try to insert job_id and user_id as 10, we will get fk constraint error, as its not present in the table 1 and 2
+
+SELECT * FROM account;
+SELECT * FROM job;
+SELECT * FROM account_job;
+
+INSERT INTO account(username,password,emailid,created_on,last_login)
+VALUES
+('Thilaga','Password@1','Thilaga@dell.com',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),
+('Kala','Password@1','Kala@dell.com',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),
+('Diya','Password@1','Diya@dell.com',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP),
+('Abi','Password@1','Abi@dell.com',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)
+
+INSERT INTO job(job_desc)
+VALUES
+('Manager'),
+('Director'),
+('Specialist')
+
+INSERT INTO account_job(user_id,jobid,hired_on)
+VALUES
+(1,1,CURRENT_TIMESTAMP),
+(2,2,CURRENT_TIMESTAMP),
+(3,3,CURRENT_TIMESTAMP),
+(4,4,CURRENT_TIMESTAMP)
+
+7. UPDATE - Updating the existing column value into table
+Syntax:
+UPDATE table_name
+SET col_name1 = value1,
+col_name2 = value2, ....
+WHERE condition;
+Example
+SELECT * FROM account;
+SELECT * FROM job;
+SELECT * FROM account_job;
+Updating the column value
+UPDATE account
+SET last_login = CURRENT_TIMESTAMP,
+    created_on = CURRENT_TIMESTAMP
+WHERE last_login IS NOT NULL;
+Updating the colum with another column values
+Syntax:
+UPDATE table_name
+SET col_name1 = column_name2
+WHERE condition;
+Eg:
+UPDATE account
+SET last_login = CURRENT_TIMESTAMP,
+    created_on = last_login
+WHERE last_login IS NOT NULL;
+Update using join
+Syntax:
+UPDATE table_name
+SET col_name = table_name2.col_name
+FROM table_name2
+WHERE table_name.col_name = table_name2.col_name;
+Eg:
+UPDATE account_job
+SET hired_on = account.last_login
+FROM account
+WHERE account_job.user_id = account.user_id;
+After the update we can also return the data using below command
+UPDATE account
+SET last_login = CURRENT_TIMESTAMP,
+    created_on = last_login
+RETURNING created_on,last_login, user_id
+
+8. DELETE - Used to delete the row from the table
+Syntax:
+DELETE FROM table_name
+WHERE condition;
+RETURNING col_name1, col_name2, ....
+Eg:
+DELETE FROM job
+WHERE job_desc = 'CEO'
+RETURNING jobid, job_desc
+
+Below command is used to delete the data from table a based on the same data available in table b
+DELETE FROM tabla
+USING tableb
+WHERE tablea.id = tableb.id
+RETURNING tablea.col_name1, tablea.col_name2, ....
+
+9. ALTER - Altering the table structure
+Genaral Synatx - ALTER TABLE table_name action
+Renaming the tabel name
+ALTER TABLE tavle_name
+RENAME TO new_table_name
+Renaming column name
+ALTER TABLE table_name
+RENAME COLUMN col_name1 TO new_column_name
+ADD column
+ALTER TABLE table_name
+ADD COLUMN col_name TYPE constraint_name
+Drop Column:
+ALTER TABLE table_name
+DROP COLUMN col_name
+Set Default value to column:
+ALTER TABLE table_name
+ALTER COLUMN col_name
+SET DEFAULT value
+Drop Default value:
+ALTER TABLE table_name
+ALTER COLUMN col_name
+DROP DEFAULT
+Set constraint to column:
+ALTER TABLE table_name
+ALTER COLUMN col_name
+SET NOT NULL
+Drop constraint:
+ALTER TABLE table_name
+ALTER COLUMN col_name
+DROP CONSTRAINT
+Add Constrain to column:
+ALTER TABLE table_name
+ALTER COLUMN col_name
+ADD CONSTRAINT constraint_name
+
+10. DROP - Used to drop columns in table
+It will drop the column along its index and constraints created for that column. if that column is used with view, stored procedure and curser, need to use cascade
+Syntax:
+DROP TABLE table_name - To drop table
+To drop single column
+ALTER TABLE table_name
+DROP COLUMN col_name
+To drop single column which is used in view, stored procedure and cursor
+ALTER TABLE table_name
+DROP COLUMN col_name CASCADE
+To drop single column and make sure it present before droping
+ALTER TABLE table_name
+DROP COLUMN IF EXISTS col_name
+To drop multiple columns
+ALTER TABLE table_name
+DROP COLUMN col_name1,
+DROP COLUMN col_name2,
+DROP COLUMN col_name3
+
+11. CHECK Constraints - Its used to define own customised constraints
+Syntax:
+CREATE TABLE employee(
+emp_id SERIAL PRIMARY KEY,
+fname VARCHAR(500) NOT NULL,
+lname VARCHAR(500) NOT NULL,
+age INTEGER CHECK(age>22),
+DOB DATE CHECK(DOB>'1990-01-01')
+)
+
+INSERT INTO employee(fname,lname,age,DOB)
+VALUES
+('Abinaya','R',23,'1989-01-01')
+
+Usually emp_id is primary key and gave serial so it will increment automatic, so when i try inserting for 1st time if its fail due to constraint issue, when i try for second time it passed, its start with emp_id as 2 , even for fail it will count as 1 but not stored in table but all failed it will count, only for passed it give unique count and enter in tableeg 1 and 2 iteration it fail when 3 rd iteration it pass, it will create emp_id as 3 for first insert we make

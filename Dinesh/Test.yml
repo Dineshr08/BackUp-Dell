@@ -1,0 +1,147 @@
+#YAML - yaml aint markup language and data serilization language.
+#Data serilization - used to transfer data differently created technology app.like transfer data from pythnon backend to java backend
+#key value pair
+name: Dinesh
+age: 29
+professional: software engineer
+
+# object
+#object means creaing object and have some attributes for that object for above example we are creating profile as object and below value as attribute
+Profile:
+  name: Dinesh
+  age: 29
+  professional: software engineer
+
+  #List
+  #it should start with -
+  # how below look like ["","",""]
+  Profile:
+    - Dinesh
+    - Balaji
+    - Vinod
+  # list with list of objects, here profile is list and name,gae and professional are list of objetcs
+  # how list with obj look like [{},{},{}]
+  Profile:
+    - name: Dinesh
+      age: 29
+      professional: software engineer
+    - name: vinod
+      age: 29
+      professional: software engineer  
+  
+  #we can have list inside the list
+  Profile:
+    - name: dinesh
+      age: 29
+      profession: SWE
+      language: [tamil,English]
+  #or we can write bested list like below
+  Profile:
+    - name: dinesh
+      age: 29
+      profession: SWE
+      language:
+        - tamil
+        - english
+  #Boolean
+  #in boolean we can use true, false,on , off, yes, no
+   Profile:
+    - name: Dinesh
+      age: 29
+      professional: software engineer
+      Pass: true
+
+
+#Writing one basic yaml file below
+
+state: tamilnadu # key value pair
+statesylabus: # object
+  syl1: stateboard # attributes
+  syl2: cbse # attributes
+  syl3: icse# attributes
+  standards availabe: # objects
+    std: 1 to 12 # attributes
+stateboard: # objects
+  school: # list of objects with sjv and srk object data
+    - name: sjv
+      type: private
+      sub: # list
+        - english
+        - tamil
+        - maths
+        - science
+        - social
+    - name: srk
+      type: private
+      sub: # list
+        - english
+        - tamil
+        - maths
+        - science
+        - social
+
+# Multiple line string
+# we need to use | to keep string in multiple line
+# mainly this will help in execute the multiline code
+multilinestring: |
+  hi this is dinesh and
+  i work as swe as performance
+  tester with 8 years of exp
+
+# single line string
+# we have to use > symbole to keep everything in single line even we write in multiple line
+singlelinestring: >
+  hi this is dinesh and
+  i work as swe as performance
+  tester with 8 years of exp
+# accessing Environment variable
+# if we want to get the data from environment varible and use then we have to use $and env varibale name , so it will get the value assign to that name
+
+envvariable:
+  $Home
+
+#Place holders
+#instead of having direct valie to key we can have placeholder using {{ .value.service.name}}
+placeholder:
+  name: {{value.service.name}}
+
+#Keep multiple yaml component into single file by using ---
+
+singlelinestring: >
+  hi this is dinesh and
+  i work as swe as performance
+  tester with 8 years of exp
+---
+envvariable:
+  $Home
+---
+placeholder:
+  name: {{value.service.name}}
+
+#Creating variable and using it
+# we should use &and assign name like below the for using it need to use *
+Profile:
+  name: dinesh
+  age: &age 29
+
+Profile1:
+  name: vinod
+  age: *age
+
+#using complete key value pair in one profile to other profile
+Profile: &Profile
+  name: dinesh
+  age: 29
+
+Profile1:
+  <<: *Profile 
+
+#date format
+date: 2022-06-25 05:30:55
+
+# define null value
+Profile:
+  name: dinesh
+  age: 29
+  school: null
+  

@@ -1,0 +1,23 @@
+Registry:
+To login to registry:
+docker login dockerhub.io ie url
+Will ask for user name and password. 
+
+We have other registery like azure, git, gcp etc.
+
+We can create our own registry
+For this need to pull image called registry:2
+docker run -d -p 5000:5000 --name registry registry:2 - Will create own registry always it will run on port 5000
+docker image tag myimage localhost:5000/myimage - Step1 to push image
+docker push  localhost:5000/myimage - step2 to push image
+docker pull  localhost:5000/myimage - step3 to pull image
+
+To remove all the image on the system
+docker images prune
+To list all the images
+docker image ls
+
+To stop the conatiner ie registry container
+docker container stop my-registry
+To remove the conatiner ie registry container
+docker container rm my-registry

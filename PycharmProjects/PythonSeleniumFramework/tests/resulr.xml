@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="4.687" timestamp="2023-05-02T13:53:55.890017" hostname="W101FPKMG3"><testcase classname="test_Course-98.TestExample9" name="test_testcase6[getparamdata0]" time="3.543"><failure message="AssertionError: assert 'Succ2222ess' in '×\nSuccess! The Form has been submitted successfully!.'">self = &lt;tests.test_Course-98.TestExample9 object at 0x000001774F5C9900&gt;
+getparamdata = {'gender': 'Male', 'name': 'Dinesh'}
+
+    def test_testcase6(self, getparamdata): #to use that fixture in this method, need to pass fixture methodname
+    
+        log = self.logging() #calling logging method and assigning to log obj
+    
+        homepage = HomePage1(self.driver)
+        homepage.getemail().send_keys("test@gmail.com")
+        homepage.getpassword().send_keys("Password")
+        homepage.getcheckbox().click()
+        #creating utility for this
+        # dropdown = Select(driver.find_element(By.ID, "exampleFormControlSelect1"))
+        # dropdown.select_by_visible_text("Male")
+        self.selectdropdown(homepage.getdropdown(),getparamdata["gender"]) #passing dictonary key data
+        log.info(getparamdata["gender"])
+        homepage.getname().send_keys(getparamdata["name"])#passing dictonary key data
+        log.info(getparamdata["name"])
+        homepage.getradiobtn().click()
+        homepage.getsubmitbtn().click()
+        message = homepage.getmsg().text  # help us to get the data of ui like words in ui
+        #print(message)
+        log.info(message)
+&gt;       assert "Succ2222ess" in message #explicitly making this text to fail to getscreenshot
+E       AssertionError: assert 'Succ2222ess' in '×\nSuccess! The Form has been submitted successfully!.'
+
+test_Course-98.py:48: AssertionError</failure></testcase><testcase classname="test_Course-98.TestExample9" name="test_testcase6[getparamdata1]" time="0.648"><failure message="AssertionError: assert 'Succ2222ess' in '×\nSuccess! The Form has been submitted successfully!.'">self = &lt;tests.test_Course-98.TestExample9 object at 0x000001774F5C99C0&gt;
+getparamdata = {'gender': 'Female', 'name': 'Thilaga'}
+
+    def test_testcase6(self, getparamdata): #to use that fixture in this method, need to pass fixture methodname
+    
+        log = self.logging() #calling logging method and assigning to log obj
+    
+        homepage = HomePage1(self.driver)
+        homepage.getemail().send_keys("test@gmail.com")
+        homepage.getpassword().send_keys("Password")
+        homepage.getcheckbox().click()
+        #creating utility for this
+        # dropdown = Select(driver.find_element(By.ID, "exampleFormControlSelect1"))
+        # dropdown.select_by_visible_text("Male")
+        self.selectdropdown(homepage.getdropdown(),getparamdata["gender"]) #passing dictonary key data
+        log.info(getparamdata["gender"])
+        homepage.getname().send_keys(getparamdata["name"])#passing dictonary key data
+        log.info(getparamdata["name"])
+        homepage.getradiobtn().click()
+        homepage.getsubmitbtn().click()
+        message = homepage.getmsg().text  # help us to get the data of ui like words in ui
+        #print(message)
+        log.info(message)
+&gt;       assert "Succ2222ess" in message #explicitly making this text to fail to getscreenshot
+E       AssertionError: assert 'Succ2222ess' in '×\nSuccess! The Form has been submitted successfully!.'
+
+test_Course-98.py:48: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,87 @@
+Refer below doc for all git command:
+https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html
+
+GIT -It is Open source and distriubuted version control
+Need to download Git in local and need to create a account in git hub.
+Git hub - is the repo where we store all our codes , so other can access our files
+Git software which we download - help us to push and pull our local files to git hub repo
+
+
+First if we pushing anything from desktop or if we perform anything on git , first we need to say to git who we are
+So for that we are giving our details to git config files
+Saying who we are
+git config --global user.name "Dinesh R"
+git config --global user.email "dinesh.r1@dell.com"
+
+Above git config command is one time activities
+
+--global - if we give global , we can use git from anywhere from our system
+
+
+If we want to add any file from local to githib, need to create repo first in github
+Once Repo is created, we need to have our local files in one folder
+Then our local folder to git hub we need to make communication.So for that we need to do initialization
+git init  - which will create .git file
+Then consider if we have 100 files and want to send all 100 files to folder need to follow below steps
+Staging - it will 1st commit, if we do stage then only we can able to commit files
+Commit - if we commit then only can able to push files to git hub.to check wheteher file is staged on commited use git status command
+Push - push file to git hub
+Note: if we have 100 file only 80 file is staged and commited , only that 80 can be pushed to git huub
+But before push we need to say, where we need to push eg in git hub which repo we need to push to do that need git remote add orgin <repo end point>
+Post that only we need to push to git repo
+
+
+Once github repo created below steps will follow
+Got to local repo path through cmd eg cd c:\GitDemo then do below actions
+git init
+git add * (add all file) or git add <filename or file path>
+git commit -m "message"
+git remote add orgin https://github.com/Dineshr08/GitDemo.git (first time only need to add this remote, next time directly use push command)
+git push orgin master (Master is the repo which we created)
+
+Above is if we newly created git hub repo and push from local.
+But now we are going to see is , clone the existing git hub repo and get file from there and we can update the file and push it back to the same repo, so other can take that file and use the change that we make
+Just we need to clone usin g below command it will automatically create folder and have all our files
+then need to add orgin , then only able to access the file(this is alos one time activity)
+then we can use pull command to get all the file to our local foldrr
+Now all file is in our local, so next we can make a chage to download file and we can push our updated code to repo, so other can come and use the updated one
+For next time we can just use pull command so only change made by new guy that file only get updated not the complete repo
+
+
+
+git init
+git clone https://github.com/Dineshr08/GitDemo.git
+git remote add orgin https://github.com/Dineshr08/GitDemo.git
+git pull orgin master
+Then follow same push command to push to git hub from downloaded local folder
+
+
+Branching:
+Branching means, the project file is there in msater, but need to update master but that update will take time.so during the update our regular work will affect.So in order to overcome that we will have create branch and have all our current code there.once we update everything then we will merge with master
+
+1)need to repo where we need to create branch C:\Git>git checkout -b develop
+2)to look for what are branch available and which branch we are currently get branch
+3)now ur current repo file is in branch, so u can change or update file in branch the u can push
+4)for push same add and commit steps
+5)finally git push orgin develop(name of branch)
+6)now in ui u can see the branch
+
+Now we are pulling the branch code and made some change and push it back to branch again
+1)go to clone repo C:\Git>cd C:\GitDemo
+2)Pull the data from branch git pull orgin develop
+3)make some change in file
+4)push it back to branch
+5)to switch to branch git checkout develop
+6)then follow same add, commit and push
+7)for push - git push orgin develop
+
+Mergin branch to master
+1)switch to master
+git checkout master
+2)making sure master is upto date so we can merge git pull orgin master
+3)merge git merge develop
+
+
+
+
+

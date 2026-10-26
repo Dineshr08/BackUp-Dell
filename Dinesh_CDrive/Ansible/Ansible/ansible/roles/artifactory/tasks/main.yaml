@@ -1,0 +1,164 @@
+---
+
+- name: Test distribution
+  assert:
+    that: >
+      ansible_os_family == 'RedHat'
+
+- name: create group for artifactory
+  group:
+    name: "{{ artifactory_group }}"
+    state: present
+
+- name: create user for artifactory
+  user:
+    name: "{{ artifactory_user }}"
+    group: "{{ artifactory_group }}"
+    system: yes
+
+- name: Install additional dependencies packages
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ artifactory_deps_pkgs }}"
+  tags:
+    - artifactory_pkg
+
+- name: Download postgresql JAR file
+  get_url:
+    url: "{{ url }}"
+    validate_certs: no
+    dest: /usr/share/java
+    force: yes
+  tags:
+    - artifactory_pkg
+
+- name: Install Artifactory
+  yum:
+    name: "{{artifactory_yumrepo_url}}/{{ artifactory_pkg }}"
+    state: present
+  notify:
+    - Restart Artifactory server
+  tags:
+    - artifactory_pkg
+
+- name: Artifactory directories
+  file: 
+    path: "{{ item }}"
+    state: directory
+  with_items:
+  - "{{ artifactory_home_dir }}"
+  - "{{ artifactory_pgsql_data_path }}"
+  - "{{ artifactory_conf_dir }}"
+  - "{{ artifactory_tomcat_path }}"
+
+# Copy the configuration files over (Tomcat, Artifactory, Users)
+- name: Artifactory configuration files
+  template: 
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ artifactory_user }}"
+    group: "{{ artifactory_group }}"
+    mode: '0640'
+  with_items:
+  - src: server.xml.j2
+    dest: "{{ artifactory_tomcat_path }}/server.xml"
+  - src: default.j2
+    dest: "{{ artifactory_conf_dir }}/default"
+  - src: db.properties.j2
+    dest: "{{ artifactory_conf_dir }}/db.properties"
+  - src: binarystore.xml.j2
+    dest: "{{ artifactory_conf_dir }}/binarystore.xml"
+  notify:
+    - Restart Artifactory server
+
+- name: Artifactory configuration files
+  become_user: root 
+  template: 
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: 'u+rwx'
+  with_items:
+  - src: artifactoryManage.sh.j2
+    dest: "{{ artifactory_opt_path }}/bin/artifactoryManage.sh"
+  notify:
+    - Restart Artifactory server
+
+- name: Check that the postgresql-jdbc.jar exists
+  stat:
+    path: "{{artifactory_opt_path}}/tomcat/lib/postgresql-jdbc.jar"
+  register: jdbc_stat_result
+
+- name: Download postgresql JAR file to tomcat lib folder
+  get_url:
+    url: "{{ url }}"
+    validate_certs: no
+    dest: "{{artifactory_opt_path}}/tomcat/lib/postgresql-jdbc.jar"
+    force: yes
+  when: not jdbc_stat_result.stat.exists
+
+- name: Symlink JDBC driver to be found by Tomcat
+  file:
+    src: "{{ artifactory_db_driver_location }}"
+    dest: "{{ artifactory_db_driver_destination }}"
+    state: link
+    owner: "{{ artifactory_user }}"
+    group: "{{ artifactory_group }}"
+    mode: '0644'
+  when: artifactory_db_engine in ['postgresql']
+  tags:
+    - artifactory_db
+
+- name: Stop firewalld service
+  service: 
+    name: firewalld 
+    state: stopped 
+
+- name: Stop Iptables service 
+  service: 
+    name: iptables 
+    state: stopped 
+
+- name: disable service firewalld and ensure it is not masked
+  systemd:
+    name: firewalld
+    enabled: no
+    masked: no
+
+- name: Run artifactoryManageNew to fix PID issues
+  shell: "sh {{ artifactory_opt_path }}/bin/artifactoryManage.sh start"
+
+- name: Check that the master.key exists
+  stat:
+    path: "{{ artifactory_conf_dir }}/security/master.key"
+  register: stat_result
+
+- name: Create the file, if it doesnt exist already
+  shell: "openssl rand -hex 16 > {{ artifactory_conf_dir }}/security/master.key"
+  when: not stat_result.stat.exists
+
+- name: Make sure the service is enabled
+  service:
+    name: "{{ artifactory_service }}"
+    enabled: yes
+  tags:
+    - artifactory_service
+
+- include: start.yml
+
+- name: systemctl reload
+  command: systemctl daemon-reload
+
+- name: Make sure the service is running
+  service:
+    name: "{{ artifactory_service }}"
+    state: started
+  register: artifactory_service_started
+  tags:
+    - artifactory_service
+
+- name: Check status 
+  debug: 
+    msg: "{{ artifactory_service_started }} "
+
+

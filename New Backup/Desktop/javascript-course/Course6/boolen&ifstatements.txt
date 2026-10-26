@@ -1,0 +1,92 @@
+For equal to use === in js
+For not equal to use !== in js
+Comparion operator will has last order of precidence
+
+If synatx
+if (condition)
+{
+console.log('true');
+}
+else
+{
+condole.log('false');
+}
+
+
+If else if synatx
+if (condition)
+{
+console.log('true');
+}
+else if (condition)
+{
+console.log('true');
+}
+else
+{
+condole.log('false');
+}
+Whatever inside {} called as branches in js
+
+Logical operator
+And  - && - console.log(true&&true) - true - Both should be true then true
+OR  - ||- console.log(true||false) - true - Any one true it will be true
+Not - ! - - console.log(!true) - Opposite it return false . it will take one boolen ie one input
+Math.random() - This function will return the number between 0 to 1 ie >=0 to <=1
+if variable declared inside {} or branches it will be local to that {} ie scope to {}
+
+Currently we use comparision and logical operators on if conditions and the if condition is true then it enter to if ,else it go to else. instead we can use truthy and falsy statements
+  if(5)
+  {
+    console.log('truthy')
+  }
+
+  What is happening is below are falsy conditions
+  false, 0,'', NaN, Undefined,null
+  if(false)
+  {
+    console.log('Random data')
+  } it wont enter inside , if we give if(0), empty string, NaN means not a number like if we perform operation like below
+  if('test'/5)
+  {
+    console.log('Random data')
+  }
+  For undefine always we need to use let, not const. Apart from above falsy things if we use anyonther number 2,5 etc and true it enter to if statements. this is called truthy and falsy usage in if statements
+
+  Terenary Operator:
+  result = true ? 'Truthy' : 'falsy' 
+  On the place of true we can keep our conditions like if st
+  We can store results to variable of if ststement to results
+  Above is syntax its shortcut of if else st.
+    if(true)
+    {
+      result = 'truthy';
+    }
+  else
+    {
+      result = 'falsy';
+    }
+
+Gaurd Operator &&(AND Operator)
+Its short cut for below
+let result;
+if(condition)
+{
+  result='hello'
+}
+result = false && 'hello';  - What it will do is if condition fails it wont execute after &&, so purpose of and is both true if one fasle then it will stop.
+result = 5 && 'hello' - Since 5 is truthy the it will execute and store result='hello'
+on the place of false and 5 we can keep our conditions like if st
+
+Default operator ||
+
+Its short cut for below
+
+
+|| returns the first truthy value it finds (or the last value if both are falsy).
+let userCurrency = 'EUR';
+currency = (userCurrency === 'EUR' && 'EUR') || 'USD';
+console.log(currency); // "EUR"
+
+All above terenary, gaurd and OR is shortest form of if statements using truthy and falsy
+

@@ -1,0 +1,66 @@
+Array:
+List of values. List of value is value so we can save to variable.
+const num = [1,2,3];
+We can have arrays inside arry, boolen, string, integer etc
+const temp = [[1,2], 'test', true, 5];
+Aray itself a special object, so it has property and method, property like length, method like push,,splice, slice
+To check wether the array is array or not
+Array.isArray(temp)
+To add element to array
+temp.push(20) - it add at last
+To remove data from array
+temp.splice(index,value) - eg temp.spice(1,1) - delete value on index 1 and range 1. if we give 1,3 start with and end with 3 index
+to update existing element
+temp[1] = 5
+While loop:
+let i=1;
+while (condition) {
+
+}
+for loop:
+for(let i=1; i<5;i++) {
+
+}
+We have new element called <div><div> - Here we can add any html element inside this like button paragraph, input etc. div is a container, it can store everything. Its same as paragarph, it will take the complete line but paragraph will have above and below one line space, but div will not give that space.
+
+The main idea of Js:
+Save the data 
+Generate the html
+Make it interactive 
+Like we did in todolist.js check that script what we did is we stored the data in array and we constructed the html on realtime, this is main idea of js 
+
+Adding object inside array:
+   let nameElement = document.querySelector('.js-input');
+  let name = nameElement.value;
+  let dateElement = document.querySelector('.js-date-class');
+  let date = dateElement.value;
+  toDoArray.push({name:name,
+    date:date
+  });
+
+  On <input> element we have special attribute called date, which will allows us to add or pic date inside input
+  <input type="date">
+
+  Grid: In css we have grid it will apply grid to each elements. <div>hai</div><div>hello</div>. What it will create is the grid will create like a coloum row structure like table.
+
+  .todo-grid,//herw we apply 2 class to same css
+.todo-input-grid {
+  display: grid; //make the content as grid
+  grid-template-columns: 200px 150px 100px;//giving size of the grid all fiest column shouldbe 200px,2nd with 150 and rest all will be with 100px
+  column-gap: 10px; //giving comumn gap size
+  row-gap: 10px;//giving row gap size
+  align-items: center; // in word we can align right, same  way we are alingning here
+}
+
+Array are referances:
+const array1 = [1,2,3] - which means [1,2,3] are not storing inside the array1 it is storing in computer mem and array1 is rference the address same like object
+const array2  = array1 - here array2 is just hold of the address of array1 so array2 also hold point to same value , it dosent copy the array1 values
+To copy value:
+const array3 = array1.slice(); it create a copy but same referance concept, array3 hold address but with new values stored in computer mem
+const array3 = array1.slice(1,3); - it will copy from index 1 to 3-1
+to get 1 and 2 from array1 we do like this
+array1[0] and array1[1] by giving index we can get alternate way is
+const [firstValue, secondValue] = [1,2,3] - Here firstValue, secondValue hold 1 and 2
+Break - Break the loop
+continue - Skip the matching iteration
+Return - Break the function

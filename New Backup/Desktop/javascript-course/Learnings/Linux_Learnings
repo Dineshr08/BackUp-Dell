@@ -1,0 +1,333 @@
+SSH
+-----Start-----
+SSH into the machine: - Connect remote server securly. All commands will be encrypted.
+ssh username@ip
+ssh-keygen -t ed25519 -C "dinesh.r1@dell.com"
+curl -fsSL https://deb.nodesource.com/setup_18.x
+
+Copy file from onbe machine to other
+scp source file location username:ip of destination then:destination location
+scp /var/log/haproxy.log dinesh_r3@<analysis_server_ip>:/home/dinesh_r3/
+If we are in deatination machine and get the file from source machine ,just reverese the command
+scp dinesh_r3@sqllb1prd-u:/var/log/haproxy.log /home/dinesh_r3/
+
+Ports:
+22: ssh
+80: http
+443: https
+
+SSL(TLS) - Encryption protacol, it will encrypt the data, protect tampering and spying.Also digital id card of the server.
+-----End-----
+
+HA Proxy:
+-----Start-----
+Installed location - /etc/haproxy
+Config file - haproxy.cfg
+global section — settings for the HAProxy process itself
+chroot  - chroot changes the starting point (/) of a process so that it sees only a specific directory tree instead of the entire filesystem, making that directory appear to be the whole system.
+chroot locks the process into that directory as its filesystem root, as a security measure — if HAProxy is ever compromised, it can't see or touch files outside /var/lib/haproxy
+chroot /var/lib/haproxy
+
+Run as haproxy user and haproxy group.Each program when the installation is happening linux will create a program user and group ie haproxy user and group, same for postgres, ngnix etc.When root start the haproxy then ha proxy run as haproxxy user by below config. Why start as haproxy as root so it can bind 80 and 443 port.But all traffic are contolled as haproxy user.It dosent have complete previlage only previlage to do haproxy operation.
+user haproxy
+group haproxy
+
+To see the all the users:
+cat /etc/passwd
+haproxy:x:188:188:HAProxy:/var/lib/haproxy:/sbin/nologin - 188 is user id and 188 is user group it part of , /var/lib/haproxy is access directory and /sbin/nologin means no login access
+To see all groups
+cat /etc/group
+haproxy:x:188: -188 is group id of haproxy group. one group can have many users or one
+
+maxconn 4000 - total simultaneous connections HAProxy will accept
+log 127.0.0.1 local0 debug - Enable logging, send to syslog service which is installed in this server ie 127.0.0.1, the purpose of syslog is take the log from all application and store in the file in a place based on the syslog config. local0 is the route that log traverse to syslog ie haproxy log will come from local0 similarly we have local7 till, so for each application we can have own label so syslog identify properly and save to file, debug is writing complete data not filtering anything.local0 is lable and we have some system label as well, like auth, mail etc, those are used for system logs mainly we used this lable is is not to mix all logs together.
+pidfile    /var/run/haproxy.pid - Just store the haproxy pid to this file
+tune.ssl.default-dh-param    2048 - for ssl encryption use dh method with 2048 bit higher bit number stronger encryption
+tune.bufsize 1048576  # Increased from 128KB to 1MB for large SonarQube report uploads - When we send the req from browser to haproxy it will create a temp storage called buffer and save the data, same for resp as well from backend to haproxy to browser. Backend to haproxy data will be stramed ie chunk not full 200mb file
+tune.http.maxhdr 200  # Increase the max number of headers - No of http headers allowed.
+
+defaults section — Anything placed inside defaults becomes the default behavior for your frontend, backend, and listen sections unless they override it.
+log global - Inherit the same log serting from global to all frontend and backend
+option httplog - Give detailed log with path, method, response time, code etc
+option forwardfor - for each req send X-Forwarded-For header with client ip to backend
+option redispatch - When the haproxy send the req to one backend server and connection lost in middle and retry exhausted, this option will send the same req to other backend server witout failing the req
+option http-keep-alive - Keeps the TCP connection between the client and HAProxy open across multiple HTTP requests, instead of opening/closing a new connection per request
+When from backend if we are getting 5xx error just return the error message that have in below path 50x.http file for all 500 to 504 error msg.
+errorfile 500 /etc/haproxy/errors/50x.http
+errorfile 502 /etc/haproxy/errors/50x.http
+errorfile 503 /etc/haproxy/errors/50x.http
+errorfile 504 /etc/haproxy/errors/50x.http
+
+listen stats - this is a separate thing entirely from your app traffic it's HAProxy's own built-in monitoring dashboard, a live webpage showing connection counts and backend health, reachable at port 9080 (bind *:9080). Not something you need for traffic analysis, but worth knowing it exists — you can literally open http://<lb-host>:9080/ in a browser right now and see live connection stats while your load test runs.It gives it own health and traffic like backedn status, number of req, connection, uptime, response time etc
+listen stats - Here stats can give any name
+    bind       *:9080 - * refer if server has many ip it will listent to any ip with port 9080
+    mode       http - only via http
+    maxconn    10 - 10 simpultenous connection
+    stats      enable - Turn the statistic on
+    stats      refresh 20s - Refresh sec
+    stats      show-legends - Show up down etc
+    stats      show-node - Show haproxy name on stat page
+    stats      hide-version - hide hapeoxy version
+    stats      uri / - if /haproxy then http://ip:9080/haproxy to view stat page else if /then http://ip:9080/
+    stats      realm Haproxy\ Statistics
+    #stats      auth stats-admin:B1Gp4sSw0rD!!
+    option     httplog - Complete http log
+    option     logasap - log assoon as possible dont wait for req to complete
+    option     dontlognull - ignore log without any data
+    timeout    client 100s - Time to wait for connection from browser to haproxy
+    timeout    server 100s - Time to wait for response from backend to haproxy
+    timeout    connect 100s - backend connection time to connect to backend from haproxy
+    timeout    queue 100s - How long req can wait in queue to reach the app server or backend.
+
+    ##########################
+#       FRONTENDS        #
+##########################
+
+Here we have 2 frontend ie sonar_frontend and orignal_port(this usually we keep it enable when we need this for temporary purpose)
+frontend sonar_frontend - Can give any name
+    mode            http - allow http via port 80
+    description     standard 80 http test
+    bind            *:80
+    bind            *:443 ssl crt /opt/ssl/sonarqube.pem ciphers EECDH+AESGCM:EDH+AESGCM:ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:DHE-RSA-AES128-GCM-SHA256:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4 - Allow https via port 443 with metioned ciphers rules which means only pick any chickper mentioned here to do the encryption and not include Whcich metioned in !, also mention the pem which has private key and certificate details for ssl tunnel
+    capture         request header Host len 64 - Capture the host name the user is trying to connect
+    capture         request header X-Forwarded-For len 64 - Capture the ip address of the user and forward the same to backend server.
+    http-request    redirect scheme https code 301 unless { ssl_fc } - if http , redirect to https unless https
+    log             127.0.0.1 local0 debug
+    option httplog
+#    acl block_ip src 10.227.167.74 10.227.167.78
+#    tcp-request connection reject if block_ip
+    default_backend sonar_web_backend - default backeend is sonar_web_backend
+    acl robots_req path_beg /robots.txt - acl is access control list like if condition if path_beg ie url path is robots.txt then use backend which is robot
+    use_backend robots if robots_req - This is where it has to launch from above st
+    acl freecache_req path_beg /freecache - Same like above
+    use_backend freecache if freecache_req - This is where it has to launch from above st
+
+frontend orignal_port - This is tempory frontend
+    mode            http
+    log 127.0.0.1 local0 debug
+    option httplog
+    description     Original Port 9000 pass-through - this is Temporary until ready to switch to full https over 443
+    bind            *:9000
+    default_backend sonar_web_backend
+
+
+##########################
+#        BACKENDS        #
+##########################
+When the new req comes , it will check first the health ie both up or not, health cjeck happen on background for every sec then it will check if cookie present for new req  it will not so it will use round robin and send to one req and it will login and create cookie and store in cookie store, when the existing req come then same health check then look for cookie then send req to correspond server.here sqapp1prd sqapp1prd.cec.delllabs.net:9000 check cookie sqapp1prd server1 details. sqapp1prd is internal haproxy name, sqapp1prd sqapp1prd.cec.delllabs.net:9000 - dns with port , here check is HAProxy periodically checks /api/system/status, cookie sqapp1prd - If your session is tied to sqapp1prd, future requests carrying the appropriate cookie information are routed back to that server.
+backend sonar_web_backend - This is the backend name
+    mode            http - send as http req to backend server
+    balance         roundrobin - round robin algorithm
+    http-check      expect rstring UP|DB_MIGRATION_NEEDED|DB_MIGRATION_RUNNING - on server line check if it return UP|DB_MIGRATION_NEEDED|DB_MIGRATION_RUNNING it will send req to the server else what is up only to that it will send.
+    option          httpchk GET /api/system/status - get the status of the both server below.
+    cookie JWT-SESSION prefix nocache - It will attach the cookies to each req, for new req it will check then after it reach the server it create a cookie and attach back to req
+    timeout         server 10m - sets the timeout
+#    server          sqapp1prd sqapp1prd.cec.lab.emc.com:9000 check cookie sqapp1prd
+#    server          sqapp2prd sqapp2prd.cec.lab.emc.com:9000 check cookie sqapp2prd
+#    server          sqapp1prd-u sqapp1prd-u.cec.lab.emc.com:9000 check cookie sqapp1prd-u
+#    server          sqapp2prd-u sqapp2prd-u.cec.lab.emc.com:9000 check cookie sqapp2prd-u
+    server          sqapp1prd sqapp1prd.cec.delllabs.net:9000 check cookie sqapp1prd - Server 1 details
+    server          sqapp2prd sqapp2prd.cec.delllabs.net:9000 check cookie sqapp2prd - Server 2 details
+Below both are backend robots and freecache, if rew match the above acl it will return the error file
+backend robots
+    mode http
+    errorfile 503 /etc/haproxy/errors/robots.http
+
+backend freecache
+    mode http
+    errorfile 503 /etc/haproxy/errors/freecache.http
+
+Our HA proxy cfg file has frontend abd backend, frontend(will have rules how to get the req and where to send it) will receive the req from browser and backedn(will have rules on which server to send and cookies , lb etc) will send the request to server.
+
+-----End-----
+
+Grep
+-----Start-----
+grep -ri "local0" /etc/rsyslog.conf /etc/rsyslog.d/*.conf 2>/dev/null
+grep - search the data in file
+r - recursive
+i - case insensitive
+"local0" - actual search starting
+/etc/rsyslog.conf /etc/rsyslog.d/*.conf - Search in these 2 files, here /etc/rsyslog.d/*.conf * refers on this rsyslog.d folder if any file ends with .conf search inside it
+2>/dev/null - 2 refer error if any error  write to the /dev/null file. it will help to remove error msg in prompt
+
+grep -o '\-Dsonar.path.home=[^ ]*'
+"Only show me text that starts with -Dsonar.path.home=.
+-----End-----
+
+list files
+-----Start-----
+ls  - list , only list file name
+ls -a  - list all files, including hidden files, hiddenfile start with . and used to store config settings
+ls -la - list all files with complete details eg below
+-rw-r--r-- 1 root root 250 Jul 28 10:30 10-haproxy.conf
+here - refer file insted of - if its d means directory
+1 - number of links ie syslink
+root - file owner
+root - group owner
+250  - file size
+Jul 28 10:30 - last modifed dete 
+10-haproxy.conf - File name
+┌────┬─────┬─────┬─────┐
+│ -  │ rw- │ r-- │ r-- │ - here owner has read and write, group has read, other has only read
+└────┴─────┴─────┴─────┘
+  │     │     │     │
+  │     │     │     └── Others
+  │     │     └──────── Group
+  │     └────────────── Owner
+  └──────────────────── File Type
+  r = Read
+w = Write
+x = Execute
+Here -rwxr-xr-x - here first rwx owner has execute access, only we can provide execute access when there is .sh file ie executable file then only we can execute it
+
+-----End-----
+
+syslog
+-----Start-----
+Each program(haproxy, ngnix etc) it wont directly write log to file, instead it send via unix socket /dev/log and it contain logs from that place syslog take the logs and based on syslog configuration rules it will write to file.
+program syslog config rules file present inside  /etc/rsyslog.conf and /etc/rsyslog.d/*.conf. It will be auto created when program installed or admin will create it.
+Below is the rule for haproxy rule inside /etc/rsyslog.d/. When haproxy run , syslog collect the log and save to filke based on below rules
+
+$AddUnixListenSocket /var/lib/haproxy/dev/log - Since ha proxy run in change root, o it will create one unix socket.
+
+# Send HAProxy messages to a dedicated logfile
+Here if the logfile on unixsocket contain with program name haproxy those log will save to haproxy.log in path mentioned below once stored it will stop it so it wont write to other files.
+:programname, startswith, "haproxy" {
+  /var/log/haproxy.log
+  stop
+}
+in this location /etc/rsyslog.d/if it has many rules , each rule has number start with, so when syslog looking at rule in order,the first order with rule match there it will write log ie in that ath mentioned in that rule
+-----End-----
+
+tail
+-----Start-----
+
+tail /var/log/haproxy.log show last 20 AddUnixListenSocket
+tail -n 100 /var/log/haproxy.log show last 100 AddUnixListenSocket
+tail -f /var/log/haproxy.log show last 10 lines and continue to increase when new lines added, real time monitoring
+tail -n 10 -f /var/log/haproxy.log - show last 10 lines the continue to add
+-----End-----
+
+wordcount wc 
+
+-----Start-----
+wc /var/log/haproxy.log - Show no of lines, word, character
+wc -l /var/log/haproxy.log - show only no of lines
+
+-----End-----
+
+Pipe
+-----Start-----
+The pipe sends the output of one command as the input to another.
+ls -la /var/log | grep -i haproxy - grep receives the directory listing from ls and filters only the lines containing haproxy.
+
+-----End-----
+
+Understanding HAProxy log
+
+-----Start-----
+first time - Jul 27 09:15:02 - Added by syslog when it proceess the log 
+Second time  - [27/Jul/2026:09:15:02.456] - When haproxy receive the request
+0/0/1/45/46 - Tq / Tw / Tc / Tr / Tt 
+tq - Total time haproxy wait to accept the request
+tw - total wait time for backend to accept the request from haproxy
+tc - haproxy to backend tcp connection time
+tr - server response time
+tt - total time of above
+
+---- - Req end without any issues
+--NN - NN mean normal normal ending no issues
+--VN - Again end with normal so no issues
+Below are the error endings
+cD-- - client disconnect, ie bofore sq send resp, client close browser we see this error code
+sQ-- - Sqerver issue or time out.
+cD → Client disconnected before completion.
+sC → Couldn't connect to the backend server.
+sH → Server timeout while waiting for headers.
+sD → Server closed the connection unexpectedly.
+45/45/12/12/0 - actconn / feconn / beconn / srv_conn / retries - 
+actconn - Toatl active connection in haproxy
+feconn - Toatl active front end connection in haproxy. usually same as actconn, since haproxy has one front end we configured
+beconn - total active backend connection
+srv_conn - total active connection on particukar one back end server if has many like 2 server in our case
+retries - How many retries on that sever for that req
+0/0 - server queue/backend queue - server queue means no of req waiting for that server, bckend queue - Total req waiting in queue for both server in case of 2 server we have as backend.
+rest other data are like pid and name, client ip,  req path, response code, response size etc all are readable.
+-----End-----
+
+awk & sed
+-----Start-----
+Using awk we can split the lines. By default it will delimit by space, we can use custom  delimit by using -F'"', here delimit by ". After delimit each filed will be start with $1 which means first field. '{print $2}' gies us second filed.
+What we do below is first we grep all the logfile end with http/1 which meand proper http response file, then op we passed to awk and split by " then taking second filed then that op we split by ? then taking first field the sort with alphabetical order , then uniq -c, if two identical word are there like a a next to eachother in rows it willad as one and make count as 2 then again sort with -nr means n means numerical then with r means decending prder
+grep -i "http/1" haproxy-aug6.log | awk -F'"' '{print $2}'| awk -F'?' '{print $1}' | sort | uniq -c | sort -nr | grep -i 'api'
+
+Here sed - stream editor, it reads all the lines in file by line by line and perform operation like serrch, replace, print and delete and -E means friendly writing pattern.
+On sed we need to write the req ex and finding that and replacing
+Here  sed -E 's/.*:([0-9]{2}):[0-9]{2}:[0-9]{2}\..*/\1/' the syntax is 's/pattern/\1/' - here .*:([0-9]{2}):[0-9]{2}:[0-9]{2}\..* we are trying to get data from this timestamp [27/Jul/2026:09:15:02.456].
+first .* say sequence of any character
+. means "any single character."
+.* means "any number of any characters" (greedy — grabs as much as it can).
+: matches a literal colon.
+[0-9] means "any single digit, 0 through 9."
+{2} means "exactly two of whatever came right before it" — so [0-9]{2} means "exactly two digits."
+(...) — parentheses mark a capturing group: "remember whatever matched inside here, I want to use it later."
+\. — a literal dot character (a plain . would normally mean "any character," so the backslash tells sed "no, I actually mean a dot here").
+Put together, this pattern matches a full timestamp and specifically remembers the middle HH (hour) portion in its one capturing group.
+s/PATTERN/\1/ — the substitution instruction: replace everything that matched the whole pattern with just \1, which means "whatever was captured in group 1" — i.e., throw away everything else and keep only the hour.
+grep -i "http/1" haproxy-aug6.log | awk '{print $7}' | sed -E 's/.*:([0-9]{2}):[0-9]{2}:[0-9]{2}\..*/\1/' | sort | uniq -c | sort -nr
+
+Command to filter the log based on the range and save it to new file
+Sed- stream editor , its used to read all the lines in a file line by line and perform operation like search, replace, print and delete for lines.
+How to filter the file using sed
+sed -n '/start/,/end/p'  file- here -n refers only print the line which match the pattern, if we dont give -n for every line sed read that also print then resulted output also it print so duplicated data, then since we use -n so print the resulted lines use page
+
+sed -n '/^Aug 10 07:59:00/,/^Aug 10 09:10:00/p' file > resulted_file
+Here we are filtering the data based on time range. Here ^ refer if the line start with Jul then only start match and same for ^Aug, it start with Aug then till that collect and end it. if it start with info Jul it wont match that
+
+-----End-----
+
+log rotation
+
+-----Start-----
+For any program like haproxy, ngnix all the files logs needs to be rotated.elase it will grow and fill the disk size
+The logrotation rules will be written here.The rules will be auto crreated when the program installed, else it will be created by admins. Here when it rotate the log it will create a new log empty file with same name and old file it will rename to haproxy.log.1 and 2 day old log ile it will zip and rename to haproxy.2.tz and same till 7th day and last 8 file will be deleted.
+/etc/logrotate.d/haproxy
+haproxy rules
+/var/log/haproxy.log {
+    daily - rotate daily
+    rotate 7 - keep for 7 day old data, 
+    compress - old files it will compress
+    missingok - if no log file show no error
+    notifempty - donot rotate if file is empty
+    create 640 root adm - provide complete access
+    postrotate
+        systemctl reload rsyslog - after rotate just reload the syslog program
+    endscript
+}
+
+-----End-----
+
+Zip,UnZip,copy, move, search in file
+-----Start-----
+To zip the file
+tar -czf filename.tar.gz file or folder/ 
+Here c is create z is zip and f is file name then space give filefolder followed by /
+To unzip
+tar -xzf filename.tar.gz here x iz extract
+
+Copy
+cp filename /path
+move
+mv filename /path 
+can use -r for recursive
+
+SEarch the data in file based on time
+grep "10:15" filename
+Search for time range
+grep -E "10:11|10:12|10:13" file name
+grep -E "10:1[0-9]|10:20" file name , here search from 10: 10 to 10:20
+zcat or zgrep to search or cat in compressed file. can use zcat and zgrep on above scenarios
+
+
+-----End-----

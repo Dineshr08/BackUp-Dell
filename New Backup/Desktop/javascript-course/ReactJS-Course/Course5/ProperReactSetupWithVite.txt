@@ -1,0 +1,55 @@
+Install Node JS
+To check the version 
+node -v
+We installed node js to run the javascript file.
+Command:
+node javascriptFile.js
+To install external libary: node package manager
+npm install externallibrary
+Open a terminal from the project folder and install the library using above command , It will create a folder called node-module inside the folder path, where all the installed library will be located.
+While installing if we get an error run below command.
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+Some packages will create a command for the command line.
+Eg create-vite - It will create a command called create-vite, it will help us to create the new react project.
+
+
+SetUp New React Project:
+We know create-vite will help us in setup new react project, to do that need to perform 2 steps
+1. npm install creat-vite
+2. Run create-vite
+Instead od doing both seperately we can run below command
+npx create-vite 
+Here x means execute , it will install and execute.
+npx create-vite@6.5.0 here we are mentioning the version of the create-vite as well.
+While running this command it will ask for the project name - Give project name our case it will be chatbot-project, then it will as for technology choose react and javascript by using arrow icon to navigate and click enter.
+
+Once project is created we can see package.json - it will have list of package that needed for this react project, to install all just give
+npm Install
+Once installation is done, to start up the new project in webiste run below command
+npm run dev
+We will get http webiste url just launch that in browser.
+
+Folder Structure:
+node-module - It will contain all the installed packages
+src - Source folder , all our codes ie css, javascrpt files. here javascript need to save as jsx.
+public - store Files that are accessible to public. When  we deploy this application , the files here should be accessible through the url
+Files inside the folders:
+.gitignore - Hold the git related details
+eslint.config.js - it will highlight the error in js. To identify the error need to install eslint extension in vs code.
+index.html - Will have actual our webiste html code. in Script element we gave the the css and jsx file path
+package.json - will have all the package that need to installed
+package-lock.json - Holds all the installed package version related details , when we install or update the package those file will be auto updated.
+vite.config - Its vite config file
+Vite - Will help us in setup the project, It will help us in create a website and act as server for our website, because it will deploy and give as end point as well, and when we work on website it will update the changes innrealtime like liveserver.
+We usually touch only index.html and files inside the src folder.
+
+Now we are moving the chatbot project into this. Refer the Steps. Start seeing in App.jsx under the src folder.
+
+In code we are removing React from React.useState('') just going to use useState('') beacuse earlier we have imported the package using the script element, now we have installed so just importing itdirectly so no need to use React.useState. While import if we need just specify like import { useState } from 'react' which means we are using useState feature and after from if we use like 'react' which means it will find a package inside node-module inside the react it will look.No need to use ../ and ./ to go inside and outside it will just search inside the node-module for react.
+
+So vite has the feature where we can directly import the .css or image file directly. Earlier we have learned only we can import js but using vite we can import the css and image files too.
+
+Here App.css will have all the App component related files and index.css will have all the webiste related files. If we have any website related code eg body class that need to moved to index.css file
+
+For Best Practise Move each component and its css file into components folder and and only keep App component and App.css file as it is ie outside the components folder.Then handle all the export and import, for each component need to add export so can use in other component files and after split import all the css files too.When we import if it is js or js file need to just give file name no need to explicitly mention .js or .jsx. When we do import just import the package, then js or jsx then rest files

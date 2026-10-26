@@ -1,0 +1,161 @@
+AsyncAwait:
+Its a even better way to handle asyncronous code.promise we came becuase of its better than callback and ayncawait is better than promise, here in promise we have lot of code like promise function and then , ayncawait will fix all this . ayncawait is shortcut for promise and removes all the extra code
+
+create afunction and put async infornt it will return the promise then we can use the then for the next step
+
+async function loadPage() {
+  console.log('loadpage');
+} - Which return promise, then we can apply then
+
+loadPage().then(() => {
+  console.log('next step');
+});
+
+if we return some value in async function then we can use that in value in then like passing value in resolve in promise
+async function loadPage() {
+  console.log('loadpage');
+  return 'value1';
+} 
+loadPage().then((value) => {
+  console.log('next step');
+  console.log(value)
+});
+
+Why we use async, the reason is to use await, because we can use await inside the async function. in below example, if i use await infront of the function after completion of this functiononly the next step will happen so we no need to explictly mention .then and write code. below for example we have given loadPage().then((value) so we can see how it works first it will print loadpage then loadProductsFetch fn will run and until it complete the next step and value1 will not print as it will wait for loadProductsFetch fn to complete
+
+async function loadPage() {
+  console.log('loadpage');
+
+  await loadProductsFetch() 
+
+  return 'value1';
+} 
+loadPage().then((value) => {
+  console.log('next step');
+  console.log(value)
+});
+
+Async await can only do with promises it dosent do with callback. if we want to use promises inside the async it should be promises it not callback
+What is happening in the final code is we created the async function so can use await inside it, it will wait till loadProductsFetch fn to load then we have used promise and it will wait until the loadCarts fn complete because used await infront of that we can do like this as well await loadCarts(); but just to show we can use promises inside the asyn await we did like this then once that is loaded we can run the below 2 render and paymentsummary fn. the advantage here is we can write the code step by step like normal instead of writing complicated using promises
+Eg: final code
+async function loadPage() {
+  await loadProductsFetch();
+
+   await new Promise((resolve) => {
+      loadCarts(() => {
+        resolve();
+      });
+    });
+
+    renderCheckoutPage();
+    paymentSummary();
+} 
+
+So here if resolve('value1'); return some value we can save that directly like below const value and can pass in below lines of codes
+
+async function loadPage() {
+  await loadProductsFetch();
+
+   const value = await new Promise((resolve) => {
+      loadCarts(() => {
+        resolve('value1');
+      });
+    });
+
+    renderCheckoutPage();
+    paymentSummary();
+} 
+
+Always use async await for handling asyn calls
+Await awlays inside asyc fn.
+Closest fn should be async like below
+
+async function loadPage() {
+  await loadProductsFetch();
+
+   const value = await new Promise((resolve) => {
+      loadCarts(() => {
+        resolve('value1');
+      });
+    });
+
+    renderCheckoutPage();
+    paymentSummary();
+}  
+
+if it like below it wont work
+async function loadPage() {
+  function test() {
+    await loadProductsFetch();
+
+   const value = await new Promise((resolve) => {
+      loadCarts(() => {
+        resolve('value1');
+      });
+    });
+
+    renderCheckoutPage();
+    paymentSummary();
+
+  }
+  
+}  so make normal fn to async fn
+
+Refer checkout.js for more details.
+To call the async await fn just call that fn 
+loadPage(); - like this
+
+Error handeling:
+For call back:
+
+This is the code for call back. here we have added seperate add event listner for error(xhr.addEventListener('error', (error) => {), when error occured when we send request it will skip the load and run the error addevent listner. using (error) parameter we can do whatever we want it will have error details
+
+export function loadProducts(fun) { 
+  const xhr = new XMLHttpRequest();
+  xhr.addEventListener('load', () => {
+    products = JSON.parse(xhr.response).map((productDetails) => {
+ 
+    if (productDetails.type === 'clothing') {
+      return new Clothings(productDetails);
+    }
+    return new Products(productDetails);
+  
+})
+fun();
+  });
+
+  xhr.addEventListener('error', (error) => {
+    console.log('Unexpected error please try again');
+  })
+
+  xhr.open ('GET', 'https://supersimplebackend.dev/products');
+  xhr.send();
+}
+
+For Promise:
+
+Added error handeling for promise using catch method it will tahe fn and can pass error variable to get error details
+export function loadProductsFetch() {
+  const promise = fetch('https://supersimplebackend.dev/products').then((response) => {
+    return response.json(); // it become promise
+  }).then((productData) => {
+
+    products = productData.map((productDetails) => {
+ 
+    if (productDetails.type === 'clothing') {
+      return new Clothings(productDetails);
+    }
+    return new Products(productDetails);
+  
+})
+  }).catch((error) => {
+    console.log('Unexpected error please try again');
+  });
+  return promise;
+}
+
+
+For Async await
+
+We can manually create an error in try catch using throw
+

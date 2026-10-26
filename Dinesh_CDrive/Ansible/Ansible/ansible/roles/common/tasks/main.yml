@@ -1,0 +1,35 @@
+---
+# Data and apps directories
+- name: DATA and APPS directories
+  file: path={{ item }} state=directory mode=0775 setype=usr_t
+  with_items:
+  - "{{ data_dir }}"
+  - "{{ apps_dir }}"
+
+# Extra Packages for Enterprise Linux (EPEL)
+- name: Extra Packages for Enterprise Linux (EPEL)
+  yum: name=epel-release state=latest
+
+# Libraries and utilities
+- name: Libraries and utilities
+  yum: name={{ item }} state=present
+  with_items: "{{ yum_libraries_utilities }}"
+  
+# Date and time
+- name: Remove old timezone file
+  file: path=/etc/localtime state=absent
+- name: Set America/New_York  timezone
+  file: src=/usr/share/zoneinfo/America/New_York  dest=/etc/localtime state=link
+- name: Ensure NTP is running
+  service: name=ntpd state=started enabled=yes
+
+- name: Stop Iptables service 
+  service: 
+    name: iptables 
+    state: stopped 
+    
+- name: disable service firewalld and ensure it is not masked
+  systemd:
+    name: iptables
+    enabled: no
+    masked: no

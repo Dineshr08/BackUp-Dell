@@ -1,0 +1,16 @@
+---
+ - name: Restarting the server
+   hosts: client
+   become: true
+   tasks:
+   - name: Restarting the httpd  service
+     service:
+       name: httpd
+       state: restarted
+   - name: Checking Service Status
+     shell: service httpd status
+     register: serverstatus
+   - name: Show Service status
+     debug: 
+       msg: "Service is Up and Running"
+     when: serverstatus.rc | int == 0

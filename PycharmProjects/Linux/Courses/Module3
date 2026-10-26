@@ -1,0 +1,227 @@
+Things to remember in Linux:
+    1.Linux have super account which is root user.Which can able to create, modify, delete the account.Even it can able to change the system configuration file.
+    2.Linux is case sensitive.ABC is not same as abc
+    3.Avoid using space while creating files and directory.Instead use _ and -
+    4.Linux kernel is not OS.Its small software inside OS, which take user inputs and passed to hardware
+
+Accessing OS:
+Accessing OS can be done in 2 ways.
+    1.Console(Physical machine UI, ie connecting monitor to CPU using HDMI cable). We can access anything in UI
+    2.Remote(Connecting you OS or machine remotely over network)
+        1.Connecting remote windows OS from host windows OS, can be done using RDP.
+        2.Connect windows(host) to linux through remote can done using putty client.From Windows 10 onwards, we can connect one windows OS to linux by cmd prompt using ssh. eg ssh ip(linux machine ip)
+        3.Connect one linux machine to another linux machine can done using ssh. eg ssh ip(another or remote machine ip)
+
+Putty:
+Used to connect from windows system to linux system remotely
+
+Access Linux System through putty or through ssh:
+    1.Through Putty:
+        1. Open putty give ip then give username and password.You will be login to the linux machine remotely through CLI interface
+            - Getting IP address of linux machine(centOS)
+            - For CentOS till 7.5 we can use ifconfig
+            - But for centos >= 7.5 use ip addr.Still you want to use ifconfig the need to install yum install net-tools
+            - When we give ifconfig to fetch ip , always take ip from enpos3
+
+    2. Through ssh:
+        1. In windows 10, we can connect to linux system remotely through ssh accessing from command prompt instead of putty.
+        2. Open cmd and type ssh -l username ip or ssh ip .Here -l user to represent username. Then enter username and password which take you to linux CLI
+
+ Getting Prompt Back:
+ When we logged in to linux system through putty or ssh and access the linux cli our screen will look like [drajendran@LinuxVM ~]$
+ Here drajendran is username
+ LinuxVM is hostname
+ $ - indicate user is not root user
+ If instead of $ it was # - which indicate root user that case it will be [drajendran@LinuxVM ~]#
+ Command To get the username  - whoami
+ Command to get hostname - hostname
+ command to get prompt back if we struct somewhere is ctrl+c [ctrl+c is just click ctrl and c in keyboard]
+ su - will switch user to root user
+ su - drajendran will switch to user
+ su means switch user
+ exit command its used to logout the user
+
+
+ FileSystem:
+ OS use filesystem to store files and directory.Where we manage and access files.In linux filesystem everything stored in folder structure. Like windows, C driver is the root directory, inside we have program files which store application installable, user folder which has user directory and Windows folder have OS related files. Same way in Linux cd / where / is home directory like C drive. Which have folder structures.
+ cd /  - will take us to root directory
+ ls -l  - list all directories
+ Example below
+ etc - Store configuration file
+ var - log file
+ home - user directories
+ We can remember this by taking example of cupboard, where in cupboard shirts placed in some row, shoes in some row, jewels in some row etc. like that linux file system have folder structure to store files.
+
+File System Structures and descriptions:
+/ is the root directory like c drive.
+cd / will go to that directory
+ls -l will list the directory
+
+/boot - will have boot loader file ie grub.cfg. Which has which OS and it version etc.When we start the machine,based on this file only system starts up
+/root - this has all root user files and directory
+/dev - which has all the peripheral(keyboard, mouse etc) files
+/etc - all application configuration files present inside here. eg DNS config file
+/bin --> /usr/bin - all user command files. like top, ls, pwd etc
+/sbin --> /usr/sbin - all system/filesystem command files. This will be used when we increase the file system and change filesystem configurations
+/opt - which have third party application installed like oracle .Not OS related apps
+/proc - All current running process file.When system shutdown all files will be cleared
+/lib --> /usr/lib - Have library file of all the command.Like top command will have library file and all command will be written in C and C++. All command related library will stored here.
+    - To see which library are associated for each command strace -e open top
+/home - will have user directory
+/tmp -  will have all temporary files
+/var - will have all application log files inside var /log will have all log files
+/run - will have all running app pid files
+/mnt - it used to mount external filesystem to current system
+/media - In computer we have cd drive. if we attach CD in that drive, that content will be stored here.
+
+FileSystem Navigation Commands:
+/ - parent directory like c drive in windows
+cd  - Change directory. In windows Open folder , we double click in Linux cd /etc will take you to etc folder
+pwd - print working directory. In windows in top will give path of folder. in Linux need to give pwd , it will give path of the directory like /var/log if we in lof folder of etc folder
+ls -l - listing.It will list all files and directory . In Windows, it will list all folder and files inside directory. In linux ls -l will list all directory and files and its count. output start with d means its directory and - means its file
+cd ..  wile take you one step back
+cd / will take you to parent directory
+cd alone will take you to /root or user directory folder
+
+Difference between ls and ls -l:
+ls - will just list the file and directory
+ls -l will list the properties of the files and directory
+Property say like what are names of files and directory we have, with it size , who created , when last accessed, what group it associated. In windows if we right click file or folder to see the properties which show all details of file or folder, same is ls -l
+In ls -l , the output start with d means its directory, - means file and l means links
+Output of ls -l
+lrwxrwxrwx.   1 root root    7 Nov 17 11:03 bin -> usr/bin
+drwxr-xr-x.  20 root root 3200 Nov 20 20:41 dev
+-rw-------. 1 root   root        0 Nov 17 11:15 yum.log
+drwxr-xr-x - Directory, 20 is how many folder we have inside with parent directory of dev, root is who created, root is which group, 3200 is size, Nov 20 20:41 is time it got created, dev is directory name
+lrwxrwxrwx - which is link, rest same
+-rw------- -  Which is file, rest same
+
+Linux file types:
+Based on above with additional file types
+- which means regular file
+d means directory
+l means link
+c means special file or device file. Eg if some pheripheral attached to system like cpu, memory, keyboard wll will have file, which will start with c
+s means socket
+p means named pipe
+b means block device
+
+Changing Password:
+When we logged in as the root, can able to change the password of users using command below
+passwd drajendran(username)
+With root we can able to change password of all users.
+If we logged in as the normal user, need to change password, just enter
+passwd
+then try change password
+
+Absolute Path:
+Start with / .If we know the full path we can give like below
+cd /var/log which is absolute path
+Or
+If we traversal to multiple folder by knowing path like above it should start with / and rest path, which is absolute path
+Absolute path will always start like cd /var/log/samba but not like cd var/log/samba
+From cd /var/log/samba to we can go to cd /etc it will take to parent directory etc folder but if you try cd etc alone it will search ect folder inside cd /var/log/samba. so cd etc is relative path
+Relative path:
+Will not start with /. If we already inside /var. we will just give
+cd log which is relative path. if we already inside the folder , we should not give /
+
+Creating Files and Directory:
+Creating Files:
+    It can be done by 3 ways.
+        1.touch
+            eg touch filename it will create empty file
+            or touch filename1 filename2 etc it will create as many file we given
+        2.cp
+            Copy the file
+            eg cp actual file new filename or cp test test1
+        3.vi
+            eg vi filename to come out of vi editor :wq! here w is written, q is quit
+Creating Directory:
+mkdir which is make directory
+eg mkdir directoryname or mkdir dir1 dir2 etc, it will create as my directory which we given
+
+Difference between ls -l and ls -ltr
+ls -l give the list of files and directory with properties without sorting them with time
+ls -ltr give the list of files and directory with properties with sorting them with time
+
+
+Copying Directory:
+cp -R orginalDirectory Backupdirectory
+eg:  cp -R config /tmp/config-bak if we give like cp -R config /tmp it will copy config in tmp with same name and if we give cp -R config /tmp/config-bak it will copy config with name which we given config-bak
+
+-R is Recursive and used to denote copying directory and also it say copy the subfolder and files inside the directory
+
+Find files and Directory:
+    Can be done in 2 ways
+        1.find
+            syntax: find . -name "filename or directory name" . Here . is relative path, which means already we are into directory and need to search from there. if we want to search from parent directory then follow below
+            find / -name "filename or directory name"
+            eg:
+            find . -name "c.config" which check in relative path ie the directory we are inside
+            find / -name "c.config" it check from parent directory
+            find /tmp -name "c.config" it start check from path which we given and its sub folder
+        2.locate
+            synatx: locate "filename or directory"
+            if command dosent provide output run updatedb
+            to check the locate is installed run below
+            rpm -qa | grep mlocate
+            to istall mlocate
+            yum install mlocate
+Difference between find and locate
+locate have prebuilt db. all files which we created will store there.that db will update in 1 hr interval. so post we create the file or if file in cache it will not show output when we locate. so always do updatebd command
+find will search in all directory of filesystem and provide the output
+
+Moving files and Directory
+mv filename /path of file system
+mv riya /tmp to move one file and directory to temp folder
+mv dinesh thilaga /tmp move multiple files and directory to tmp folder
+
+Wildcards:
+* - zero or more occurance eg ls -ltr abc* or ls -ltr *bc* or rm *cd
+? - One or more occurance eg ls -ltr a?*
+[] - provide output based on character inside [] eg ls -ltr *[cd]*  - which search everything which has c and d character in file name
+{} - used to mention range. eg touch abc{1..9}-xyz, it will create abc1-xy till abc9-xyz
+^ (caret) = means "the beginning of the line". So "^a" means find a line starting with an "a".
+$ (dollar sign) = means "the end of the line". So "a$" means find a line ending with an "a
+For example, this command searches the file myfile for lines starting with an "s" and ending with an "n",
+and prints them to the standard output (screen):
+cat myfile | grep '^s.*n$
+Other Wild Cards
+\ (backslash) = is used as an "escape" character, i.e. to protect a subsequent special character. Thus, "\\"
+searches for a backslash. Note you may need to use quotation marks and backslash(es
+
+Remove file
+rm filename
+
+Soft and Hard links
+inode - all file which we created will have a number and that number only will get stored in harddisk. whenever we are retrieving the file, it will retrieve in backend based on number
+Soft link:
+When we create a file and we create a softlink for that, and if we remove or rename that file the softlink also will get deleted
+Create file:
+touch test
+Soft link cannot created in same directory, so creating softlink in /tmp
+cd /tmp
+ln -s /home/drajendran/test - softlink will be created. -s is softlink
+if we delete the orginal file in /home/drajendran/test softlink will not get access to it
+
+Hard link:
+When we create a file and we create a Hardlink for that, and if we remove or rename that file the hardlink also will not get deleted
+Create file:
+touch test
+Hard link cannot created in same directory, so creating hardlink in /tmp
+cd /tmp
+ln /home/drajendran/test - hardlink will be created. -s is not for hardlink
+if we delete the orginal file in /home/drajendran/test hardlink will get access to it
+
+ls -ltri - used to get inode number i is inode
+
+Write data to file:
+Create file
+touch testfile
+Write data to file:
+echo "Hello Linux" > testfile
+append data to file
+echo "How are you" >> testfile
+
+View file
+cat testfile

@@ -1,0 +1,29 @@
+---
+
+- name: copy file
+  copy:
+    src: /opt/jfrog/artifactory/bin/artifactoryManage.sh
+    dest: /opt/jfrog/artifactory/bin/artifactoryManage.sh.old
+    remote_src: yes
+
+- name: delete file
+  shell: rm -rf /opt/jfrog/artifactory/bin/artifactoryManage.sh
+
+- name: replace file
+  copy:
+    src: /opt/jfrog/artifactory/bin/artifactoryManage.sh
+    dest: /opt/jfrog/artifactory/bin/artifactoryManage.sh
+    mode: 0755
+
+- name: edit file
+  lineinfile:
+    path: /etc/systemd/system/artifactory.service
+    insertafter: 'ExecStop.*'
+    line: "{{ item }}"
+  with_items:
+    - "LimitNOFILE=32000"
+    - "Group=artifactory"
+    - "User=artifactory"
+
+- name: run command
+  command: systemctl daemon-reload

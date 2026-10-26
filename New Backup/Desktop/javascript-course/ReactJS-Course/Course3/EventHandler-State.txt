@@ -1,0 +1,19 @@
+EventHandeler:
+It will run the function when we interact with the website ie click
+
+OnChange: Run the function when we change the text inside <input>
+event.target = gives us the element that we are typing in. Here its gives the input element. event.target.value will give us the value that we type in the element
+
+State:
+When we update the data, it will update the html as well, so we use state.
+
+In React we should save the data in the state that change over the time, like the text that we entering in textbox of chat project. As the input box we will enter the new data everytime
+
+So syntax is React.useState(''); - Use initail value inside (), here in text box the initial value is ''
+
+Lifiting up the state:
+If we want to share the state to other component, then visualize the compoent, then just move the state to main component then from there share the state using props to other component
+We can save anytype of values inside the prop like array, function, object etc
+
+Controlled Input:
+value prop: Change the text inside the <input> element

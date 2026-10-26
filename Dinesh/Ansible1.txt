@@ -1,0 +1,647 @@
+Ansible by other tutor
+Prerequsits:
+For both master and client machine need to have python 2.6 or 3 or above so it easy to manage or run playbook in client machine.else we have to use raw module to manage client machine.manage means install sw
+
+Installation:
+Refer previous file
+
+Configuration or (to do this by play book check learn linux tv youtube channel in that adding user video)
+We perform password less authentication but in early file we used password authentication.
+Password less authentication:[generating public key from master and pass to all client machine]
+1) Create same name user in all master and client machine and use it
+Creating user need admin rights so use below Command
+sudo su -
+then add user by giving below Cmd
+useradd ansadmin(new username)
+passwd ansadmin(new pass)
+Then machine will ask to change password and follow instruction
+2) Add sudo previlage to newly created user in all machine include client and master to do that open sudo file like below
+visudo the go down and enter like below
+ansadmin ALL=(ALL) NOPASSWD: ALL
+Then go to all machine below path and make sure Passwordauthentication as yes
+/etc/ssh/sshd_config
+3) Then we need to restart all sshd service, to do that enter like below
+service sshd restart
+or
+systemctl restart sshd
+4) Generate ssh key[ needs to do in ansible master machine]
+go to ansadmin user and generate to do that first login as ansadmin user by giving below Cmd
+sudo su ansadmin
+Then enter ssh-keygen to generate .ssh folder inside that we have files to see that ls and move inside .ssh by givong cd .ssh then view files
+We will have id_rsa and id_rsa_pub which is private and public key
+5) Then need to copy thse public key file to all client  only not master one by giving following commands
+ssh-copy-id ip(of client machine) like need to do for all client machine
+6) Then to login as password less give ssh ip(client machine ip) it will login oe ssh username@ip
+Then enter exit in cmd pmt to logout of server which we connected password less.so it will come to mastermachine with ansadmin user which we logged in
+7)In inventory file write ip ie host files in below path
+cd /etc/ansible
+like we did in previous file but only change is without username and passwors because its password less configuration
+8)To check whether all the client node is able to access by master node use below Command
+ansible all -m ping 
+to ping only one server(below 2 case only work in host file u didnt have any group ie only have ip number in host file if we have like in our previous file it wont work, our previous file Ansible.txt hase group)
+ansible ip(one ip adress which in host file) -m ping
+Ping two server
+ansible ip:ip -m ping
+
+Note: only for passwordless config only we do above operation in client machine apart from that all other operation was done in ansible master machine like writing playbook, making change in inventory etc
+
+Ansible Directory Structure:
+Home for ansible directory is /etc/ansible inside this we have 3 files
+ansible.cfg - if we change anything eg we have rename our host file then we need to specify that in this file because based on info given in this file only ansible take and run
+hosts - place where we specify all our ip of client machine
+roles
+If we want to create seperate directory and move all these file to that location and run ansible means do below cmd. this mainly used insted of working from root user if we creat new user like ansadmin then we do like this.if we logged in ansadmin and we try to open hosts file like vi hosts it wont open then we need to use sudo vi hosts.but if we move all files to owr own directory means no need to use sudo.everything is same just create seperate dir and perform ansible operation for that location for that user.
+Directory creation:
+mkdir Dirname
+move inside that directory
+cd Dirname
+Copy file to the directory
+cp -rpP /etc/ansible/* .
+if u moved the file to directory and need to give path of host in cfg file then just give ./hosts in cfg file because its in same location
+
+Disable Host key checking in Ansible:
+in Anible.cfg change below thing
+host_key_checking = False
+by doing this it wont ask while u do ssh username@ip it wont ask would you like to login to disable that we are doing this.
+
+Inventory Group & Group of Groups
+Group:
+In host files if we have multple ip we can group it like below and have multiple group as well
+[group1]
+ip1
+ip2
+[group2]
+ip3
+ip4
+
+then we can manage group like below
+ansible group1 -m ping
+if we want manage r group then
+ansible group1:group2 -m ping
+if we grouped all but  run all client machine then
+ansible all -m ping  - all machine will run
+if we grouped all but  run one client machine then
+ansible ip1 -m ping
+here we are just performing ping module and we have lot of module(task) like that
+Group of Groups:
+if we want to group multiple group under single group then host file should be like below
+
+[group1]
+ip1
+ip2
+[group2]
+ip3
+ip4
+[group3:children]
+group1
+group2
+then run above group as
+ansible group3 -m ping
+
+Ansible.cfg file priority
+Top priority are below order
+Env variable ansible file 
+current directory ansible file
+home directory ansible file
+default ansible home ansible filw which is /etc/ansible/
+if u want to check which ansible.cfg file location our user refering just give below cmd
+ansible --version
+Above example will says if u are working in current directory but dont have or have ansible.cfg there but have in env var then it take that location only which has highest priority
+
+Module:
+To perform some task in all client machine we use module like ping.we have pre defined modules and we can use it like ping
+or 
+In playbook,we write a Steps to execute the task on remote client.we have default module in ansible and we can use it to perform or automate tasks.
+or 
+it a program used to execute to task. Based on the task we need to select the req module eg ping or uptime .each module has own arguments.
+or
+module is just a python program.
+
+To get the list of module availabe in ansible just enter below command
+ansible-doc -l 
+to get specific module info give like below
+ansible-doc -shell
+
+Difference Between Adhoc command and Playbook
+Adhoc command:
+if want to perform only one task on client node then we can use adhoc eg get uptime
+Syntax: if we put [] means optional
+ansible [-i otherinv file] servername:group:groups -m module [-a argument_value]
+-i then file name - if we want to choose other host file which not configured in config file  then we need to mention that file name but without bracket
+modile argument  - depends on module we may have argument or not eg like below
+ansible serverip -m ping(which dose not have arguments)
+ansible servergroup - m shell -a "uptime" (shell has arguments)
+
+Playbook:
+if we want to perform multiple task then we need to write playbook. ef get uptime and free-m
+
+How ansible work:
+Need to have one master where ansible is installed then need to have all client machine where we run our modules.no need to have ansible installed on client.just ansible master push module to all client and run it.it will run all module in  parallel.Ansible follow push mech ie from master its just push all the module to client and its agent less since we dont have ansible installed in all client mahine.by default ansible run 5 client server in parallel.if we want to change that we can got ansible.cfg and make forks = any number.if we set 1 it will run in sequntial order.by default its set as 5 and if we have 15 client server then it will run in 3 groups parallely for all 15 server.
+While running adhoc cmd or play book, ansible master push all module to all client server, in all client all module run inside home directory of our user ie ansible inside that .ansible directory inside that temp directory and inside it will create python program and run
+
+Transfer file using Adhoc command:
+To transfer a file from master to client we need to use copy module and it has many arguments. eg below
+ansible ip or group or all -m copy -a "src= dest="
+ansible client -m copy -a "src=./test dest=/root/testing"
+to take the backup of the file
+ansible client -m copy -a "content='hello dinesh welcome to ansible1' dest=/root/testing/test2.txt backup=yes"
+
+Download the file:
+To download the file from client to master machine need to use fetch command
+ansible ip -m fetch -a "src= dest="
+ansible client -m fetch -a "src=/root/testing/test2.txt dest=./demo" by giving this command and we dont have demo dir in master machine but it will create automatically and inside demo automatically it create tree structure like path(ip/root/testing(of src location)) how in source path file is located right same way it create the folder and it will place.eg inside demo it will create folder name with ip then create root folder then testing folder then only it will place file.in order to over come that need to use flat=yes.along with that need to rename the file with ip name need to use {{inventory_hostname}} variable name like below.
+ ansible client -m fetch -a "src=/root/testing/test2.txt dest=./ansibletestingfolder/demo1/{{inventory_hostname}}_testing.txt flat=yes"
+
+ Createing or deleting file and directory
+ in order to create or delete file or folder in client machine we can use file module
+ ansible ip -m file -a "path= state="
+if state we have many types .need to create file then state=touch,delete file then state=absent,create folder state=directory
+ansible client -m file -a "path=/root/testing/dinesh.txt state=absent"
+
+Using of -b command:
+in master machine we are working on other user apart from root and want to access client machine root folder , when u try command u will get permission denied in that case u need to use -b cmd
+
+Installing the packages:
+For all linux machine to install packages need to use yum .for ubuntu and debine nee to use apt
+ansible ip -m yum -a "name=give the pakage name like git,http etc state="
+if state=present we are installing, absent - we are uninstalling, latest the we are upgrading.
+ansible client -m yum -a "name=git state=latest"
+
+Ansible facts:
+Gathering the information about client machine is called facts or variable.to gather info we need to use setup command.No need to write setup module in playbook,playbook when it run it will automatically gather info abt client machines
+ansible ip -m setup
+to get any particular value then need to use filter command
+ansible client -m setup -a "filter="ansible_nodename""
+Two types of fact are there
+Default fact -  getting the info by giving setup cmd
+custom fact - getting additional info of client machine for  doing that need to create custom facts in client machine , so master machine can see that custom details
+
+Custom Facts:
+getting additional info of client machine, for  doing that need to create custom facts in client machine , so master machine can see that custom created details
+Additional details means just consider on all client machine we need to get version of git and httpd but for doing that we can write adhoc cmd as well, but we have to write 2 adhoc cmd individually to see , but if we write custom fact file we can see both in single adhoc cmd by calling setup.the fact may be in shell or python .while running the setup cmd we can able to custom fact op in master machine along with orginal details.to only see the custom file output need to use filter=ansible_local.
+Steps to write custom facts:
+1)need to create folder structure below in all client machine
+/etc/ansible/facts.d
+2)inside fact.d can create any number of .fact file and inside .fact file we can create code using python or shell but file extension should be .fact
+3)output of .fact file should be json
+4)file should have execution permission.
+below is the example written shell script and saved as customfact.fact which placed in client machine /etc/ansible/facts.d
+#!/bin/bash
+temp=$(git --version)
+#echo "$temp"
+cat << EOF   # from this line to end is to display op in json format
+{
+"git_veri":"$temp"
+}
+EOF
+
+Inventory:
+We know that inventory we can say as host.this is the place where we add all ip or create group for our client machine.inventory are two types.
+Static and dynamic.static is the above defenition.
+Dynamic:
+Dynamic inventory are created only for cloud env or dynamic env. in cloud env always instance ip will change if we stopped the instance so for that case we use this dynamic inventory concepts.dynamic inventory also we need to create script,it may be shell or python.instead of that ansible automatically provide dynamic inventory file for all cloud env.need to download that from ansible app from web.for aws we need to download ec2.py and ec2.ini file and need to use that.below command is just to get ping details of dynnamic inventory file.
+ansible -i ec2.py ec2 -m ping
+-i we are using becuase we download that file and in that file only have all the details of geting dynamic ip of aws machines
+ec2 - in the op if ec2.py, there will be multiple group and in that ec2 group only have ip of all machine so we are using that.
+In ec2.py file some time there will some modules will be used like boto in ec2.py file, so before running that validate ec2.py file in master machine and make sure there is no synatx error.if anything comes please instal that module.run ec2.py file by ./ec2.py.to install any module pip install bote - here boto is example.
+We need to remamber that all client and master machine in same cloud instance then need to assign iam role for master machine.iam role should be ec2 full access one should be selected.
+Best practice:
+in legacy machine we will create password less authentication for all master and client machine right,so in cloud when we create new machine then need to create image of already existing machine with all config like password less config,from that we launch new machine it wont throw error.else it throw permission denied, since new machine dont have any config.mainly for auto scaling we use this concept
+
+Raw Module:
+if we dont have python in client machine then we need to use raw module wont use default module like copy ping etc.if we use it will throw error.Raw module is complex.then writing playbook also need to use raw module
+
+Writing basic playbook:
+writing basic playbook using debug modules.In debug we have 3 arguments msg,var,verbosity
+How to write playbook.
+1)always start write playbook with ---
+2)use space - space its indicate play1 then need to provide option we have for play like name, host , task etc.
+in name need to write purpose of the playbook
+in hosts need to give ip of the client machine where this playbook want to run
+in task need to use module and perform task like debug.in task also we can write use name and give what task we are performing.and we can perform multiple task inside task.each task should start with -.
+in task we are going to use module the name of the task eg debug or name should start under task(t) like below
+tasks:
+- debug: 
+
+or
+tasks:
+- name: 
+4)if we are using any argument for module.like for debug, argument is msg its should start like below
+tasks:
+- name: print msg
+  debug:
+   msg: "Prini this msg"
+
+Below is the example of printing msg:
+
+---
+ - name: debug module msg variable learning
+   hosts: all
+   tasks:
+   - name: writing task to check msg var is working fine
+     debug:
+      msg: "just to validate msg variable in debug module"
+    # debug: msg="just to validate msg variable in debug module" we can print msg in this way too
+
+Below is the example for priniting msg and using var argument
+--- 
+ - name: this is to learn debug module variable argument
+   hosts: all
+   tasks:
+   # can write multiple tasks inside tasks like below
+   # printing default inventory_hostname variable inside msg so need to use {{}}
+   - name: printing default inventory_hostname variable inside msg
+     debug:
+      msg: "Display host names: {{inventory_hostname}}"
+   #  priniting inventory hostname only by using variable parameter so no need {{}}
+   - name: priniting inventory hostname only by using variable parameter
+     debug:
+      var: inventory_hostname
+Below is the example for using verbosity argument
+---
+ - name: Debug module using verbosity arguments
+   hosts: all
+   tasks:
+   - name: priniting verbosity by setting verbosity as 2
+     debug:
+      msg: "Using verbosity as 2"
+      verbosity: 2
+
+Validate playbook
+ansible-playbook playbookname.yaml --syntax-check
+Run playbook:
+ansible-playbook playbookname.yaml
+
+Using userdefined variable in playbook .we have to use vars
+---
+ - name: using variables vars command
+   hosts: all
+   vars:
+    x: 5
+    name: "Dinesh"
+   tasks:
+   - name: printing user defined variables using debug module and msg arg
+     debug:
+      msg:
+       - "The value of x is: {{x}}"
+       - "The Name is : {{name}}"
+
+Using userdefined variable in playbook and enter values through cmd prompt .we have to use vars_prompt
+---
+ - name: using command prompt variable
+   hosts: all
+   vars_prompt: # if we are using multiple input the need to use -name like below and use.if singe value noo need of - we can directly use name
+     - name: x
+       prompt: Enter the value of x  # to get value
+       private: no # to show entered value in ui.if yes it wont show entering value
+     - name: y
+       prompt: Enter value of y
+       private: no
+   tasks:
+   - name: getting value of x and y and printing
+     debug:
+       msg: # writing multiple line msg need to follow like below
+         - "Printing value of x:{{x}}"
+         - "Priniting value of y: {{y}}"
+
+
+Giving variable in command line argument
+1)scalar type for below play book
+ansible-playbook usingscalar.yaml -e "x=08" 
+or
+ansible-playbook usingscalar.yaml -e "{'x':08}"
+
+Playbook
+---
+ - name: cmdpmt scalar
+   hosts: all
+   tasks:
+   - name: taking scalar inputs frm command line
+     debug:
+       msg:
+         - "The value of x: {{x}}"
+2)Using scalar multiple value
+ansible-playbook usingsequence.yaml -e "x=08 y=06"
+ or
+ansible-playbook usingsequence.yaml -e "{'x':08,'y':06}"
+
+Playbook:
+---
+ - name: cmdpmt scalar multiple val
+   hosts: all
+   tasks:
+   - name: taking scalar multiple val inputs frm command line
+     debug:
+       msg:
+         - "The value of x: {{x}}"
+         - "The value of y: {{y}}"
+3)Using sequence
+ ansible-playbook sequence.yaml -e "{'x':[08,06,93]}"
+
+Playbook
+---
+ - name: cmdpmt sequence
+   hosts: all
+   tasks:
+   - name: taking sequence val inputs frm command line
+     debug:
+       msg:
+         - "The value of x: {{x}}"
+4)Using map
+ansible-playbook sequence.yaml -e "{'x':['date':08,'day':06,'year':93]}"
+
+Playbook
+---
+ - name: cmdpmt sequence
+   hosts: all
+   tasks:
+   - name: taking sequence val inputs frm command line
+     debug:
+       msg:
+         - "The value of x: {{x}}"
+
+5)Using file
+File may be yaml or json
+ansible-playbook sequence.yaml -e "@inputfile.yaml"
+Playbook:
+Playbook
+---
+ - name: cmdpmt sequence
+   hosts: all
+   tasks:
+   - name: taking sequence val inputs frm command line
+     debug:
+       msg:
+         - "The value of x: {{x}}"
+6)Installing any packages using cmd prompt
+ansible-playbook instal_uninstallpkg.yaml -e "pkg=httpd req_state=absent"
+
+Playbook:
+
+---
+ - name: install and unstall package using cmdprmt variable
+   hosts: all
+   become: true
+   tasks:
+   - name: install and uninstall package from cmd prompt
+     yum:
+       name: "{{pkg}}"
+       state: "{{req_state}}"
+~
+
+How to use comparision operators in playbook:
+the comparision operator op will be either true or false based on the condition.if x=5 and y=6 and if we use like this in play book {{ x == y }}, then op will be false.
+playbook:
+
+---
+ - name: comparision operators
+   hosts: all
+   vars:
+    x: 5
+    y: 6
+   tasks:
+   - name: just printing comparision operator output in msg
+     debug:
+        msg:
+          - "if x == y then : {{x==y}}"
+          - "if x! = y then : {{x!=y}}"
+
+Playbook op:
+ok: [10.118.240.252] => {
+    "msg": [
+        "if x == y then : False",
+        "if x! = y then : True"
+    ]
+}
+
+Ignoring errors:
+Below play book used command module to navigate to the path and register argument is store the op of command op
+ignore_errors: yes - usually if we have multiple task ,if one task fail below task wont run , to make even one task fail all below task to run need to use ignore_erors as true
+Play book:
+---
+ - name: ignore errors
+   hosts: all
+   tasks:
+   - name: open the folder1
+     command: "ls /root/testing"
+     register: op1
+     ignore_errors: true
+   - name: open folder2
+     command: "ls /root/test"
+     register: op2
+     ignore_errors: true
+   - name: open folder2
+     command: "ls /root/script"
+     register: op3
+     ignore_errors: true
+
+
+Block:
+block is used to group the comman action for the multiple task. for above playbook we are using ignore error on each task so what we can do is we can create one common block and keep all task inside the block and use common ignore error for that block , so it applicable to all task inside blocks.
+Playbook:
+---
+ - name: blocks
+   hosts: all
+   tasks:
+   - block:
+      - name: open the folder1
+        command: "ls /root/testing"
+        register: op1
+      - name: open folder2
+        command: "ls /root/test"
+        register: op2
+      - name: open folder2
+        command: "ls /root/script"
+        register: op3
+     ignore_errors: true
+~
+
+Using when condition:
+
+---
+ - name: while and block statement
+   hosts: client
+   vars:
+    x: 8
+    y: 9
+   tasks:
+   - block:
+     - name: make when condition 1
+       debug:
+         msg: "when condition passed"
+       when:  x == y
+     - name: make when conditon 2
+       debug:
+          msg: "When condition failed"
+
+Try and Reuse and always: error handeling
+
+---
+ - name: using try resue and finally
+   hosts: all
+   tasks:
+   - block:
+     - name: this is try block
+       command: "ls /root/"
+       register: op1
+     - debug:
+        msg: "opened successfully"
+     rescue:
+       - name: rescue fn
+         debug:
+           msg: "unable to open or find directory"
+     always:
+       - name: always fn
+         debug:
+            msg: "Completed script"
+Import and include module:
+if we have any task written in any playbook and we can use that by calling import_tasks.like that we can import_vars as well.In task file need to write only task like below
+task fike:
+
+---
+ - name: print msg
+   debug:
+     msg: "Printing msg"
+
+Playbook:
+---
+ - name: import
+   hosts: all
+   tasks:
+   - name: importing tasks
+     import_tasks: printmsg.yaml
+
+we can use include tasks as well but only use this for dynamic value.eg if we need to get a value from gather task and need to pass in filename like that case
+just conside below test is variable we will get in gather task ie at run time then need to use include.here test is just taken for example
+Playbook:
+---
+ - name: import
+   hosts: all
+   tasks:
+   - name: importing tasks
+     include_tasks: printmsg-{{test}}.yaml
+
+Ansible Vault:
+if we want to encrypt or decrypt ansible play book or any yaml file we use ansible vault.We can encrypt the seperate file where variable is stored and we can pass the variable stored in that encrypted file to playbook insted of encrypting the entire playbook.
+Encrypt syntax:
+ansible-vault encrypt filename.yaml
+decrypt:
+ansible-vault decrypt filename.yaml
+Running encrytded file:
+ansible-playbook filename.yaml --ask-vault-pass
+Can store password in seperate file and pass in run command:
+ansible-playbook filename.yaml --vault-id passwordfile
+
+----------------------------xxxxxx------------------------------
+When condition
+We can use in in when condition
+when: ansible_distribution in ["Debin","Ubuntu"]
+Here ansible_distribution is variable getting from gather facts and it will give os details of client machine
+If we have multiple machine in host file and need to gather facts for one machine can do by doing below cmd
+ansible all -m gather_fact --limit ip 
+Neew to grep anything in fact need to do like below
+ansible all -m gather_fact --limit ip | grep ansible_distribution
+pre_tasks: is same as tasks in play book .but if you u keep as pre tasks it will execute first compared to other like below
+---
+- hosts: webserver
+  tasks:
+  - name: instal httpd
+    yum:
+      name: httpd
+      state: latest
+- hosts: appserver
+  pre_tasks: (it will run first)
+  - name: start service
+    service:
+      name: httpd
+      state: started
+We can have multiple playbook like above
+
+Tags:
+If we have multiple tasks in your play book and want to run some particular or few thing only we can handle this by using Tags
+
+Playbooks:
+
+---
+ - name: Restarting the server
+   hosts: client
+   become: true
+   tasks:
+   - name: install httpd
+     tags: install
+     yum:
+       name: httpd
+       state: latest
+   - name: Restarting the httpd  service
+     tags: httpd
+     service:
+       name: httpd
+       state: restarted
+   - name: Checking Service Status
+     tags: httpd, status
+     shell: service httpd status
+     register: serverstatus
+   - name: Show Service status
+     tags: debug
+     debug:
+       msg: "Service is Up and Running"
+     when: serverstatus.rc | int == 0
+This help us to see list of tags we mentioned in playbook
+ansible-playbook --list-tags tags.yaml
+This help us to run particular tags in play book0
+ansible-playbook --tags install tags.yaml - only run install tag section ansible playbook
+ansible-playbook --tags "install,httpd" tags.yaml  - only run install and httpd section alone in playbook
+In playbook under task if we mention below means , im gng to say what it describe
+mode: 0755 - provide permission
+owner: root - only root access person can acess or perform this task
+group: root - only root access person can acess or perform this task
+remote_src: yes - if we perform some downloading saying ansible to dont look in files location where all software will be there, because it wont be there so dont look there
+
+Roles:
+
+Organising the playbook
+Playbook:
+---
+ - name: Restarting the server
+   hosts: client
+   become: true
+   roles:
+      - clients
+For creating role need to create playbook like above
+Here we created role as client.so in ansible director ie /etc/ansible/roles need to create folder callient clients (same name we given in playbook above) inside that need to create tasks folder and inside that need create main.yaml file and in that file only need add all the tasks like below
+   - name: Restarting the httpd  service
+     service:
+       name: httpd
+       state: restarted
+   - name: Checking Service Status
+     shell: service httpd status
+     register: serverstatus
+   - name: Show Service status
+     debug:
+       msg: "Service is Up and Running"
+     when: serverstatus.rc | int == 0
+
+For more details on roles please refer below link
+https://www.learnlinux.tv/getting-started-with-ansible-14-roles/
+
+Creating variable:
+
+Create folder as host_vars in /etc/ansible and inside folder what ever host we have added(ip) need to create file name with same ip ie ip.yaml and add variable inside that like below
+10.118.240.252.yaml
+inside that add variable 
+name: httpd
+in playbook change like below
+   - name: Restarting the httpd  service
+     service:
+       name: "{{ name }}"
+       state: restarted
+   - name: Checking Service Status
+     shell: service httpd status
+     register: serverstatus
+   - name: Show Service status
+     debug:
+       msg: "Service is Up and Running"
+     when: serverstatus.rc | int == 0
+Handler : is used to call the playbook refer below wiki link
+https://www.learnlinux.tv/getting-started-with-ansible-15-host-variables/
+https://www.youtube.com/watch?v=shBlQQZLU9M&list=PLT98CRl2KxKEUHie1m24-wkyHpEsa4Y70&index=15

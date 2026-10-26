@@ -1,0 +1,63 @@
+Refer Docker in chatgpt for all doubts discussed for docker
+
+DockerFile of Backend Image we build:
+
+FROM node:20
+
+WORKDIR /qTestSupport-backend
+
+COPY package*.json .
+
+RUN npm install
+
+COPY . .
+
+RUN npm install -g pm2
+
+CMD ["pm2-runtime", "start","src/index.js", "--name", "qTest-backend"]
+
+
+Compose file:
+
+services:
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  backend:
+    image: qtest-backed:latest
+    environment:
+      PORT: 5001
+      DB_USERNAME: qtest
+      DB_PASSWORD: password
+      DB_PORT: 5432
+      DB_NAME: qtesttoken
+      DB_HOST: postgres
+      LDAP_URL: ldaps://ausdcamer.amer.dell.com:3269
+      LDAP_BASE_DN: dc=dell,dc=com
+      JWT_SECRET: supersecretjwtkey
+      QTEST_BASE_URL: https://qtest.gtie.dell.com
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: qtest
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: qtesttoken
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres-data:

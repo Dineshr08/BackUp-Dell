@@ -1,0 +1,17 @@
+React compiler:
+It will automatically optmize the components.We no need to do anything from our end. just follow below step to install react compiler
+https://github.com/SuperSimpleDev/react-course/blob/main/1-links.md
+
+Typescript:
+Setup Typescript with React:
+Follow same command on setting up the project using vite but just select typescript instead of javascript. extension.tsx
+Typescript is same as javascript but has additional feature, like we can mention what type of variable is . Eg below
+const message: string = 'hello';
+so when we type message. it will give all auto suggestion related to the varibale type string like toUpperCase etc. .length etc.
+If our project has any error, it wont allow us to build as well, it will throw error but javascript wont allow
+It also have feature called type inference, we no need to mention explictily like this const message: string = 'hello'; we can give like this const message = 'hello';, it will automatically detect its type and when we give . only it will give string releated suggestion
+
+Convert the existing project into typescript:
+Just create a project with javascript first, then when we complete just go through the video of how tp convert the existing project then convert to tsx one. 
+Below is also one way to fix the converted project
+! - Definetely exist and not null

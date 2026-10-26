@@ -1,0 +1,372 @@
+We have provided the access now. Please login to qTest(https://qtest.gtie.dell.com/) with your corp credential( use email address as username) so your account is created on the qTest instance. Once your login is created, Please contact project admin for project permission.
+
+Since we have not received any updates on this ticket, we are proceeding to close it. If access is still required, please submit a new ESM ticket.
+
+Could you please share the complete project URL so we can provide the required access? By default, all Dell users have access to SonarQube, but for project-specific access, we need the full project URL.
+
+Can you please provide the business justification for creating a new GitHub organization? This information is required as part of the process we follow before creating a new organization, and it will also need to go through the standard review and approval process.
+
+
+Please note that service accounts are not created by the qTest admin team. The product team will need to raise a request to have the service account created under the AMER domain. Once the service account has been provisioned, please submit a new ticket and we will proceed with onboarding it into the qTest project.
+Additionally, please be aware that direct login to qTest using a service account is not supported, as Okta does not allow service account-based logins. However, the service account can still be utilized to access qTest APIs via a Bearer Token, which remains the recommended approach for automated and integration use cases.
+
+Access Provided, Login with NT credentials for qTest
+
+Access Provided,Login with SSO Login option
+
+Access Provided, Login with Gtie credentials for qTest
+
+We have provided the access now. Please login to qTest with SSO Login Option(https://qtest.gtie.dell.com/) with your credential( use email address as username) so your account is created on the qTest instance. Once your login is created, Please contact project admin for project permission.
+
+Account Provided,Login with Service account credentials for qTest
+
+Account Reactivated,Login with NT credentials for qTest
+Incase if you dont remember your password, please reset the  password using https://dell.service-now.com/sp?id=passwordreset
+
+Account Reactivated,Login with SSO Login option
+
+Account Reactivated,Login with Gtie credentials for qTest
+
+We have reactivated your profile. Please login to qTest with SSO Login Option(https://qtest.gtie.dell.com/) with your credential( use email address as username).
+Account Reactivated,Login with Service account credentials for qTest
+
+People under Abilash and Sridhar's org recently had their permissions updated. To regain access, please reach out to Elangovan.G@dell.com
+ for further details and assistance.
+
+Your account is currently active in qTest, Please login to qTest with SSO Login Option(https://qtest.gtie.dell.com/) with your credential( use email address as username).
+
+Your account is currently active in qTest, Please login to qTest with SSO Login Option(https://qtest.gtie.dell.com/) with your credential( use email address as username).
+
+Your account is currently active in qTest and already have access to project, Please login to qTest with SSO Login Option(https://qtest.gtie.dell.com/) with your credential( use email address as username).
+
+Access provided for the project.
+
+Issue addressed and resolved via Microsoft Teams
+
+User already have access to qTest.  Please login to qTest(https://qtest.gtie.dell.com/) with your corp credential( use email address as username)
+
+User already have access to Project. Please login to qTest(https://qtest.gtie.dell.com/) with your corp credential( use email address as username)
+
+@Young, Chris , @Vanga, RajaKumar  Can you check this request and provide your approval
+
+
+@Chris Young , @Vanga, RajaKumar Can you check this request and provide your approval
+
+@Perusse, Christopher, @Chris Young, @Filion-Villeneuve, Louis, @Nagdi, Jujar Can you check this request and provide your approval
+
+Access cannot be provided to the project. Since CloudIQ project admin team was declined the access request
+
+Access cannot be provided to the project. Since DPS project admin team was declined the access request
+
+P@ssw0rd1
+I have reset the password and sent the password to the requested account through mail, he can reset and login to qTest now.
+
+Hi George, we are working internally and with Tricentis to fix the issue , you can see the updates here https://jira.cec.lab.emc.com/browse/TCMAAS-7456
+
+We have reactivated your account, dont reset password using forget password. Always login to qtest with NT credentials, which you used to login to laptop
+
+Your qTest account is currently active in qTest, but it might be locked on the Dell side. Please try unlocking your account using the link below. After that, wait for 5 to 10 minutes, then log in to qTest with the NT credentials you use for your laptop
+
+https://dell.service-now.com/sp?id=passwordreset
+
+You should not reset your password. You should always use your NT credentials to login to qtest. When you tried to reset your password, your account will be locked.Use below url and try unlock your account, then  wait for 5 mins then try login to qtest
+https://dell.service-now.com/sp?id=passwordreset
+
+Please check with Dell IT and get it registered, post that wait for 5 to 10 mins then try unlock your account using above URL then try login to qtest
+
+For Admin access to the project, please reach out to the project admin of the project. You can find the project admin list in below links. He/She can provide a project admin access.
+
+https://confluence.cec.lab.emc.com/display/TCM/qTest+project+list+with+admins
+
+For Delete operation, you need Admin access to the project, please reach out to the project admin of the project to get admin access. You can find the project admin list in below links. He/She can provide a project admin access.
+
+https://confluence.cec.lab.emc.com/display/TCM/qTest+project+list+with+admins
+
+Can you provide project name or id which you are looking on qTest. You can find the project name in below confluence page
+https://confluence.cec.lab.emc.com/display/TCM/qTest+project+list+with+admins
+
+Can you provide more information about the support which you are looking on qTest. Since You are already have access to qtest and CloudIQ project
+
+Currently we have a sync issue with Jira and qTest and we are working on qTest on this
+https://jira.cec.lab.emc.com/browse/TCMAAS-5268
+
+You can follow the manual workaround to resolve this
+Click on the TestRun hyperlink
+Then click on link defect icon
+Then come back to defect summary, you can see proper status
+
+
+Can you please submit the ticket to Dell IT to unlock your LDAP account
+
+
+I have checked you had submitted the ticket in wrong way.
+
+
+Value Added to the field Automation Owner
+
+
+In qTest, there is no Audit option at project level to record of user actions. We can check only the last updated/modified information at the module(folder) level
+
+qTest is down due to File system issue. The qTest support team and remoteOps team are troubleshooting. Will update you once issue is resolved
+qTest is down due to Round Rock Storage  issue. The qTest support team and remoteOps team are troubleshooting. Will update you once issue is resolved
+Issue got fixed. Application is up and running
+
+Service account password reset:
+
+https://confluence.cec.lab.emc.com/display/ISGDevOpsSec/FY-24+Corp+Service+Accounts+Password+Reconcile+Activity
+https://confluence.cec.lab.emc.com/display/ISGDevOpsSec/IEO+ALM+Service+Account+Handling
+
+Did not receive any updates, so closing the ticket
+
+
+Here is the process for opening a ticket.
+
+1.https://emcesm.service-now.com/ieo/
+2. Find and click "Application Services"
+3. Select "qTest-Techops" in "Select Application" field
+4. Select required action
+5. Select "Yes" in "Do you know the application url?" field (this way your ticket will be processed faster)
+6. Fill in you instance's URL into "Application URL" field
+7. Provide more details in "Request Details" field
+8. Do not link with your Jira item – in this case we won't see your request
+9. Click "Order Now" button
+
+
+I have reset your password, Please follow the below steps to login and change your password.
+1.	Login to the GTIE password management site https://password.gtie.dell.com using
+Username:  Catchy_Shiu99
+Password:  P@ssw0rd1
+2.	Click on the "Manage my Passwords" link at https://password.gtie.dell.com to change the default password
+3.	Click  on https://password.gtie.dell.com and enroll in "My Questions and Answers Profile"
+
+Note: If you attempt to access applications without changing your password, you will receive an invalid username or password message.
+
+
+I have reset your password, Please use the below credentials to login to qTest
+Username:  Catchy_Shiu99
+Password:  P@ssw0rd1
+
+Please clear your browser history and cache and try login to qTest with Email ID
+
+Scheduled outage period for service(s): qTest
+
+We have already purchased the license and it yet to be updated in the sever. We are currently in the process of updating it.
+
+0 (No effort)
+1 (Very small, trivial)
+2 (Small, straightforward)
+3 (Moderate effort, some complexity)
+5 (Larger, more complex, but still manageable)
+8 (Complex, might require more resources)
+13 (Very complex or uncertain)
+21 (Extremely complex, possibly to be broken into smaller tasks
+
+Service account you provided is in EMC account, so we can't add to qTest.Service account has to be in AMER domain for adding it to qTest
+
+The issue ID "IME01A-151" belongs to the "IM Bamboo" Jira project. However, this project has not been added under the Isilon integration settings for defect integration. Please add the project with the issue type set to "Defect", then click Save and Activate. Wait for 5 minutes before attempting to link the defect to the test run.
+
+The issue ID "IME01A-151" belongs to the "IM Bamboo" Jira project. However, this project has not been added under the Isilon integration settings for defect integration.
+
+I have added this Jira project, now you can bale to add this defect to test run.
+
+Going forward, if the same issue happen, please add the Jira project with the issue type set to "Defect", then click Save and Activate. Wait for 5 minutes before attempting to link the defect to the test run.
+
+
+In the qTest Jira Integration settings, under Requirement Integration, no projects have been added yet. Please contact the project administrator and request them to add the relevant Jira project along with the appropriate issue type under Requirement Integration. Once added, make sure to Save and Activate the configuration. After that, perform Retrieve Jira Data once to initiate the sync. Once this is done, all requirements will be automatically synced, and you will be able to link requirements to your test cases
+
+
+The issue you're encountering typically occurs when a Jira project included in the Integration settings (under Defect, Requirement, or Release Integration) has been archived.
+
+To resolve this, you need to remove the archived Jira project from the integration settings and then click Save and Activate.
+
+Please note the following impacts:
+
+If you remove an archived project from Defect Integration, any defects linked to test runs will lose their active link. This means that clicking the defect from within a test run will no longer open it in Jira—it will appear as read-only within qTest.
+
+A similar behavior applies to Requirement Integration. If a requirement from an archived project was imported into qTest, removing that project from the integration settings will convert the imported requirements into internal qTest requirements.
+
+Hover to user name at to right, then chose My profile
+
+On Timezone update your current time zone and try again
+
+
+
+We have provided the access now. After 3 hours, please login to https://eos2git.cec.lab.emc.com with your corp credential( use email address as username) so your account is created on the github instance. Once your login is created, Please contact repo admin for permission.
+
+If you have ssl certificate related issue when you perform git operation, please click on the link below to add CA Root certificate to the trusted store or git configuration.
+
+https://confluence.cec.lab.emc.com/display/LABOPS/How+to+Install+Dell+Tech+Certificate+for+GitHub+instance
+
+If you need any more support on this ticket please reach to me on teams or via email
+
+Email ID: dinesh.r1@dell.com
+
+UserName: Dinesh_r3
+
+User account is unsuspended, please login to https://eos2git.cec.lab.emc.com with your corp credential( use email address as username)
+
+We are currently performing the Okta migration for the qTest Stage environment. Please wait for our update — once the migration is complete, you can start using the application.
+
+Since we are not Organization owners, so we cannot provide access to the specified URL.
+Please send out an mail to the specified user to get the Organization access.
+@agutman - Gutman, Alex
+@bellro - Bell, Bob (ISG)
+@cyc - Jenkins Builds
+@gilbol1 - Yungerman, Lilach
+@jojodh - Jojode, Hanumesh
+@kingq - King, Qiao
+@korenh - Koren, Henrik
+@Manikanta-chinthapal - chinthapally, Manikanta
+@martic6 - Martino, Chris
+@Mythri-r - R, Mythri
+@owenk - Owen, Karl
+@penmaa - Penmatcha, Avinash
+@surest1 - Suresh, Tejas
+@svc-cyclonebuild - svc_cyclonebuild
+@svc-eos2github - svc_eos2github
+@svc-npdrp - svc_npdrp
+@svc-npdrpcicd - svc_npdrpcicd
+@svc-npdrppstore - svc_npdrppstore
+@svc-npgithubauto
+@svc-npnexus
+@svc-npprddevlabauto - svc_npprddevlabauto
+@svc-prddrpcicd - svc_prddrpcicd
+@svc-prdgittridbld - svc_prdgittridbld
+@svc-prdkaasghactions - svc_prdkaasghactions
+@svc-prdpstoregitbld
+@venkam4 - Venkatesh, Mohan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+We have provided the user with access on GitHub. However, due to a synchronization issue, the user has not yet been onboarded with Okta. A ticket has been raised with the Okta team, and we will update you once the issue is resolved. Please find the ticket details below for your reference.
+
+https://jira.cec.lab.emc.com/browse/AIM01D-4744
+
+Access provided at OKTA side , can you please check now
+
+You will not be able to access the service account through the GitHub UI because the service account does not have an associated email ID. Without an email ID, Okta will not allow access to the service account.
+
+Instead, you must use the service account's username and token via Git Bash. The service account cannot be logged into through the UI.
+
+New GitHub organization was created, please find below url for the same
+https://eos2git.cec.lab.emc.com/Competitive-Engineering
+
+
+Okta
+New Account
+-------------------
+-> create a new user in ODM
+-> add user to the qtest-access group
+-> create a ticket with OKTA Team to create a new user profile in OKTA and assign the qtest-prod application assignment
+-> update the user to activate the profile
+-> User will be automatically created in the application on initial login.
+-> Once user login is done. Admin team can assign the user with group / projects/ project admin can do that
+=-----------------------------=
+Existing Account
+
+-> Validate in GTIE AD
+-> check if the user exists in the qtest-access group in GTIE
+-> check the user access in the okta-preview(qtest-stage) / okta-prod (qtest)
+-> if doesnt then add him using the jenkins
+-> work with okta team to assign the application
+---------------------------------
+Application Level Issues
+-> If the user account is locked Admin team has to unlock
+-> Project access admin team / project admin need to handle
+-> Service account admin team need to manage.
+---------------------------------
+
+Corp --
+
+User will be deactivated automatically the next day they leave
+Okta will deactivate the user in the next sync.
+Ping the OKTA Team and they will reactivate the user. No password changes / anything needed. Just reactivation is enough
+
+ODM --
+reactivate the GTIE account
+ping the okta team to reactivate the user in OTKA
+User needs to setup the okta verify and profile again
+Okta team needs to assign the application again.
+User can login.
+
+
+-------------Corrections(Important)---------------
+Gather the user details with the existing vs the updated.
+Raise a ticket to app infra to update the details in GTIE AD
+Raise a ticket to OKTA Team to update the user details.
+Update the user details in the qTest Application.
+Then user should login. Else new account will be created if missed at qtest level.
+
+If the user is active in OKTA EE prod lookup, so no need to do the setup, which means he is already part of other tools like jira and confluence so already MFA is setup, So they have to login to qTest with SSO login option so their account will be created. Generally if they are part of Jira and Confluence and last login is recently then which means they have MFA setup. Just login with sso , their account will be created.
+
+If status is provisioned, deactivated or unassigned to the application, then need to reachout to okta team with email id, they will trigger activation email, user need to do MFA setup, then they can login to qTest.
+
+
+
+For below users, account reactivated, please login to qTest with SSO login option with email id and do not use native login option which will deactivate your account on qTest.
+
+Ben_Liu99 (Ben_BY_Liu@wistron.com)
+Len_Lee99 (Len_Lee@wistron.com)
+Jason_Liao99 (Jason_JM_Liao@wistron.com)
+scott_lin98 (Scott_CY_Lin@wistron.com)
+
+
+
+For below email id, okta activation email was sent, please follow the steps and complete the setup and post that login to qTest using SSO login option
+
+Sherry_Gu98 (Sherry_Gu@wistron.com)
+
+We do not support https://github.com login issues. It is an external github instance.  please confirm the URL
+we don't support , please check with your manager or peers for the correct support team.
+
+A request has been submitted to the Okta team. Please check your inbox for an email regarding Okta activation from the sender "Okta Team". Click the "Activate Okta Account" link provided in the email and follow the on-screen instructions to complete your profile setup.
+
+Please ensure your account is activated within 7 days from the date you receive the email. If the activation window expires, you will need to raise an ESM ticket to request a new activation link.
+
+Once your account is activated, please log in to qTest after 24 hours to access your assigned project.
+
+If you continue to face issues, kindly submit a ticket with a screenshot of the error message. The support team will assist you shortly.
+
+Users are marked as dormant if they have existed for more than 30 days, have not used any personal access tokens or SSH keys in the last 30 days, have not performed any activity in the last 30 days, and are not site admins. Activity includes commenting on issues or pull requests, creating issues, pull requests, or repositories, making commits to any repository, or owning repositories that have received recent pushes. Dormant users may be suspended from GitHub.
+
+PRod Token EOS2:
+[REMOVED_FOR_SECURITY]
+
+Test Token:
+[REMOVED_FOR_SECURITY]
+
+svc-nptechopscollab
+[REMOVED_FOR_SECURITY]
+
+Prod CSG
+[REMOVED_FOR_SECURITY]
+
+curl -X POST -H "Accept: application/vnd.github+json" -H "Authorization: token [REMOVED_FOR_SECURITY]" -H "X-GitHub-Api-Version: 2022-11-28" https://eos2git.cec.lab.emc.com/api/v3/admin/users -d '{"login":"Graham_Chen","email":"Graham.Chen@Dell.com"}'
+
+The user is not onboarded to Okta at this time. Kindly onboard the user to Okta and then submit a support request to the GitHub team
+
+
+curl -L \
+  -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer [REMOVED_FOR_SECURITY]" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+https://eos2git.cec.lab.emc.com/api/v3/admin/users \
+  -d '{"login":"svc_npvemnobuild"}'
+

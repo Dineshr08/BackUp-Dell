@@ -1,0 +1,8 @@
+---
+ - name: cmdpmt scalar
+   hosts: all
+   tasks:
+   - name: taking scalar inputs frm command line
+     debug:
+       msg:
+         - "The value of x: {{x}}"

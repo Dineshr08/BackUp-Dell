@@ -1,0 +1,211 @@
+Concurrent users = How many people are actively using the application during the time range, if 10 users active between 9 to 9:05 then 10 Concurrent users.
+Simeltaneous users - How many users are try login at the same time ie 9 am exactly if 10 clicked then 10 simaltenous users.
+Sessions = How many login states the application is maintaining. - Like 10 users logged in and have session created so 10 session, if one logged out then 9 session.
+Connections = How many network conversations are happening right now. - If 10 users logged in then 10 tcp connection created after sometime if 8 were reading report and only 2 activly clcking something so network call established and tcp connection open , so 2 active connection.
+
+| Situation                                            | Concurrent Users | Sessions |         Connections |
+| ---------------------------------------------------- | ---------------: | -------: | ------------------: |
+| 10 users all logged in and actively requesting pages |               10 |       10 | Around 10 (or more) |
+| 10 users logged in but reading reports               |               10 |       10 |                 0–2 |
+| 10 users, 2 sessions expired and being recreated     |               10 |        8 |                 1–2 |
+| 1 user loading a complex dashboard                   |                1 |        1 |                5–10 |
+
+
+
+Connections
+Connection rate 
+sessions
+one connection - session rate
+buffer
+http versions
+Backend Connections
+Egress and Ingress
+Idle CPU
+Socket
+SSL connection
+Workers and Run queue
+
+ps -ef | grep "java"
+pid
+ppid and path
+
+ss -s
+Socket statistic -s summary
+
+ss -tanp
+
+State                Recv-Q            Send-Q                        Local Address:Port                          Peer Address:Port            Process
+LISTEN               0                 4096                              127.0.0.1:12345                              0.0.0.0:*
+LISTEN               0                 10                                  0.0.0.0:9080                               0.0.0.0:*
+LISTEN               0                 4000                                0.0.0.0:9000                               0.0.0.0:*
+LISTEN               0                 4096                                0.0.0.0:10050                              0.0.0.0:*
+LISTEN               0                 4000                                0.0.0.0:443                                0.0.0.0:*
+LISTEN               0                 4096                                0.0.0.0:111                                0.0.0.0:*
+LISTEN               0                 4000                                0.0.0.0:80                                 0.0.0.0:*
+LISTEN               0                 128                                 0.0.0.0:22                                 0.0.0.0:*
+LISTEN               0                 128                               127.0.0.1:6010                               0.0.0.0:*
+LISTEN               0                 4096                          127.0.0.53%lo:53                                 0.0.0.0:*
+ESTAB                0                 0                            10.227.180.211:54880                         10.143.24.70:443
+TIME-WAIT            0                 0                            10.227.180.211:443                            10.94.9.173:59834
+FIN-WAIT-2           0                 0                            10.227.180.211:443                           10.17.15.143:50424
+
+LISTEN               0                 1                                         *:31400                                    *:*
+LISTEN               0                 4096                                   [::]:111                                   [::]:*
+LISTEN               0                 128                                    [::]:22                                    [::]:*
+LISTEN               0                 4096                                      *:4421                                     *:*
+LISTEN               0                 128                                   [::1]:6010                                  [::]:*
+LISTEN               0                 128                                       *:8081                                     *:*
+LAST-ACK
+FIN-WAIT
+CLOSED
+
+Client: "Can we talk?"       → SYN
+
+Server: "Yes, I heard you."  → SYN-ACK
+
+Client: "Great."             → ACK
+
+         CONNECTION OPEN
+
+Client: "I'm done talking."       → FIN
+
+Server: "Okay, I heard you."      → ACK
+
+Client: "I'll wait."              → FIN-WAIT-2
+
+Server: "I'm done too."           → FIN
+
+Client: "Okay."                  → ACK
+
+         CONNECTION CLOSED
+
+
+top
+load average
+buffer/cache
+Swap
+available Memory
+RES 
+Virtual mem 
+Shared mem
+Process Cpu
+Time+
+Swap
+vmstat
+si, so
+swap used
+when swap used
+swapping -> latency -> slow
+pages in ram
+
+nproc
+kill -STOP <pid>
+top -p 4143948
+ps -fp pid
+
+vmstat 1
+vmstat 1 5
+
+free -h
+
+| Column | Simple meaning                 | Performance concern                    |
+| ------ | ------------------------------ | -------------------------------------- |
+| `r`    | Tasks waiting/runnable for CPU | High → CPU contention                  |
+| `b`    | Tasks blocked                  | High → possible I/O/resource problem   |
+| `si`   | Swap → RAM                     | High → memory pressure                 |
+| `so`   | RAM → Swap                     | High → memory pressure                 |
+| `bi`   | Data read from storage         | High → investigate I/O                 |
+| `bo`   | Data written to storage        | High → investigate I/O                 |
+| `cs`   | Context switches               | Very high + CPU pressure → investigate |
+| `us`   | User/application CPU           | High → application CPU usage           |
+| `sy`   | Kernel CPU                     | High → kernel/network/system work      |
+| `wa`   | I/O wait                       | High → investigate storage/I/O         |
+
+iostat -xz 1
+
+%util > 80% = problem
+%util
++
+await
++
+queue depth
++
+application response time
+
+| iostat metric     | What it tells you      | Importance |
+| ----------------- | ---------------------- | ---------- |
+| `r/s`             | Read IOPS              | ⭐⭐⭐        |
+| `w/s`             | Write IOPS             | ⭐⭐⭐        |
+| `rMB/s` / `rkB/s` | Read throughput        | ⭐⭐⭐        |
+| `wMB/s` / `wkB/s` | Write throughput       | ⭐⭐⭐        |
+| `await`           | Overall I/O latency    | ⭐⭐⭐⭐⭐      |
+| `r_await`         | Read latency           | ⭐⭐⭐⭐       |
+| `w_await`         | Write latency          | ⭐⭐⭐⭐       |
+| `aqu-sz`          | Outstanding/queued I/O | ⭐⭐⭐⭐⭐      |
+| `%util`           | Device busy time       | ⭐⭐⭐⭐⭐      |
+| `avgrq-sz`        | Average request size   | ⭐⭐         |
+| `rrqm/s`          | Read request merges    | ⭐          |
+| `wrqm/s`          | Write request merges   | ⭐          |
+
+
+Application
+    ↓
+File
+    ↓
+Filesystem
+    ↓
+Logical Volume (sometimes)
+    ↓
+Device Mapper (sometimes)
+    ↓
+Block Device
+    ↓
+Disk / Storage
+
+
+/dev/sda
+/dev/sdb
+/dev/sdc 
+
+dm-o, dm-1 device mapper
+lvm
+block devices
+disk
+partitions
+Filesystem
+
+dont count dm-0 and sda 
+
+
+
+Monitor during load test 
+CPU utilization
+Load average
+HAProxy process CPU
+Memory
+Network throughput
+HAProxy connections
+HAProxy queues
+Backend connections
+Response time
+HTTP errors
+TCP states
+
+buffer
+backpressure
+wmem_max
+net.ipv4.tcp_wmem = 4096 65536 16777216
+net.ipv4.tcp_rmem = 4096 87380 16777216
+
+Congestion control
+Protects the network.
+
+Question:
+
+"Is the network itself becoming congested?"
+
+Example:
+
+TCP:
+"I don't know how much traffic the network can safely handle,
+so I'll increase my sending rate gradually."

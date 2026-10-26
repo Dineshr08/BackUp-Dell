@@ -1,0 +1,10 @@
+---
+- hosts: all:!skip
+  gather_facts: yes
+  roles:
+    - role: java
+    
+# By default, this would install openjdk8. If you to install other packages, include (ex: java_packages: java-11-openjdk)
+
+
+    

@@ -1,0 +1,6 @@
+---
+ - name: Restarting the server
+   hosts: client
+   become: true
+   roles:
+      - clients

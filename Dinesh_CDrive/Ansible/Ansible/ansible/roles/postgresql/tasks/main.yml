@@ -1,0 +1,61 @@
+# file: postgresql/tasks/main.yml
+
+- include: test.yml
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/{{ ansible_os_family }}.yml"
+  tags: [always]
+
+# Override defaults/main.yml with PostgreSQL version specific values
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/postgresql_11.yml"
+  tags: [always]
+
+- include_vars: "{{ item }}"
+  with_first_found:
+    - "../vars/main.yml"
+  tags: [always]
+
+- import_tasks: install_apt.yml
+  when: ansible_pkg_mgr == "apt"
+  tags: [postgresql, postgresql-install]
+
+- import_tasks: install_yum.yml
+  when: ansible_pkg_mgr == "yum" and ( ansible_distribution == "RedHat" or ansible_distribution == "CentOS" or ansible_distribution == "OracleLinux")
+  tags: [postgresql, postgresql-install]
+
+- import_tasks: install_dnf.yml
+  when: ansible_pkg_mgr == "dnf" and ansible_distribution == "Fedora"
+  tags: [postgresql, postgresql-install]
+
+- import_tasks: configure.yml
+  tags: [postgresql, postgresql-configure]
+
+- import_tasks: users.yml
+  tags: [postgresql, postgresql-users]
+
+- import_tasks: databases.yml
+  tags: [postgresql, postgresql-databases]
+
+- import_tasks: schemas.yml
+  tags: [postgresql, postgresql-schemas]
+
+- import_tasks: users_privileges.yml
+  tags: [postgresql, postgresql-users]
+
+#postgresql version
+- name: Check postgresql version
+  yum:
+    list: postgresql
+  register: installed_postgresql_version
+- set_fact:
+    POSTGRESQL_VERSION: "{{installed_postgresql_version|json_query(jsonquery)}}"
+  vars:
+     jsonquery: "results[?yumstate=='installed'].version"
+
+- name: Installed postgresql version
+  debug:
+    msg: "Installed postgresql version = {{ POSTGRESQL_VERSION }}"
+
+- include: firewalltest.yml

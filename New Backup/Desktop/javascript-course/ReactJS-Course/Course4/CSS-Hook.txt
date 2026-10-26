@@ -1,0 +1,125 @@
+To style the element we need to create a css under the head like we learn in javascript. But on html element if we want to use the css class need to use property called className instead of class, in js we use class but in react we need to use className.
+
+Flexbox: To create a flexible layout. Eg when we minimize or maximise or shorten the website or increase the size of the website the element also shrink and extend in order to do that we need to use flexbox. In our example the Chat input component is horizontal layout so we are creating flexible for that.
+Layout: How the elements are positioned on the website. In our chat input and send button, its horizontal layout as the both elements are present beside eachother
+To create a flexible layout need to follow 3 steps
+1. Need to surround the element inside the container which is <div></div>, as of now our example its in fragment so need to use div
+2.Need to apply css for that container, because we cant style css for fragment that why we moved to div. For that container need to apply style with property called display: flex;
+3. Then on the component style we need to mention it should use the available spaces ie flex-grow: 1;, ie if the input box and send button is small and we have lot of space by mentioning this property we can it will use the space based on the size of the window.
+
+justify-content: 
+Its an property of css class
+justify-content: end;
+Another feature of flexbox, it will control how the elements are to displayed horizontically. like to display at which corner, if its complete right then need to specify end if it needs to on complete left then need to use start
+
+In below container for {message} need to style, as if we need to apply style it should be an element , but message is not element , so moving {message} into container
+
+          <div>
+            {sender === 'robot' && (
+              <img src="robot.png" width="50" />
+            )}
+            {message}
+            {sender === 'user' && (
+              <img src="user.png" width="50" />
+            )}
+          </div>
+
+After:
+          <div>
+            {sender === 'robot' && (
+              <img src="robot.png" width="50" />
+            )}
+            <div className="chat-message-text">
+              {message}
+            </div>
+            {sender === 'user' && (
+              <img src="user.png" width="50" />
+            )}
+          </div>
+
+When block element like <div> usually take the emtire line , but if it was inside the flex box, it only take up the space that needed. Eg on above code the main div we have applyed flexbox ie <div>
+            {sender === 'robot' && ( line this div so our message div is inside the flexbox so it only take the required space.
+
+align-item: start, by default it will streatch, so instead of streatch it will alogn top, so we used it.
+max-width: 300px; to give maximum width of the text box
+
+Instead of give width like this <img src="robot.png" width="50" /> need to use css style like below
+<img src="user.png" width="50" className="chat-message-profile"/>
+.chat-message-profile {
+  width: 50px;
+}
+
+Im our code <App> compoemet we have all other components. So what order we keep the same order it wull display the data in website. If we keep the ChatInput component below the ChatMessages component, then it will come  down
+flex-grow: make a element grow and take up the remaining spaces
+height:100vh - it will set up the container the browser height, eg it will setup our app container to same size of browser. But the problem is the browser will have additional 8px top and bottom , so inorder to remove that we use below , it will just remove that additional spacing
+body {
+        font-family: Arial;
+        margin-top: 0px;
+        margin-bottom: 0px;
+      }
+
+Dy default display: flex; wil streacth horizontally, inorder to make to vertical flex need to use flex-direction:column; here column refers to vertically, row means horizontally
+
+overflow: scroll; To scroll, to up and down if we have more data in chat bot.
+To remove the scroll bar on right side of window
+scrollbar-width: none;
+
+Hooks:
+To autoscrlling of the website we use hooks
+Hooks helps us to insert react feature into components. Earlier we have used hook.React.useState() which is hook , here state is the react feature and used that in our component.
+useState()
+useEffect()
+useRef()
+All are hook , hook start with use.
+
+useEffect()
+useEffect hook will run some code after the component is created or updated.
+Put hook at top of the compoent and it will take function and dependency arry as input. Dont put hook inside the if condition or inside the function.
+React.useEffect(() => {
+  console.log('hello');
+            },[]);
+As we have given [] empty array, so when the componet is created it will run once, but if we give like this 
+React.useEffect(() => {
+  console.log('hello');
+            },[chatMessages]); - For every time the data gets updated , it will run the hook. So we can controol the useEffect hook to run how many times and when.
+useRef();
+Automatically save the html element from the component
+ref is the container with special react feature.
+We should use this above the useEffect hook, By default this will store the null value and can save it variable
+const chatMessagesRef = React.useRef(null);.
+Then on the html element ie inside the compinent return wherw we can give like below
+<div className="chat-messages-container" ref={chatMessagesRef}>
+On div container we have added the prop called ref={chatMessagesRef} which is refering the above ref, so what will happend is when the component is created , it the html element will automatically stored inside the chatMessagesRef, then that we can use indie the useEffect hook to scrol automatically. because toi scroll automatically we need an html element, to capture that html element we use the useRef.So once the component is created we capture the html element, then taht element we can pass to useEffect, beacuse the use effect will run once the component is created, as the componet is created it will store the html of the component in the ref variable which we can use in useeffect.
+Eg below:
+ function ChatMessages({ chatMessages }) {
+        const chatMessagesRef = React.useRef(null);
+
+        React.useEffect(() => {
+          const containerElem = chatMessagesRef.current;
+          if (containerElem) {
+            containerElem.scrollTop = containerElem.scrollHeight;
+          }
+        }, [chatMessages]);
+
+        return (
+          <div className="chat-messages-container" ref={chatMessagesRef}>
+            {chatMessages.map((chatMessage) => {
+              return (
+                <ChatMessage
+                  message={chatMessage.message}
+                  sender={chatMessage.sender}
+                  key={chatMessage.id}
+                />
+              );
+            })}
+          </div>
+        );
+      }
+
+Created ref and store it valiable and pased the same to container, then once the container is created running the useeffect 
+const containerElem = chatMessagesRef.current; which will have html element, then below code 
+if (containerElem) {
+            containerElem.scrollTop = containerElem.scrollHeight;
+          } if element is present then scroll. it is used to scroll the data. What will happen is setting the how much we need to scroll top=howmuch the scroll height we have.
+
+Instead of fragment, use div container , because for the styling need to use div , as we cannot apply style to frgment ie can use className to frgment

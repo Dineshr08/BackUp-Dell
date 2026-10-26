@@ -1,0 +1,70 @@
+
+let num  = [2, -3, 5];
+
+const minMaxNum = {
+  min : 0,
+  max : 0
+}
+
+minMax(num);
+
+function minMax(num) {
+
+  let i = 0;
+  let max = num[0];
+  let min = num[0];
+
+
+  while (i < num.length) {
+    
+    if( num[i] >= max ) {
+      max = num[i];
+    }
+
+    if (num[i] <= min) {
+      min = num[i];
+    }
+    i = i+1;
+
+  }
+  console.log(max);
+  console.log(min);
+  minMaxNum.min = min;
+  minMaxNum.max = max;
+  console.log(minMaxNum);
+}
+
+let nums = [];
+// minMax1(nums);
+console.log(minMax([]));
+console.log(minMax([3]));
+function minMax1() {
+  // We'll set the starting values of min and max
+        // to null this time.
+        const result = {
+          min: null,
+          max: null
+        };
+
+        for (let i = 0; i < nums.length; i++) {
+          const value = nums[i];
+
+          // If the min is null OR the value is
+          // less than the min, update the min.
+          if (result.min === null || value < result.min) {
+            result.min = value;
+          }
+
+          // If the max is null OR the value is
+          // greater than the max, update the max.
+          if (result.max === null || value > result.max) {
+            result.max = value;
+          }
+
+          // We have to use 2 if-statements above instead of
+          // an if-else statement. This makes sure both the
+          // min and max are set if they are null.
+        }
+
+
+}

@@ -1,0 +1,8 @@
+---
+ - name: cmdpmt sequence
+   hosts: all
+   tasks:
+   - name: taking sequence val inputs frm command line
+     debug:
+       msg:
+         - "The value of x: {{x}}"

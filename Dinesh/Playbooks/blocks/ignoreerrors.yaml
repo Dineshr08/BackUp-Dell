@@ -1,0 +1,17 @@
+---
+ - name: ignore errors
+   hosts: all
+   tasks:
+   - name: open the folder1
+     command: "ls /root/testing"
+     register: op1
+     ignore_errors: true
+   - name: open folder2
+     command: "ls /root/test"
+     register: op2
+     ignore_errors: true
+   - name: open folder2
+     command: "ls /root/script"
+     register: op3
+     ignore_errors: true
+   

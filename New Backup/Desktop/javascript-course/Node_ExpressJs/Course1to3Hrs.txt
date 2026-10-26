@@ -1,0 +1,189 @@
+Introduction:
+Javascript usually made to keep the ui interactive.It only run in browser.Not on computer.Why only in browser is due to it has V8 engine, it will convert js to byte code and run in broser. To run in computer we need to convert to binary ie 1 and 0 and we cannot conver js to binary.Inorder to run js in computer node js came.Earlier before c was invented we have low level language assembler ie on top of computer we have assembley and that has assemnler  and that only perform very small operation to over come that we have c , c will sit at top of assembly and c has gcc compiler what it will do it will convert to binary and pass to assembly taht will run on computer.
+V8 - it a engine convert js to byte code and run in browser and all browser is made up of v8 engine ie chrome.
+node js - Node js is built with v8 and other functionality with c++ and js so it can convert js into binary and run in computer . It has advantage, it can have file operation , act as server.easy for developer they no need to use differnt tech both front and back end can use same technology.
+global object - in js how we have window as object simalarly we have global as object in node js but no need to use like all object because in js we dont use like window.document. like that same way we no need to use global.setTimeOut etc
+__dirname - It will help us in fetch the current directory console.log(__dirname);
+__filename - It will help us in fetch the current file path console.log(__filename);
+
+Module - To get the data from one file to other file, need to use require keyword. require will run the complete file which we call inside the require ie require('./data'); run the complete data.js file
+From data file to export only names and ages we can give like below, if we need to call only one can do like below. Also it return as an object
+module.exports = {
+  names, ages
+}
+module.exports = names;
+Eg:
+const {names, ages} = require('./data');//run the complete file and only export what in export and it it return obejct. Here we used destructuring concept as well. we get the names and ages and again stored in names and ages variable ie instead of const names  = obj.name
+Below is default module ie os
+const os = require('os') - default module in node js
+console.log(os.homedir()); - get the home dir
+
+filesystem
+const fs = require('fs'); - default module of fs , we are importing it
+fs.existsSync('./doc'); - sync call - check if the folder or file is exist
+fs.mkdir('./doc', (err)=>{
+  if(err){
+    console.log('folder not created');
+  }
+  
+}) - create folder , it take 2 fn path where folder to create and call back fn and it is async call
+
+fs.writeFile('./doc/file.txt','hi hi hi',(err) =>{
+  if(err) {
+    console.log('Unable to write to file');
+  } else {
+    console.log('data wriiten to file)
+  }
+}) = Its async fn and take 3 arguments, path, data to write and callback fn
+
+fs.readFile('./doc/file.txt', (err,data)=>{
+  if(err) {
+    console.log(err.message);
+  } else {
+    console.log(data.toString());
+  }
+}); - take 2 arg, file to read and callback fn
+
+fs.unlink('./doc/file.txt', (err)=>{
+  if(err){
+    console.log(err.message);
+  } else {
+    console.log('File deleted);
+  }
+}) - to remove the file, take 2 arg, file path and call back fn
+
+fs.rmdir('./doc', (err)=>{
+  if(err){
+    console.log(err.message);
+  } else {
+    console.log('Folder deleted);
+  }
+}); - to rmove dir, take 2 arg, dir to remove and call back fn
+
+Streams and buffer 
+If we have big file and unable to perform using above file system so stream and buffer, so it will cut the big file into chunk(buffer) and using that we can read and write. Eg in youtube if we want to load the 100gb file it wont dounload fully instead it will make a buffer and download an small portion and load then rest small chunk will load like that until end
+
+const fs = require('fs'); - import same file system module
+const readStream = fs.createReadStream('./doc/file.txt', {encoding: uft-8}) - to read the large file, take 2 arg file path and encoding so we no need togive toString to convert from buffer to text 
+const writeSrteam = fs.createWriteStream('./doc/newfile.txt) - to write the data to file
+readStream.on('data', (buffer)=>{
+  console.log(buffer);
+  writeSrteam.write(buffer); - to write data to file
+}) - here on is event listner and  telling to read data from file and has callback. so using call back we are getting data and and using writestream writing back to file
+
+If we are reading and directly writing back instead of doing able we can do like below using pipe, it will read and pipe to write
+readStream.pipe(writeSrteam); - Alternate to above
+
+Client & Server
+Client is user who access the application with laptop or mobile
+Server -  is application where it hosted
+http - When we send the request from client to server via internet it will send via http call
+request and response - if we send call its req, if we receive any data fromn server its response
+ip address - In internet we have lot of server , so when we access something from client ui how it know which server it should make a call, so ip come, each server will have unique ip
+domain - To remember ip will be difficult so each ip we will give name ir domain name
+DNS & Lookup - DNS means the provider will have table where he will add everything like from internet if we get call with this domain name then it should send a call to this ip taht mapping will be done in dns , the dns table will have hunderd of domain and its ip mappend , so based on ui call it it send req to corrosponsing server so it called lookup
+localhost - self ip, referring the local computer ip
+port - in one server many applicatrion will have, so differentiaate each application call we have port, so respective app will take the call and respond back
+
+Create Server:
+To create server need to import module called http
+const http = require('http');
+Then need to create a server, but we just created server , to make this server to listent to call that user is sending 
+const server = http.createServer((req, res)=>{
+  console.log('req sent');
+});
+To listen to server
+server.listen(3000,'localhost,()=>{
+  console.log('Server is listening);
+});
+So what is happening importing http, then creating server but wont listen to user request and it will have call back, where it has 2 param , req and res then we are making server to lsiten, it will listen via 3000 port with local host and has call back as well, so when we run the server by running node filename.js we will get Server is listening becuase it will create server and start listening, but when the user hit via localhost:3000, the server will send req sent becuase it will listen and return the call back fn.
+Whenever the request is coming the createserver call back will execute
+
+Request and response:
+Here once the server is start listening , it will get all the req we meade through the browser with localhostand port when req made it will run the ananymous fn, so here req is objeect it will list of attribute it has , then req.url will give path ie post port ie localhost:3000/hello, it will /hello and req.method, will will what type of req ie get post etc, once req is made we need to get the response, so before getting res we need to tell brower the infor about the res ie like what type of res that we will give in setHeader, here we are going to tell text/plain ie plain text like we can mention json or text/html etc ie res.setHeader('Content-Type', 'text/plain');, then we are sending the respone back that can be written like res.write('Hello Everyone'); we can have multiple write like below and once the response is written we need to end it res.end() so only it will display in browser.
+const http = require('http');
+const server = http.createServer((re1, res)=>{
+  console.log('Req sent');
+  console.log(req);
+  console.log(req.url);
+  console.log(req.method)';
+
+//response
+  res.setHeader('Content-Type', 'text/plain');
+  res.write('Hello Everyone');
+  res.write('Hi All);
+  res.end();
+});
+
+server.listen(3000, 'localhost', ()=>{
+  console.log('Server is listening')
+});
+
+eg for html response
+
+const http = require('http');
+const server = http.createServer((re1, res)=>{
+  console.log('Req sent');
+  console.log(req);
+  console.log(req.url);
+  console.log(req.method)';
+
+//response
+  res.setHeader('Content-Type', 'text/html');
+  res.write('<h1>hello</h1>');
+  res.write('<h2>hai</h2>');
+  res.end();
+});
+
+server.listen(3000, 'localhost', ()=>{
+  console.log('Server is listening')
+});
+
+HTML Page Manual redirection and Response Code - No need to learn
+What we are doing here is based on the path we guve in browser we are manually redirecting the pages, all the pages we keep inside the pages folder then using fs operation we are doing the manual redirection. So firest we are check the path if /about then on path appending the full about.html path then using fs reading  the file content then then writing the response, in fs callback we have added data that will have content of .html file . if we want to the permenant redirection we need to handle using  res.setHeader("Location", "/"); if any user hit /home then thet need to redirect to /, so before that we need to mention res.statusCode = 301; as its redirecting and lso need to mention res.end();because after redirection we need to end the response then for / new req will gen and that will show the response in browser.on else part also if some dirrerent path given for that also we need to metion res.statusCode = 404. All this manual redirect can easily done using express js with route concept.
+console.log(__filename);
+const http = require("http");
+const server = http.createServer((req, res) => {
+  let path = './pages';
+  console.log(req.url);
+  if (req.url === "/") {
+    path += "index.html";
+  } else if (req.url === "/home") {
+    res.statusCode = 301;
+    res.setHeader("Location", "/");
+    res.end();
+  } else if (req.url === "/about") {
+    path += "about.html";
+  } else if (req.url == "/contact") {
+    path += "contact.html";
+  } else {
+    path += "notFound.html";
+    res.statusCode = 404;
+  }
+
+  const fs = require("fs");
+  if (fs.existsSync(path)) {
+    fs.readFile(path, (error, data) => {
+      if (error) {
+        console.log(error.message);
+      } else {
+        res.write(data);
+        res.end();
+      }
+    });
+  }
+});
+
+server.listen(3000, "localhost", () => {
+  console.log("Server is listening...");
+});
+
+NPM
+Node package manager - it used to intall external modules into project . -g refer to global installaton ie install to the system and --save-dev or -save refer to local installation ie local to project.
+package.json - will have project package ie module related details and project info, this project info will be given while creating the package.json. To create package.json just give npm init.
+While installing the package we can give npm install -g nodemon or npm i -g nodemon both i and install refers the same.
+nodemon  - external module used to auto reflect the change in browser. To use nodemon just run file with nodemon instead of node filename.js ie nodemon filename.js
+When we exporting the files to github no need to export node-module all the project dependies module will be saved inside that folder, just ignore that folder and share the rest files, when we install project by other people or user they can use the package.json and install all the dependencies with that file, becuse in package.jon, the dependencies place will have all the modules releated info when u do npm install it will install all the packages in new project
+To find all the npm packages go to npmjs.com
+Only packages locally installed to project available in package.json like lodash package, all fs, http module are node packages so no need to install just use using require
+All the packages which are in dependencies section are the packages which are used in the project

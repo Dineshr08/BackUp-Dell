@@ -1,0 +1,12 @@
+---
+ - name: using variables vars command
+   hosts: all
+   vars:
+    x: 5
+    name: "Dinesh"
+   tasks: 
+   - name: printing user defined variables using debug module and msg arg
+     debug:
+      msg: 
+       - "The value of x is: {{x}}"
+       - "The Name is : {{name}}"

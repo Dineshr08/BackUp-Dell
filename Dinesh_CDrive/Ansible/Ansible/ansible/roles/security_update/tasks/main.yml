@@ -1,0 +1,123 @@
+---
+# tasks file for security_update
+
+- name: Check files
+  stat:
+    path: "{{item}}"
+  register: check_file
+  with_items:
+    - /etc/yum.repos.d/pgdg94
+    - /etc/yum.repos.d/yum.postgresql.org.repo
+
+- name: Report files
+  debug:
+    msg: "The file exists"
+  when: check_file.results[0].stat.exists and check_file.results[1].stat.exists
+
+- name: Disable files
+  shell: |
+    yum-config-manager --disable yum.postgresql.org
+    yum-config-manager --disable pgdg94
+    yum-config-manager --disable beats
+  when: check_file.results[0].stat.exists and check_file.results[1].stat.exists
+  register: disable_check
+
+
+- name: Report files
+  debug:
+    msg: "The file not exists"
+  when: not check_file.results[0].stat.exists and not check_file.results[1].stat.exists
+
+- name: run command
+  command: yum clean all
+
+- name: run command
+  command: yum makecache fast
+
+- name: "Check if nginx is installed"
+  package_facts:
+    manager: "auto"
+
+- name: "nginx test result"
+  debug:
+    msg: "nginx found"
+  when: "'nginx' in ansible_facts.packages"
+
+- name: "nginx test result"
+  debug:
+    msg: "nginx not found"
+  when: "'nginx' not in ansible_facts.packages"
+
+- name: check nginx service
+  shell: systemctl status nginx.service
+  register: nginx_check
+  ignore_errors: true
+
+- name: check postgres service
+  shell: systemctl status postgresql-9.4
+  register: postgres_check
+  ignore_errors: true
+
+- name: postgres check
+  debug:
+    var: postgres_check
+
+
+- name: nginx check
+  debug:
+    var: nginx_check
+
+- name: nginx and postgres present
+  include_tasks: notsplitmodel.yml
+  when: '"Active: active" in nginx_check.stdout and "Active: active" in postgres_check.stdout'
+
+- name: nginx or postgres absent
+  include_tasks: splitmodel.yml
+  when: '"Active: inactive" in nginx_check.stdout or "Active: inactive" in postgres_check.stdout or "nginx" not in ansible_facts.packages'
+
+- name: get artifactory version
+  shell: "cat /var/opt/jfrog/artifactory/etc/artifactory.properties | grep artifactory.version | cut -d '=' -f2"
+  register: artifactory_version
+
+- debug:
+    var: artifactory_version
+
+- name: check artifactory version
+  include_tasks: versioncheck.yml
+  when: artifactory_version.stdout< "6.14.0"
+
+
+- name: Check if reboot required
+  command: needs-restarting -r
+  register: reboot_required
+  ignore_errors: yes
+  changed_when: False
+
+- name: Print reboot information
+  debug:
+    var: reboot_required
+
+
+- name: reboot
+  reboot:
+  when: '"Reboot is required" in reboot_required.stdout'
+
+- name: check artifactory status
+  command: systemctl status artifactory
+  register: service_exists
+  ignore_errors: yes
+
+- name: showing report
+  debug:
+    var: service_exists
+
+- name: start artifactory
+  include_tasks: start.yml
+  when: '"Active: activating" in service_exists.stdout or "Active: inactive" in service_exists.stdout or "Active: failed" in service_exists.stdout'
+  
+- name: enable artifactory
+  command: systemctl start artifactory.service
+  when: '"Active: activating" in service_exists.stdout or  "Active: inactive" in service_exists.stdout or "Active: failed" in service_exists.stdout'
+
+
+

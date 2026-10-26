@@ -1,0 +1,11 @@
+Data Mutation:
+Update the backend ie update the webpase using post, put and delete operations. Refer step for more details
+
+ We have used const navigate = useNavigate(); hook which is part of react-router library, so useNagivate() will return the fn, if we do like this navigate('/orders'); it will automatically navigate us to order page
+  const navigate = useNavigate();
+
+  const placeOrder = async () => {
+    await axios.post('/api/orders');
+    await loadCart();
+    navigate('/orders');
+  }

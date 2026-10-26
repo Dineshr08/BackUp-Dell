@@ -1,0 +1,165 @@
+Note: in this folder 04-website.html is the course html page and rest exercise1 and 2 are exercise html page
+
+1. JavaScript Basic
+It a technology used to create a website(like amazon, youtube). To create a website we need 3 technology
+    1. HTML - We can create button, name and image
+    2. CSS - We can give the appearance ie look good for the website or above button, name or image.With html and css if we want to click the button call add to cart to place order on website like amazon it wont work. For that we need java script
+    3. JavaScript - We are giving instruction to computer(Writing code) and computer will follow our instruction(Running the code) is what java script. Eg On F12 console run
+    alert('Hello'); on any website which is used to create a popup on website
+    document.body.innerHTML = 'Hello';  - used to change content of the website
+    Javascript will perform everything like alert, changing the content of body, performing match etc. These are just example and it will do a lot. Creating the code is giving the instruction  to computer and running the code is computer will follow our instruction ie what java script will do
+
+2. Numbers & Math
+We have +,-,*,/
+The order of precidence is
+() - If we have(()) - Inner bracket will execute first
+* / - Both has same priority, if we have both then it will take what ever on left to right
++ - - Both has same priority, if we have both then it will take what ever on left to right
+Math.round(2.6) - Used to round the number. It will give op of 3. Javascript is case sensitive so we need to use proper capital if we have eg Math.round() M should be capital
+Math.floor(2.6) - It will give 2
+Math.ceil(2.2) - It will give 3
+
+3. String
+String is text
+3 ways Declare string - 'Hello', "Hello",`Hello`
+`Hello` - Template string here we have 2 feature interpolation and multi line string
+General string concatination - 'Hello'+'World' = HelloWorld or "Hello"+"World"
+If we give like this 'Hello'+ 2 = Hello2 - automatrically it will convert 2 to string
+'Items(' + (1+1) +'):' '$'+ (20+30) - Which Print Items(2):$50
+Since we are doing above with concatination we can do this in easy way by  template string which has interpolation feature
+`Iteams(${1+1}:$${20+30})` - Template string which uses interpolation feature
+Eg: `Items (${2+2}): $${((2095*2)+(799*2))/100}`
+We can use template string for multi line as aell
+`Hello
+World`
+We can use escape character as well - \', \",\n
+'I\'m learning JS'
+"I\"m learning JS"
+"Some\nMore" - Some
+               More
+To identify type we can use like below
+typeof 5  - Integer
+typeod 'hello' - String
+
+4. Basic of HTML & CSS & JavaScript Together
+HTML - Hypertext markup language
+To Create a html we need a code editor , here we are using vs code
+<button>Click Here</button>
+<p>Hello i am Dinesh</p>
+<p>Hello I am <button> I am Diya </button> Thilaga</p>
+Above all are html elements. Here i am using button html element and paragraph html element. Those are type of html elements.<p>Hello I am <button> I am Diya </button> Thilaga</p> Here i am using nesting of html elements.
+<p>
+Hello I am <button> I am Diya </button> Thilaga
+</p> If we give new line inisde opening and closing tag ie writing paragraph on new line. So on opening this file in chrome it wil show as single line no additional line will be added. and if we add many space it will take as single space. So adding data in new line like above will help us in readabality purpose.
+Combination of multiple page is called website. eg homepage, add to cart page all are webpages
+<p> - Opening tag
+</p> - Closing tag all opening tag should have closing tag
+Create a webpage and save as .html eg website.html then open this in chrome to view the content
+
+CSS: Cascading style sheets. It is used to change the apperance of the elements
+On existing html,on top we need to add style element
+<style>
+    button {
+        background-color: red;
+        color: white;
+        border: none;
+    }
+</style>
+So what we do here is for button element we are telling how the appearance should look like
+background-color is css property and  red css value ; is ending of that appearance. Se in our code for button we have change the background colour, font colour and border as empty.It will apply to all buttons on the page
+
+HTML Attributes:
+Here in our html page we have use button in 2 place so with above css style for button will apply to all button on the webpage. but i dont want to apply for all the button the same styling, so in this case we can use html attributes.
+So in below <button title="Good Morning" class="red-color">Click Here</button> this line i have added 2 attributes one as title attribute the syntax is always for atribute is attributename="attributevalue" what this title attribute will do is for button when we hover it will give some suggestion. and i add class attribute as well, what i did here is i dont want to add same sytle for all button so i have created a class, so class should create with .and class name so i made 2 class here  .red-color and .blue-color  and passed to class attribute in button . we have call class attriburte to as many place we want we can call class as many times. So here giving same style for all button was fixed
+Inside style element we run css code
+<style>
+    .red-color {
+    background-color: red;
+    color: white;
+    border: none;
+    }
+    .blue-color {
+    background-color: blue;
+    color: white;
+    border: none;
+    }
+</style>
+
+<button title="Good Morning" class="red-color">Click Here</button>
+<p>Hello i am Dinesh</p>
+<p>Hello I am <button class="blue-color"> I am Diya </button> Thilaga</p>
+
+HTML Structure
+Whenever we are creating the webpage we need to follow the html structure
+<!DOCTYPE html> - This tell browser to use latest version of html. if we dont use many of the latest feature cant be used
+<html></html> - All the content of the webpage should be present inside this
+under html tage we have head and body tag
+<head></head> - Used to store all the content not visible in html page ie the css style. in head section we can use title as well, whill set the title of the webpage
+<title>HTML&CSS Review</title> - On tab it will show HTML&CSS Review
+<body></body> - Need to keep all the content show in webpage
+We can install liver server plugin, it will help us to show the change in realtime in browser and in setting on live server choose chrome and open .html file from vs code choose open with liver server, so it will show data in realtime
+Eg:
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            HTML & CSS Review
+        </title>
+        <style>
+             .red-color {
+             background-color: red;
+             color: white;
+             border: none;
+            }
+            .blue-color {
+            background-color: blue;
+            color: white;
+            border: none;
+            }
+
+        </style>
+    </head>
+    <body>
+        <button title="Good Morning" class="red-color">
+            Click Here
+        </button>
+        <p>
+            Hello i am Dinesh
+        </p>
+        <p>
+            Hello I am <button class="blue-color"> I am Diya </button> Thilaga
+        </p>
+
+    </body>
+</html>
+
+VS code setup:
+By default vs code use 4 space indent, so on setting search with tab and change indent to 2.To remove the indent click shift+tab and add indent click tab. First choose all code and remove complete indent, then add indent for each element. like choose html to html then add indent, themn under that , then under that like that. To update word wrap on setting search with wrap then change setting it will do wordwrap
+
+Using Javascript with HTML and CSS:
+Ealier we use console to run java script now we are going to do within html.We have special element like style ie <script></script>.Inside script we can write our java script.Script also should be placed inside body and after completion of body content ie end of all the body data we need to write script tag.So what it will do is when we run the html page it will run the body content first with css style the run javascript after that.
+ <script>
+        alert('Hello world');
+      </script>
+Whenever we load the page the js under script will run, but below onclick will execute js when we click the button
+We can run javascript inside html page in two ways one is above one
+
+Second is using as attribute ie onclick="alert('hello')" - it will run when we click on button
+<button title="Good Morning" class="red-color" onclick=" alert('Good Morning'); ">
+        Click Here
+      </button>
+
+Comments:
+To apply comments on javascript we use // - Single line comments or /* */ - Multiline comments
+To apply comments on html like saying what is happening or just give some hint we use <!-- --> - Single line comments
+To apply comments on css same as js we use /* */ - Multiline comments - Under style only we need to add comments /* Add comments for style*/
+To comment the unwanted thing we can use // or /**/
+
+Console.log:
+For the webpage need to see any console logs can be given like this then on inspect on browser on console for this webpage we can see the console log.Should be under script section
+console.log('Hello world');
+console.log(2+2);
+Eg:
+ console.log('This is console comment');
+ console.log(`Adding numbers: ${2+2} got an output`);
+

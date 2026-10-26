@@ -1,0 +1,73 @@
+DOM: Document object model
+Its a built in object in JS like Math.random, console.log(), localStorage etc
+Object name: Document
+document.title = 'Hello'; - document object and tittle property will direct link to webpage tab title it will get and update
+document.body - So body property is the complete data inside <body></body> in the html. So whatever we update here it will update html body like below
+document.body.innerHTML = 'Hai'; it will update the body.
+So document object or dom will have complete linkage with website
+When we do console.log(document.body); it will get the complete body elements, so we are having html elements inside the javascript. becuase console.log(document.body) is insdde the script. So dom will combine both javascript and html element together(since html is now within js) and have control on webpage.
+<body>
+<script>
+console.log(document.body)
+</script>
+</body>
+document.body - This complete html body now will become as an object when its inside the javascript, we can get and update the data using property and methods
+
+innerHTML - Its a property for body object.It will get and update the complete elements inside the body
+document.body.innerHTML = 'Change'; - It will update the complete html element inside the body it will remove all the element and update to Change string. It will have complete control to the all the element indose the body
+document.body.innerHTML = '<button>Hello</button>' - We can update a html element as well like this not only string. But it should be inside ''
+Document Object Method:
+Method - Its afunction inside the object
+document.querySelector(''); - Using this we can pick the individual element inside the webpage. if we give like below 
+document.querySelector('button'); - It will get the first button element. get <button>hello</button>
+document.querySelector('body'); - It will give the first body of the webpage same as document.body
+As we are writing this inside script so op of this document.querySelector('button'); will become object ie <button>hello</button>. Here every html element have peoperty called .innerHTML, using this we can get the html element. So 
+document.querySelector('button').innerHTML - will get the hello and we can update the same as well like below
+document.querySelector('button').innerHTML = 'Hai';
+document.body.innerHTML - so here html will be complete content inside body ie <body> all conten t here </body>
+If we want to query the sceond button how to do this?
+This can be done using class attribute
+<button>hai</button>
+<button>hello</button>
+We can have class attribute on each html elemnts and we can label the name. here we labelled js-button and we can call using them like below
+<button class="js-button">hello</button> - When we do the label, just mention js- inforont as practise to tell this is the js button label ie we going to use in js
+document.querySelector('.js-button'); here . is to select the class
+As all the object are values, so we can save them inside the variables.
+const buttonElement = document.querySelector('.js-button'); for best bractise write Element after the variable name. We always end the variablename with Element or Elem to tell that variable hold the html element inside the variable
+Using dom we can get the html elements from the page put inside the js and save it inside the variable.Dom combine html and js together and give js a full control over the webpage
+We can user innerText property as well if there is any space on button or any new line , to get only text we can use this.
+
+If we give like this 
+<button>1</button>
+<button>2</button>
+<button>3</button>
+<button>4</button>
+All button will show like next to each other like 1234 but if we give like below
+<button>1</button>
+<button>2</button>
+<button>3</button>
+<p>hello</p>
+<button>4</button>
+it will come like below
+123
+hello
+4 the reason is the <p> will take the complete new line  and not append after 3
+
+<input> - is the html element for the text box, it dosent need closed as its special element 
+On a input box before enter data it will be empty, if we want to fill some background text for this just enetr placeholder attribute and its  value like below
+<input placeholder="cost of the order">
+To get the input enter in textbox we cant use innerHTML as it dosent have html we need to use .value and which return string to convert string to integer we can use Number in js
+eg = const inputElement = document.querySelector('input or .class name');
+const cost  = Number(inputElement.value);
+
+onkeydown - What it will do is it will monitor all the activity we perform on keyboard and run javascript its an attribute like onclick , it will monitor the keyboard activity and run js
+<input onkeydown="
+  console.log(event.key)"> what it will do here is on each press of keyboard it will run the console.log(event.key) js. Here event is js object it will capture all the details we do on keyboard. event.key will give what is the key we enter. if we want to call function from input element, and on fn anything data we are performing with event object, we need to pass event as paramenter as we dont have event data in function
+
+  Convert Number to string - String(5);
+
+  Window object - Its a built in object. Its represent the browser, like how document represent the webpage.Whatever we have in window will inside window object like below
+  window.document.body - It represent the win webpage
+  window.console.log() - It represent the win console
+  window.alert() -  its rep win alert
+   is same as document.body, console.log() and alert() because js we no need to mention explictly window on backend it will consider as  window.document.body etc

@@ -1,0 +1,74 @@
+Ansible
+Ansible is used to automate below things or used to manage the infrastructure or configuration managment tool.Just consider we have hundred server and want to instal java, so we need to do manually but consider if write shell script also it will automatically do but it will do install in sequential.but having advantage of ansible is it will do all in parallel so time consuming.master machine will push conf file to all client machine and perform task parallely.
+    Configuration managment - Automatically configure the systems like need to install java
+    Orchistration - increase the pods and in order
+    Deployment - automatic Deployment
+If we have 100 machine and need to do any of above things , then need to write yaml file which we need to do manually and deploy in all machine then ansible do all the automation or above things by itself.
+
+Prerequsits:
+For both master and client machine need to have python 3 or above so it easy to manage or run playbook in client machine.else we have to use raw module to manage client machine.manage means install sw
+
+Installation
+Command to install ansible
+    First install epel release ie adding extra package it will have latest version of ansible
+    yum install epel-release
+    Then install ansible
+    yum install ansible
+    To check the ansible version and files path use below Command
+    ansible --version
+If we have 100 machine as a client and need to do configuaration then we should have master and we need to write config file here and master is responsible to push all config file to client.
+Need to update all the client machine details in master machine host file in below path or called as inventory
+Path: /etc/ansible/hosts
+Then Add the client machine details like below in host file under Ex2
+[ansible_client]
+10.118.240.252 ansible_ssh_user=root ansible_ssh_pass=Password123!
+If we want to perform different set of operation for few differ server like conside above as web server and we need to apply differ configuration for db server then write same above with different name like below and refer SamolePlaybook.yaml
+[DB_client]
+10.118.240.251 ansible_ssh_user=root ansible_ssh_pass=Password123!
+Cmd to get ip - ifconfig
+
+Module:
+In playbook,we write a Steps to execute the task on remote client.we have default module in ansible and we can use it to perform or automate tasks.
+
+Playbook:
+All the configuration file that we write in ansible called playbook and it written in yaml
+Writing Playbook: Sample playbook also refer SamplePlaybook.yml for detailed playbook written by us
+---                     #Playbook always start with --- and its indicate the begining
+- name sampleplaybook   # enter the name of playbook
+  hosts: ansible_client # Client machine where we ececute the playbook
+  remote_user: root     # user name which will be logging to our client machine
+  become: true          # providing all or root previlage to perform all action
+  tasks:                # in tasks only will mention what action needs to be performed by playbook like install java etc
+    - name: install httpd # installing apache server
+      yum:
+        name: httpd
+        state: latest
+    - name: run httpd # starting the service
+      service:
+        name: httpd
+        state: started
+Validate Playbook:
+ansible-playbook sample.yaml --syntax-check
+
+Moving Playbook to client machine
+ansible-playbook sample.yaml
+While Running:
+Gathered fact - ok means client machine is running fine
+Task - ok means its already task is up and running
+Task - changed means our task was performed in that machine
+
+Declaring variable and use it:
+declare vars and keep value inside it and reuse by keeping {{}}
+
+---                     #Playbook always start with --- and its indicate the begining
+- name sampleplaybook   # enter the name of playbook
+  hosts: ansible_client # Client machine where we ececute the playbook
+  remote_user: root     # user name which will be logging to our client machine
+  become: true          # providing all or root previlage to perform all action
+  vars:
+    server: httpd
+  tasks:                # in tasks only will mention what action needs to be performed by playbook like install java etc
+    - name: install {{server}} # installing apache server
+      yum:
+        name: {{server}}
+        state: latest

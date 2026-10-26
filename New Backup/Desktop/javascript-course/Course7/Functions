@@ -1,0 +1,19 @@
+Functions: It will help us to reuse the code
+Synatx:
+function functionName(){
+  code;
+  return;
+}
+functionName() - Calling function
+Fn name should be camelcase. If we use return whatever post that will not run. If after return if we did not mention anything it will return undefined.
+If anything declared inside function {} then that variable is scoped to function. The best practise is always define variable inside function
+Whenever html page executes, the script execute first
+Using paramenter in function - We are passing values to function
+Syntax:
+function functionName(param1,param2 = 10){
+  console.log(a + b);
+}
+functionName(10, 20);
+funcfunction functionName(param1,param2 = 10) - Here i am passing default value as well to parameter. If we do not pass param2 in function, by default it will take 20
+eg functionName(10);
+Parameter name also should follow camelcase

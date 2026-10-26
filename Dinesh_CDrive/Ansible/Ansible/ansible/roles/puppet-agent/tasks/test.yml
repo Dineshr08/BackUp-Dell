@@ -1,0 +1,13 @@
+- name: "Check if puppet is installed"
+  package_facts:
+    manager: "auto"
+
+- name: "puppet test result"
+  debug:
+    msg: "puppet found"
+  when: "'puppet-agent' in ansible_facts.packages"
+
+- name: "puppet test result"
+  debug:
+    msg: "puppet NOT found"
+  when: "'puppet-agent' not in ansible_facts.packages"

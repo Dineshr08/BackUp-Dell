@@ -1,0 +1,32 @@
+EC2 - Elastic compute cloud - Basically rent a computer from aws(Iaas)
+EC2:
+Need to install nodeJS
+Need to connect to internet
+Upload ur code 
+
+Elastic Bean stalk: Sits at top of ECS and it will do above things automatically by its own.All we need to do is just upload our code , it will work(PaaS), platform as a service, it manage the infrastructure and software for us.
+
+Role: Gives elastic bean stalk  permission to use other services in aws
+
+Elastic beanstalk will do below thing
+REnt a computer using EC2
+Install nodejs and npm
+Connect it to internet
+
+To deploy both front and back end , need to create elastic beanstalk tehn create dummy application then deploy the code, To deploy back end just zip the complete backend and upload
+npm run zip
+To upload front end code need to zip too, becuase in our code all files are in .jsx and browser wont understand .jsx it only do .js so need to zip and upload , so below command will zip all files into one file and save it as .js. It will create a folder called dist and under it will will keep all files.Then we need to move that dist folder to backend folder and zip again and deploy in aws.
+npm run build
+We have short cut for that, we can add below in vite.js and run above command it will create a folder under backend and under dist folder we can directly zip and upload
+
+build: {
+    outDir: '../ecommerce-backend/dist'
+  }
+
+To create our own domain name need to use route53 in aws
+route53 - Manage our domaine name aws
+
+To get ssl certificate - On aws go to certificate manager.To enable enscryption and make it secure we need to setup ssl certificate for the website, which is a special file which enables the encription.
+On elastic beanstalk our application will be deployed as backend , if we want to setup load balancer we can enable that in elastic beanstalk and all our backend data will be on database and we need to have seperate db for our application , on elastic beanstalk just enable database and configure, then now our app will have frontend which is our system then lb, backend then db
+
+When we load the website from ui, it usually downlaod the code from backeend and run, so taht why we compress and uplaod, so when we access from browser it will be fast.

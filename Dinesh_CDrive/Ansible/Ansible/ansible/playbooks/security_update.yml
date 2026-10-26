@@ -1,0 +1,6 @@
+---
+- name: security update and patching
+  hosts: "{{ ansible_limit | default('no_hosts')}}"
+  become: true
+  roles: 
+    - security_update

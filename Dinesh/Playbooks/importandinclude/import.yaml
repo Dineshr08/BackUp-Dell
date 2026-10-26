@@ -1,0 +1,6 @@
+---
+ - name: import
+   hosts: all
+   tasks:
+   - name: importing tasks
+     import_tasks: printmsg.yaml

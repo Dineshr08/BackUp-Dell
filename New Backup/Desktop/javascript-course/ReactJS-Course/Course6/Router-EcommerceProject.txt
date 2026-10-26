@@ -1,0 +1,42 @@
+In this course we will start creating the Ecommerce project with react. We have a code ready we will be using that and create a the same project with react.The Existing code ie with js will be placed inside the starting-code folder.
+
+Here each pages we will consider as component. Eg  as one component, CheckoutPage as one component etc. So all the component we will move inside the pages folder under sec and its relevent css files.
+
+Now going to start moving the codes from staring code to our react projects. Start looking for Step
+This code in inex.html "<meta name="viewport" content="width=device-width, initial-scale=1">" is help us in show website good when it was in smaller screen
+
+Routing:
+To create a multiple pages in react we use routing.
+To use routing we need to install package called react-router
+npm install react-router@7.8.0.
+To use router we need to follow few steps. Need to surround App component with BrowserRouter like below
+<StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>,
+Then on App component page need to add below
+Add Routes first which is were we will include all the available pages of the webiste.Each pages deetails need to mention inside the Route. It will take 2 props one is path and element. On element we need to add the component insise {} and on path we need to give path ie after end point the webpage url eg .com/checkout. if we dont have anything after .com like homepage we can mention either "/ or index both are same and we have handled selfclosing as well here". Add imports as well for the component
+Eg:
+ <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="checkout" element={<CheckoutPage />} />
+    </Routes>
+    </>
+
+<Routes>  - This is compenent, this routes component tells all the pages that are in our webisite
+To add a page to our webiste need to use component called Route
+Route = page
+Routing tells react which pages we want in website and what to display on each page
+Routing help us in create multiple html page using one html file.This let us reuse our html code.So here all pages wil share the common index.html page and eachpage we handled inside the app component where that is the main component and that we loaded in the index.html. If we use multiple page then need to use BrowserRouter component in index.html
+
+To indent automatically click
+ctrl_shift+P and search format document then enter that page will automatically indented
+
+
+With routing its a single page application, keeping all the pages inside one file so it called single page application.
+
+If we have a common thing eg header tab is common in both homepage and order page so such thing we need to convert to a component. So the common component we need to add inside the component folder inside the src, for the things which is specific to page that need to keep in page component, so now we are moving that data from homepage and orders to header componet.
+Then in our all component html we use <a and its prop href= to switch the pages, eg when we click order from home page it will take us there, but it will reload the page if we use <a instead we will use <Link component and its prop to= so iinstead of reloading it will take us there. <a = <Link and href= is equal to to=
+
+Then important to note if we are having the component the css of component should be added into the same component. Eg inside HomePage.jsx we need to add HomePage.css too, we need to import inise it.

@@ -1,0 +1,45 @@
+1. Select Statement - Used to retrieve the data from table
+Syntax - SELECT col_name1,column_name2,--,column_namen FROM table_name;
+We can give any number of column name by comma seperated and with any order.Always query execute from backwards.Its start search from table name then with column name. ; denote thats the end of query. We can write capital or small select and from keyword, but best practise is to use capital.
+* to retrieve complete table, dont use * until its required, as its send more traffic to database and degrade the performance of the application
+
+2. Select Distinct - Used to retrieve the unique values in the column
+Syntax - SELECT DISTINCT(column_name) FROM table_name; - Here we can apply distinct only one column at the time.
+
+3. Count - Used to retrieve total row in the column or the table.
+Syntax - SELECT COUNT(column_name) FROM table_name or SELECT COUNT(*) FROM table_name;
+Above both return same count because whatever number of column we have in table will have same number of row, so both will return same count
+Eg: SELECT COUNT(DISTINCT(column_name)) FROM table_name; - This will find unique count of column name first then it find its count
+
+4. Select Where  - Where is used to do the condition, its used to filter the number of rows returned from the select statement. Here we will use the comparison, logical operator in where
+Syntax - SELECT column_name1,---,column_namen from table_name where column_name2 = condition AND column_name3 != condition;
+String will be enclosed in ''
+
+5. ORDER BY - Here we can order the resulted row by ASC or DESC.
+Syntax - SELECT column_name1, column_name2, column_name3 FROM table_name ORDER BY column_name1 ASC;
+Syntax - SELECT column_name1, column_name2, column_name3 FROM table_name ORDER BY column_name1 ASC, column_name3 DESC; - Here it will first order by columnname1, then it again order by column name3. If we did not give ASC or DESC by default it order by ascending order
+
+6. LIMIT - Used to limit the number of row return
+Syntax - SELECT * FROM table_name WHERE condition ORDER BY ASC LIMIT 5 - It only return 5 rows
+Limit has the lowest priority , it always execute last
+
+7.BETWEEN or NOT BETWEEN- Its get the details between the range given
+Syntax - SELECT * FROM table_name WHERE amount BETWEEN 6 AND 7;
+Syntax - SELECT * FROM table_name WHERE amount NOT BETWEEN 6 AND 7;
+Here between will include 6 and 7 as well when displays the result and not between will exclude that
+Date also given in between keyword but needs to follow format 'YYYY-MM-DD', when you given like below
+SELECT * FROM table_name WHERE payment_data BETWEEN '2024-10-11' AND '2024-10-15' - It will fetch data till date 14
+
+8. IN or NOT IN - Filter the result which are in IN range
+Syntax - SELECT * from table_name WHERE amount IN(5,8,9); - Its only check for amount which are in 5,8 and 9. Not will be reverse of this
+
+9. LIKE and ILIKE  - Used for pattern matching . Like is case sensitivity and ILike is case insensitivity. Here we have two pattern matching
+_ and %
+% Seq of character - SELECT * FROM table_name WHERE first_name LIKE 'A%' - It will retrieve all the first name which start with A eg Abinaya. '%A% - Any seq of character before and After A eg Tamil ot Thilaga or Diya
+- Only one letter -  SELECT * FROM table_name WHERE movie_name LIKE 'Mission Impossible _' it will fetch like below
+Mission Impossible 1
+Mission Impossible 2
+Mission Impossible 3
+We can combine and use
+SELECT * FROM table_name WHERE first_name ILIKE '_iyA%' it will retrieve Diya
+NOT LIKE and NOT ILIKE will be reverse of above

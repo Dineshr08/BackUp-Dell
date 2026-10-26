@@ -1,0 +1,6 @@
+Docker for Windows:
+Install docker desktop on windows , it will have two backed 
+wsl2  - This is by default
+hyper v
+On top of these two , by default it will create a linux kernal and top that we can create a linux container.So with docker desktop we can create a linux container on top of windows os.
+In windowsserver 2016, windows 11 and 12 , on top of docker desktop, we can create windows conatiner and we can pull windows application image and use it. To use this on docker desktop menu need to change the option to windows.

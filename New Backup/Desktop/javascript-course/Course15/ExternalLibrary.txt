@@ -1,0 +1,34 @@
+External Library:
+Using the code that is outside of the project to ur project.Developer develope the code and the publish in internet and the same can be used in our project . this will help us in rewrite the code , which is already available
+Can be used in 2ways
+1: using script tag
+<script src="path of the browserurl.com"></script>
+if we have many external library all we need to load like this bedore our main js file in script section like this
+<script src="path of the browserurl.com"></script>
+<script src="path of the browserur2.com"></script>
+<script src="scripts/homepage.js"></script>
+Then inside our homepage.js file we can directly call the function like fnName(); it will run the fn which is in the library
+2: using the modules
+<script type="module" src="scripts/homepage.js"></script>
+On homepage.js we need to import this library
+import {functionName} from 'path of the browserur2.com';  then we can use this fn inside the homepage.js
+We can also do like this 
+import functionName from 'path of the browserur2.com'; here we removed the {} which means default export and {} if we add this then its named export.On each js file we can have many fn and variable but one we can have a default export that need to be declared like below
+export default fnName or variable name; at any place in js file.
+Note only the we can use module concept if the libarry is esm version library which means on the file they mentioned explicitly as export in front of each varibale and function, if its not esm version then need to use script element concept
+One of the external library is dayjs - using this we can get the current date, format the date, increase the dates
+const now = dayjs; - Which give current dates
+const addDate = now.add(7, 'days');  -  will add 7 days from current date
+const formatDate = addDate.format('MMMM, dddd D') - It will format the date
+
+MVC - Model view container architecture 
+Model - Save and organize the data
+View - Get the data from model and generate the html
+Container - When we click on hmml element ie (is generated from above)run a java script
+MVC is interlinked ie view get the data from model and container is running js based on view html element generated and in container after we run js it will update back the data like if on cart page if we click delete , the data will be deleted in model, again tjat data view will take its cyclic path. This model is make sure the ui and data are same as eachother.
+
+We can call function inside the function
+function fnName() {
+fnName();
+}
+This why we do is when the function has the complete code ie cart summary after we perform something like delete even that will be inside the the function but when we do that delete the complete page needs to render, so inorder to do that we call same function inside it. if we dont keep it then need to refresh page or need to update all the element by calling them. 

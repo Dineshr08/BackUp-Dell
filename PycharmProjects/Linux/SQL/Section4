@@ -1,0 +1,54 @@
+1. Joins - Its helps us to combine or join multiple table together in database or help us to combine multiple table information. for example if i have a 4 table and want to retrieve some of the rows from each table and display the information. Joins will help us in this scenarios
+2. AS - is alias or alternative name for columns, it will only used in select statement for column names or for aggregate function. Means we are giving some alternate name for the column when we display in results. it always execute at end, so we cannot use AS converted names in where or having  or any other keyword, because it execute at last when display result
+Syntax - SELECT column_name1 AS test1 , SUM(column_name2) AS test2 from table_name; - When you see the result column name will display as test1
+Syntax - SELECT  SUM(column_name2) AS test2 from table_name; - When you see the result column name will display test2
+Similarly alias name cannot used in where or having or other keyword, we have to use the orginal column name or aggregate function at that place.
+SELECT column_name1 AS test1 from table_name where test1 >10 this iw wrong, it wont work we should use like below. Because AS statement will execute at last
+SELECT column_name1 AS test1 from table_name where column_name1 >10 - Same example apply for aggregate function as well
+
+3. INNER JOIN - It usually join the two table ie table1 and table2 and retrieve the row data which are common in both table.Consider table 1 has a, b, c and table 2 has a, b, d. Then after join the it will retrieve the rows of a and b. When conisering venn diagram, it will just retrieve the rows of intersection data.Consider while retrieving if table 1 has multiple column and table 2 has multiple column, after inner join the all the column will be retrieved or specified column in select statement will be retrieved based on inner joined output.
+Synatx:
+SELECT * FROM table1 INNER JOIN table2 ON table1.column_match=table2.column_match
+Here we can write like below as well, as its is symmentric like that we can swap, as we see same common or intersection record in both table.
+SELECT * FROM table2 INNER JOIN table1 ON table2.column_match=table1.column_match
+Here column_match we need to see on both table which has common column name usually most db has standard column name based on that we can join.but some time the column name will be different that case need to check column values and then need to decide the column match to do the inner join.
+In output when you join inner join if both table has same column name so duplicate column will be displayed in results post inner join. in that case we can specify like below
+SELECT column1, table1.column_name, column2 FROM table1 INNER JOIN table2 ON table1.column_match=table2.column_match
+Here we have given column1 and column2 as direct column name in select statement right, this is due to they are unique column name to the either of table do not need to mention like table1.columname.so only for duplicate colum we have to mention like this
+Final eg: SELECT customer.customer_id, first_name, email FROM customer INNER JOIN payment ON customer.customer_id=payment.customer_id WHERE first_name='Peter' ;
+
+4. FULL OUTER JOIN: It will join two tabels fully. In inner join whatever tabel a has the same if table b have then join. but here if join all table a content with table b if table a content is not present in table b it will mark as null. then on table b content is not available in table a it will mark as null
+Syntax:
+SELECT * from table a FULL OUTER JOIN table b ON table a.column_match=table b.column_match. Column match is same as above in inner join
+Here we can apply where conditions as well
+SELECT * from table a FULL OUTER JOIN table b ON table a.column_match=table b.column_match WHERE tablea.column_name IS null OR tableb.column_name IS null.
+What the above query is doing is it just taking what ever value which is unique to each table and priniting
+Example:
+SELECT * FROM customer FULL OUTER JOIN payment ON customer.customer_id=payment.customer_id WHERE customer.customer_id IS null OR payment.customer_id IS null;
+
+5. LEFT OUTER JOIN or LEFT JOIN: If we have table a and table b, it will take all the data in table a and on table b it only display if table a column match data is available in table b, if no comman data in table b it will ignore and on table a it will will display everyting if table a data is not available in table b it will display null.
+Synatx: SELECT * FROM table a LEFT OUTER JOIN table b ON table a.column match = table b.column_match
+Synatx: SELECT table a.column_match,table b.column_match, columnname FROM table a LEFT OUTER JOIN table b ON table a.column match = table b.column_match WHERE table b.column_match IS null; - To filter the data is unique to table a
+Column match finding and display table content in UI are same as above joins
+SELECT * FROM film LEFT JOIN inventory ON film.film_id = inventory.film_id WHERE inventory.film_id IS NULL;
+
+6. RIGHT OUTER JOIN OR RIGHT JOIN:  Its same as LEft join , just opposite to left join. It will display everyting in right and and on left which is match with right, and ignore which are exclusive to left On right which is not match with left will be null.
+Syntax: SELECT * FROM tabel a RIGHT OUTER JOIN table b ON table a. colum_match = table b.column_match
+
+7. UNION: used to combine the results of two or more select statements.But the results we are combining should be logically correct ie if we combine 2 select statement the columns header should be same.
+Syntax:
+SELECT column_name1, column_name2 FROM table_name1
+UNION
+SELECT column_name1, column_name2 FROM table_name2
+We can also perform ORDER BY and other functions as well
+
+SELECT column_name1, column_name2 FROM table_name1
+UNION
+SELECT column_name1, column_name2 FROM table_name2
+ORDER BY column_name1 ASC
+
+8.Join multiple tables:
+We can use many joins in query to join multiple table
+Eg:Joined 3 tables, to get our output we need to join 3 tables
+SELECT title, first_name, last_name FROM actor INNER JOIN film_actor ON actor.actor_id = film_actor.actor_id INNER JOIN film ON film_actor.film_id = film.film_id
+WHERE actor.actor_id=2;

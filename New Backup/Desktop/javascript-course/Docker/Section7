@@ -1,0 +1,27 @@
+Networking:
+We have 3 n/w in docker. To specify each network need to mention like docker run --network
+bridge - Its default no need to mention while run the container dicker run ubuntu. Its internal network and we will have only one internal network in docker it always start with 172.17.0.1. If we have 2 container then nw will be 172.17.0.1 and each container id will be 172.17.0.2 and 172.17.0.3 and it will internally connected.To contact the container accessing externally can access using the port configured.
+host - This is connecting with host network, here we cant use the same port for 2 different container , because one port for one container and what ever port configured in host that only be used.
+none - We are not creating any network and isolating it.
+
+Below command is used to create our own internal network and can assign to container.When accessing app from one container to other always prefer using container name insted of ip, beacuse ip will change when container is exited.
+docker network create \
+  --driver bridge \
+  --subnet 182.18.0.0/16 \
+  customNWname
+
+To get the container ip info
+docker inspect containername
+
+To get the network details:
+docker inspect network bridge
+
+Eg for attaching none network
+docker container run --name alpine-2 --network=none alpine
+
+Eg for creating the custom network and gateway ans assign to conatiner
+docker network create --driver bridge --subnet 182.18.0.0/24 --gateway 182.18.0.1 wp-mysql-network
+docker run -d --name webapp --network wp-mysql-network -e DB_Host=mysql
+
+If we using multiple env variable, how to assign it
+db -e DB_Password=db_pass123 -e DB_Host=mysql -p 38080:8080 kodekloud/latest-webapp-mysql

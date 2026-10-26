@@ -1,0 +1,73 @@
+React:
+Its an external library and it help us to create website easier.
+To use the react in our website need to load react.js and react-dom.js external library.
+Babel:
+Its an external library and its a javascrpt compiler, which means can convert other language into javascript.When using react we dont use javascript, we use jsx which is javascript xml which is enhance version of javascript. JSX we can write html code directly into javascript which is inside the script element.But browser dont understand the jsx, so using bael we convert the jsx into javascript using type="text/babel", thats why we load babel library.
+Eg: we used html element inside the javascript below
+<script type="text/babel">
+      const button = <button>hello</button>;
+      const paragraph = <p>paragraph of text</p>;
+
+      const div = (
+        <div>
+          <button>hello</button>
+          <p>paragraph of text {2 + 2}</p>
+        </div>
+      );
+
+      const container = document.querySelector('.js-container');
+      ReactDOM.createRoot(container).render(div);
+    </script>
+
+To setup React:
+ReactDOM.createRoot(container) - Which setup the react , here the place of container which take only the html element, so in our example we have saved the html element inside the container varibale and used it.
+To display Information:
+render(div) - Here we can use anything on div , a string or html elements, here div is the varibale and its have the div container and it has two elements which is button and pagagraph
+Eg below
+const div = (
+        <div>
+          <button>hello</button>
+          <p>paragraph of text {2 + 2}</p>
+        </div>
+      );
+So overall, first we need to setup the react, then need to display the information. To setup react we need to give the element as input mostly it will be container, then on that container we display the information using render.Inside render we can have anything. Can have single element or multi element. To have multi element, we cant directly pass two variable whaich has html element inside render, instead we need to create a variable whoch we can have div element and inside it we can have multiple element. Becuase the purpose of div is to hold multiple elements.
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React Basics</title>
+  </head>
+  <body>
+    <div class="js-container"></div>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">
+      const button = <button>hello</button>;
+      const paragraph = <p>paragraph of text</p>;
+
+      const div = (
+        <div>
+          <button>hello</button>
+          <p>paragraph of text {2 + 2}</p>
+        </div>
+      );
+
+      const container = document.querySelector('.js-container');
+      ReactDOM.createRoot(container).render(div);
+    </script>
+  </body>
+</html>
+
+Advantage of React:
+1.More natural - We can directly write the html element inside the script, so by doing this no need to use dom to get the element and manuplate it
+2.We can write javascript directly inside the html element like below
+const div = (
+        <div>
+          <button>hello</button>
+          <p>paragraph of text {2 + 2}</p>
+        </div>
+      );
+Here <p>paragraph of text {2 + 2}</p> it will display paragraph of text 4 in webpage

@@ -1,0 +1,10 @@
+---
+
+- name: Restart Puppet Agent service
+  service:
+    name: "{{ puppet_agent_service }}"
+    state: restarted
+  register: puppet_agent_service_restarted
+  when: >
+    puppet_agent_service_started is not defined or
+    not puppet_agent_service_started.changed

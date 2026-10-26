@@ -1,0 +1,13 @@
+---
+ - name: this is to learn debug module variable argument
+   hosts: all
+   tasks:
+   # can write multiple tasks inside tasks like below
+   # printing default inventory_hostname variable inside msg so need to use {{}}
+   - name: printing default inventory_hostname variable inside msg
+     debug:
+      msg: "Display host names: {{inventory_hostname}}"
+   #  priniting inventory hostname only by using variable parameter so no need {{}}
+   - name: priniting inventory hostname only by using variable parameter
+     debug: 
+      var: inventory_hostname 

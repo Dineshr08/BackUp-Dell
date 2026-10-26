@@ -1,0 +1,101 @@
+1. Case  - SQL only execute when condition true. There are 2 case type we have , general case and case expression.On general case we can use all possible operation but on case expression can only use equality
+Syntax - General case:
+CASE
+WHEN condition THEN result
+WHEN condition THEN result
+ELSE other result
+END
+Syntax - case expression:
+CASE expression
+WHEN value THEN result
+WHEN value THEN result
+ELSE other result
+END
+On general case we can use between, <,> and other operator but on case expression only equality.
+The case usually used to display an another column based on main column value with its condition match. example consider i have a column a from test table with value 1 and 2 and i want to tell when a is 1 then yes and a is 2 then no, how it will work in case is
+When below query execut finally it create another colum next to a with column header as case and we can use alis here and display yes stright to 1 and no stright to 2. Case will mainly used to display the data based on the condition
+select a,
+case
+when a = 1 then 'yes'
+when a = 2 then 'no'
+else 'unknown'
+end
+from test
+
+SELECT customer_id,
+CASE
+WHEN (customer_id<=100) THEN 'A1'
+WHEN (customer_id BETWEEN 101 AND 200 ) THEN 'A'
+ELSE 'Regular'
+END
+FROM customer;
+Here we can use Aggregate function as well
+SELECT
+SUM(CASE amount
+WHEN 1.99 THEN 1
+ELSE 0
+END) AS Regular,
+SUM(CASE amount
+WHEN 2.99 THEN 1
+ELSE 0
+END) AS Bargainer
+FROM payment; - Here what we done is to get what is the count of 1.99 and 2.99 and store in Regular and Bargainer. Also this can be done in group by but for learning we have done this
+Eg - to print the count of films on rating r, pg and pg13
+SELECT
+SUM(CASE rating
+WHEN 'R' THEN 1
+ELSE 0
+END) AS R,
+SUM(CASE rating
+WHEN 'PG' THEN 1
+ELSE 0
+END) AS PG,
+SUM(CASE rating
+WHEN 'PG-13' THEN 1
+ELSE 0
+END) AS PG13
+FROM film;
+
+2. COALESCE - It will take any number of arugument and return the first argument thst is non null value
+Eg  - SELECT COALESCE(1,2) - Return 1
+SELECT COALESCE(NULL,1,2) - Return 1
+When mainly coalesce is used is when we performing something in table. eg we have two column a and b and want to perform a+b. if in either column a or b have null value we cant perform anything it throw error and want to perform addition without updating the existing table. this can be done using coalesce, since it will subsitute value in place of null
+SELECT COALESCE(a,0) + COALESCE(b,0) FROM table_name
+When a or b is null the  it will update as 0 then it will perform add, we cannot perform additoon with null ir integer with null, it will thrown error
+
+3.CAST - User to convert column or value from one type to another
+Eg - SELECT CAST('5' AS INTEGER)
+SELECT '5'::INTEGER
+Only resonable things can be convert like above cant do like below
+SELECT CAST('FIVE' AS INTEGER)
+Eg - SELECT CHAR_LENGTH(CAST(film_id AS VARCHAR)) FROM film;
+Here converting film_id colum from int to char then getting the length of each char ie if film_id is 23 then it return 2 ie 2 character length
+
+4. NULLIF  -Takes 2 argument and return null if both argument are same else return the first argument
+Eg - SELECT NULLIF(1,1) - Return NULL.
+SELECT NULLIF(1,2) - Return 1
+Mainly we used this null if in db , when there is a condition when something is equal to zero and for eg trying divide some value with zero it will throw the error instead of that return null using this null if statement.
+Table test have two column a and b , trying to perform division on column a and b if anything has zero it will return null
+SELECT a, b, a / NULLIF(b, 0) AS division_result
+FROM test;
+
+5. VIEW - On DB for example for reporting if we writing some complex queries at multiple place that query we can write as view
+SELECT * FROM customer;
+SELECT * FROM address;
+Creating View
+CREATE VIEW customer_info AS
+SELECT first_name, last_name, address FROM customer INNER JOIN address ON customer.address_id = address.address_id
+View the view
+SELECT * FROM customer_info
+Altering View by adding additional column
+CREATE OR REPLACE VIEW customer_info AS
+SELECT first_name, last_name, address, district FROM customer INNER JOIN address ON customer.address_id = address.address_id
+Dropping view
+DROP VIEW IF EXISTS customer_info
+Renaming view
+ALTER VIEW customer_info RENAME TO c_info
+View the view
+SELECT * FROM c_info
+
+6. Import and Export
+Using pg admin we can import and  export the table. if we import we should have table in db with proper column name and its data type if any constraints are there, then only import will happen.Excel data should match the table. For both import and export just right click and choose file to import and export

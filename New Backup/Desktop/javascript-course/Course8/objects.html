@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      Objects
+    </title>
+    <body>
+      <script>
+        const product = {
+          name : 'Socks',
+          'delivery-time' : '1 Day'
+        }
+        console.log(localStorage.setItem('product', JSON.stringify(product)));
+        console.log(localStorage.getItem('product'));
+        console.log(localStorage.removeItem('product'));
+
+      </script>
+    </body>
+  </head>
+</html>

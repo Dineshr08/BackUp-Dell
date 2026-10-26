@@ -1,0 +1,9 @@
+[main]
+ssldir=/etc/puppetlabs/puppet/ssl
+[agent]
+listen=true
+ca_server=cfgcom-06-p-dur.cfgaas.darkside.cec.lab.emc.com
+server=cfgcom-06-p-dur.cfgaas.darkside.cec.lab.emc.com
+certname={{ inventory_hostname }}
+runinterval=1800
+environment=test

@@ -1,0 +1,26 @@
+---
+
+postgresql_shared_buffers: "1GB"
+postgresql_data_checksums: true
+
+postgresql_databases:
+  - name: artifactory
+    owner: artifactory
+    encoding: "UTF-8"
+
+postgresql_users:
+  - name: artifactory
+    pass: artifactory
+    encrypted: yes
+
+postgresql_database_schemas:
+  - database: artifactory
+    schema: artifactory
+    owner: artifactory
+    state: present
+
+postgresql_user_privileges:
+  - name: artifactory
+    db: artifactory
+    priv: "ALL"
+    role_attr_flags: "CREATEDB"

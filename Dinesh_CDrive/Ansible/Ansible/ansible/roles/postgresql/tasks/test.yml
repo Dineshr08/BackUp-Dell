@@ -1,0 +1,34 @@
+# file: postgresql/tasks/test.yml
+- name: "Check if postgresql is installed"
+  package_facts:
+    manager: "auto"
+
+- name: "postgresql test result"
+  debug:
+    msg: "postgresql found"
+  when: "'postgresql' in ansible_facts.packages"
+
+- name: "postgresql test result"
+  debug:
+    msg: "postgresql NOT found"
+  when: "'postgresql' not in ansible_facts.packages"
+
+- name: "postgresql test result"
+  debug:
+    msg: "postgresql11 found"
+  when: "'postgresql11' in ansible_facts.packages"
+
+- name: "postgresql test result"
+  debug:
+    msg: "postgresql11 not found"
+  when: "'postgresql11' not in ansible_facts.packages"
+
+- name: Remove old postgresql package
+  yum: package={{item}} state=absent
+  with_items:
+    - postgresql
+    - postgresql.x86_64
+    - postgresql-contrib.x86_64
+    - postgresql-libs.x86_64
+    - postgresql-server.x86_64
+  when: "'postgresql' in ansible_facts.packages"

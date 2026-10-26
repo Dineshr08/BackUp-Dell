@@ -1,0 +1,24 @@
+---
+ - name: Restarting the server
+   hosts: client
+   become: true
+   tasks:
+   - name: install httpd
+     tags: install
+     yum:
+       name: httpd
+       state: latest
+   - name: Restarting the httpd  service
+     tags: httpd
+     service:
+       name: httpd
+       state: restarted
+   - name: Checking Service Status
+     tags: httpd, status
+     shell: service httpd status
+     register: serverstatus
+   - name: Show Service status
+     tags: debug
+     debug: 
+       msg: "Service is Up and Running"
+     when: serverstatus.rc | int == 0

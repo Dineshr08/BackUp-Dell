@@ -1,0 +1,25 @@
+--- 
+  # postgres server
+- hosts: "{{ input_artifactory_db_host_grp }}"
+  become: yes
+  gather_facts: yes
+  roles:
+  - role: postgresql
+    tags: postgresql
+
+# Artifactory server 
+- hosts: "{{ input_artifactory_server_grp }}"
+  become: yes
+  gather_facts: yes
+  roles: 
+    - role: common
+      tags: common
+    - role: java
+      tags: java
+    - role: artifactory 
+      tags: artifactory
+    - role: puppet-agent
+      tags: puppet-agent
+
+
+

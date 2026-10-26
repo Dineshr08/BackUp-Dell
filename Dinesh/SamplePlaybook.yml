@@ -1,0 +1,28 @@
+---
+- name: Sampleplaybook  # Playbook has list of play
+  hosts: ansible_client # host is target to play
+  remote_user: root
+  become: true
+  tasks:                # each play has list of task
+    - name: instal httpd # each element in list of task is given a name or description of task what we gng to perform
+      yum:                # the name is followed by instruction to execute the teask or call as module or mainly call as module
+        name: httpd  # argument or task to perform
+        state: latest # argument or task to perform
+    - name: run httpd
+      service:
+        name: httpd
+        state: started
+ - name: Sampleplaybook2  # Playbook has list of play (play2)
+  hosts: DB_client # host is target to play
+  remote_user: root
+  become: true
+  tasks:                # each play has list of task
+    - name: instal httpd # each element in list of task is given a name
+      yum:                # the name is followed by instruction to execute the teask
+        name: httpd
+        state: latest
+    - name: run httpd
+      service:
+        name: httpd
+        state: started     
+    

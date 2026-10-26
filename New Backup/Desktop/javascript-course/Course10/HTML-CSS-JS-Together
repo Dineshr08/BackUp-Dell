@@ -1,0 +1,148 @@
+Here we learn how to style the project we created in course 9
+To call the css class just call using 'className', only for queryselector call using '.className'
+  body { //complete body we are changing the font, so we used body directly
+        font-family: Arial; //To change font style of all the font inside the body
+      }
+  .subscribe-button {
+        border: none; //to make borade none of button
+        background-color: black; // to make background colour of button black
+        color: white; //to make font colour white
+        padding-top: 10px; //inside button give the space at top above font
+        padding-bottom: 10px; //inside button give the space at bottom below font
+        padding-left: 15px; //inside button give the space at left beside font
+        padding-right: 15px;  //inside button give the space at right beside font
+        font-weight: bold; // To make font to bold
+        border-radius: 50px; //to make the button edge to curve
+        cursor: pointer; //when we hover on button make that arrow to pointer
+        margin-bottom: 30px; //After button to next element giving the space
+      }
+
+      .is-subscribed {
+        background-color: rgb(240, 240, 240); //reb, green, blue 0 means dark colcour, 255 means light colour. We can make all coulour using rgb, so give all rgb 240 we made light colour
+        color: black; //to make font color to black
+      }
+
+       .cost-input {
+        font-size: 15px;
+        /*
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        */
+        padding: 10px; //give padding all size 10px
+      }
+
+      .calculate-button {
+        background-color: green; //button colour green
+        color: white; //font colour
+        border: none; //button background none
+        font-size: 15px;// font size change
+        padding: 12px 15px; //give space on vertical 12 and horizontal 15
+        cursor: pointer; //mouse pointer when we hover to change to pointer
+      }
+
+       
+
+We have to make style inside the head inside style we need to give. instead of class we give element name like button, it will change all button in webpage to same font, instead that we create a class .subscribe-button apply to specific button.
+Be cautious when we keep styling inside style , it may overright
+
+On a class attribute we can give multiple class by give space like below
+class="js-subscribe-button subscribe-button"
+
+As we aware we can get the html element inside javascript and that element will become object.each obj will have property and method. On here another property called classList attribute which has method call add and remove , we can use classList property add method to add the class when we click the button like below aand remove the class as well.  eg below
+const buttonElement = document.querySelector('.js-subscribe-button');
+        if(buttonElement.innerHTML === 'Subscribe') {
+          buttonElement.innerHTML = 'Subscribed';
+          buttonElement.classList.add('is-subscribed');
+        } else {
+          buttonElement.innerHTML = 'Subscribe';
+          buttonElement.classList.remove('is-subscribed');
+        }
+
+For rock papaer scissor project
+body { //Change whole body to below colour
+  background-color: rgb(25, 25, 25);
+  color: white; //fomnt to white
+  font-family: Arial; // font style to ariel
+}
+
+.title {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.move-icon {
+  height: 50px; //Change the size of icon to 50
+}
+
+.move-button {
+  background-color: transparent; //make background colour transparent
+  border: 3px solid white; //border width 3px, border style solid, border colour white
+  width: 120px;
+  height: 120px;
+  border-radius: 60px; // to make border as circle
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.result {
+  font-size: 25px;
+  font-weight: bold;
+  margin-top: 50px;
+}
+
+.score {
+  margin-top: 60px;
+}
+
+.reset-score-button {
+  background-color: white;
+  border: none;
+  font-size: 15px;
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+dom-rock-paper-scissor-final.html: on this we made lot of changes refer this
+We have modved images, scripts and css into different folders.
+images - to images folder
+style - styles folder
+script - scripts folder
+Below is for styles.We need to remove the style tage and add link which is special element in css where it has two attribute rel as relation to say what style our is css so metioned stylesheet and href we need to mention the location. We can have multiple like this 
+<link rel="stylesheet" href="styles/rock-papaer-scissor.css">  
+<link rel="stylesheet" href="styles/rock-papaer-scissor2.css">
+<link rel="stylesheet" href="styles/rock-papaer-scissor3.css">    
+<head>
+    <link rel="stylesheet" href="styles/rock-papaer-scissor.css">  
+    <title>
+      Rock Paper Scissor - Dom
+    </title>
+  </head>
+
+  Below is for script
+  We can move all our code into scriprs folder and gave like below
+   <script src="script/rock-papaer-scissor.js"></script>
+   Can have multiple scripts as well from top to buttom
+    <script src="script/rock-papaer-scissor.js"></script>
+     <script src="script/rock-papaer-scissor2.js"></script>
+      <script src="script/rock-papaer-scissor3.js"></script> top to bottom menas split 1 file to 3 from order1st half, second half to second and 3rd half to 3rd
+
+In our script we have made like below, to convert button to image add image tag on the button name place like below and on source add the image location and we can have the class for styling the image
+
+<button onclick="
+      playGame('rock');
+    " class="move-button">
+    <img src="images/rock-emoji.png" class="move-icon">
+    ></button>
+
+On the template string we can give like below to style that result
+document.querySelector('.js-moves').innerHTML = `You
+<img src="images/${playerMove}-emoji.png" class="move-icon">
+<img src="images/${computerMove}-emoji.png" class="move-icon">
+Computer`;
+
+buttonElement.classList.contains('uber-button-request') - This contain method will check if button has class or not, if yes it will return true Refere Exercise1
+const buttonElement = document.querySelector('.js-uber-button');
+        console.log(buttonElement);
+        console.log(buttonElement.classList.contains('uber-button-request'));

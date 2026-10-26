@@ -1,0 +1,41 @@
+Basic Commands:
+
+Run docker images: It will pull from docker hub if its not available on host and run the images for the first time. For next time it will run image directly as its available on host.
+docker run nginix
+List all the running Container:
+docker ps
+List all the container with both rnning and exited.
+docker ps -a
+To stop the running container
+docker stop container name or id
+To remove the exited container. To remove the container it should be on exited stated.
+docker rm conatinername or id
+To remove the image on host. But not container should be running with the image.
+docker rmi imagename
+To pull the image from the hub and but not run. Just pull and save on host
+docker pull imagename
+When we run the os image it will exit immediately, the reason is the docker is built to run process not os. So when you run image wich has os it will exit immediately. To run the image with some command below will help
+docker run ubuntu sleep 5
+To run the command on running container
+docker exec conatiner id command 
+docker exec conatiner id cat /etc/hosts
+
+Detach and re-attach
+To run the conatiner on backend. Id you run  the container like docker run nginx it will run instance with nginx and all the log or everything will show on UI cant do other operation, so just run the containeron backend will use detach mode and how to execute command and other stuff will see later.
+docker run -d imagename 
+To come back to front end we use attach mode but cant do anytthing. To come out ctrl+c will kill container
+docker attach container id
+
+To remove multiple container at same time, can use same apprich for other as well rmi etc.
+docker rm container id1 container id2 ....
+To clean all the container running on machine. It remove all the container both running and exited.
+docker system prune
+
+To create a container and give name to it
+docker run nginx:1.28-alpine --name webapp
+
+Filter the container based on name
+docker ps --filter "name=webapp" --format "{{.Names}}"
+
+Filter the container based on images.
+docker ps --filter "name=webapp" --format "{{.Image}}"

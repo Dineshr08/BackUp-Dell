@@ -1,0 +1,19 @@
+- name: Executing Shell command
+  hosts: client
+  become: true
+  tasks:
+  - name: Running Shell command
+    shell: |
+      df -k /dev | tail -1 |  awk '{print $4}' | sed 's/[^0-9]*//g'
+      df -k /dev | tail -1 |  awk '{print $4}' | sed 's/[^0-9]*//g'
+  - name: Copying file
+    copy: src=test.sh dest=/root/testing mode=0777
+  - name: Git Module
+    git: 
+      repo: https://github.com/Dineshr08/Ansible.git
+      dest: /root/testing1
+      update: yes
+  - name: Executing copied shell script
+    command: sh /root/testing1/shellscript.sh
+
+
