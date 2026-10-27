@@ -1,0 +1,135 @@
+grep 'HTTP/1' haproxy-aug6.log | grep -i "api" | awk '
+{
+  split($0, reqparts, "\"");
+  split(reqparts[2], methodpath, " ");
+  split(methodpath[2], pathonly, "?");
+  endpoint = pathonly[1];
+
+  split($10, timers, "/");
+  tt = timers[5];
+
+  sum[endpoint] += tt;
+  count[endpoint] += 1;
+  if (tt > max[endpoint]) max[endpoint] = tt;
+}
+END {
+  printf "%-30s %-10s %-10s %-10s\n", "Endpoint", "Count", "AvgMs", "MaxMs";
+  for (e in sum) {
+    printf "%-30s %-10d %-10.1f %-10d\n", e, count[e], sum[e]/count[e], max[e];
+  }
+}'
+
+
+grep -E '\[[0-9]{2}/[A-Za-z]{3}/[0-9]{4}:20:' haproxy-aug6.log | grep 'HTTP/1' | awk '
+{
+  split($16, conns, "/");
+  actconn = conns[1]; feconn = conns[2]; beconn = conns[3]; srvconn = conns[4];
+
+  cnt++;
+  sum_act += actconn;
+  sum_fe  += feconn;
+  sum_be  += beconn;
+  sum_srv += srvconn;
+
+  if (cnt == 1 || actconn < min_act) min_act = actconn;
+  if (actconn > max_act) max_act = actconn;
+
+  if (cnt == 1 || feconn < min_fe) min_fe = feconn;
+  if (feconn > max_fe) max_fe = feconn;
+
+  if (cnt == 1 || beconn < min_be) min_be = beconn;
+  if (beconn > max_be) max_be = beconn;
+
+  if (cnt == 1 || srvconn < min_srv) min_srv = srvconn;
+  if (srvconn > max_srv) max_srv = srvconn;
+}
+END {
+  printf "%-10s %-10s %-10s %-10s\n", "Metric", "Avg", "Min", "Max";
+  printf "%-10s %-10.1f %-10d %-10d\n", "ActConn", sum_act/cnt, min_act, max_act;
+  printf "%-10s %-10.1f %-10d %-10d\n", "FeConn",  sum_fe/cnt,  min_fe,  max_fe;
+  printf "%-10s %-10.1f %-10d %-10d\n", "BeConn",  sum_be/cnt,  min_be,  max_be;
+  printf "%-10s %-10.1f %-10d %-10d\n", "SrvConn", sum_srv/cnt, min_srv, max_srv;
+  print "Requests sampled in this hour:", cnt;
+}'
+
+
+
+grep -E '\[[0-9]{2}/[A-Za-z]{3}/[0-9]{4}:20:' haproxy-aug6.log | grep 'HTTP/1' | awk '
+{
+  split($7, tsparts, ":");
+  minute = tsparts[3];
+  split($16, conns, "/");
+  actconn = conns[1];
+
+  bucket = int(minute/5)*5;
+  sum[bucket] += actconn;
+  cnt[bucket]++;
+  if (actconn > max_by_bucket[bucket]) max_by_bucket[bucket] = actconn;
+}
+END {
+  printf "%-14s %-12s %-12s\n", "MinuteBucket", "AvgActConn", "MaxActConn";
+  for (b in sum) {
+    printf "20:%02d-20:%02d     %-12.1f %-12d\n", b, b+4, sum[b]/cnt[b], max_by_bucket[b];
+  }
+}' | sort
+
+
+
+grep -E '\[[0-9]{2}/[A-Za-z]{3}/[0-9]{4}:20:'  haproxy-aug6.log | grep 'HTTP/1' | awk '
+{
+  split($10, timers, "/");
+  tt = timers[5];
+  sum += tt; count++;
+  if (tt > max) max = tt;
+}
+END { print "Avg RT this hour:", sum/count, "ms   Max RT:", max, "ms   Requests:", count }'
+
+
+awk '{split($16, conns, "/"); actconn=conns[1]; if (actconn > max) max = actconn} END {print "Max ActConn in this file:", max}' haproxy-aug6.log
+
+
+
+grep 'HTTP/1' haproxy_ss.log | awk '
+{
+  split($16, conns, "/");
+  actconn = conns[1]; feconn = conns[2]; beconn = conns[3]; srvconn = conns[4];
+
+  cnt++;
+  sum_act += actconn; sum_fe += feconn; sum_be += beconn; sum_srv += srvconn;
+
+  if (cnt == 1 || actconn < min_act) min_act = actconn;
+  if (actconn > max_act) max_act = actconn;
+  if (cnt == 1 || feconn < min_fe) min_fe = feconn;
+  if (feconn > max_fe) max_fe = feconn;
+  if (cnt == 1 || beconn < min_be) min_be = beconn;
+  if (beconn > max_be) max_be = beconn;
+  if (cnt == 1 || srvconn < min_srv) min_srv = srvconn;
+  if (srvconn > max_srv) max_srv = srvconn;
+}
+END {
+  printf "%-10s %-10s %-10s %-10s\n", "Metric", "Avg", "Min", "Max";
+  printf "%-10s %-10.1f %-10d %-10d\n", "ActConn", sum_act/cnt, min_act, max_act;
+  printf "%-10s %-10.1f %-10d %-10d\n", "FeConn",  sum_fe/cnt,  min_fe,  max_fe;
+  printf "%-10s %-10.1f %-10d %-10d\n", "BeConn",  sum_be/cnt,  min_be,  max_be;
+  printf "%-10s %-10.1f %-10d %-10d\n", "SrvConn", sum_srv/cnt, min_srv, max_srv;
+  print "Total requests sampled for the day:", cnt;
+}'
+
+grep 'HTTP/1' haproxy-aug6.log | awk '
+{
+  split($10, timers, "/");
+  tt = timers[5];
+
+  cnt++;
+  sum += tt;
+  if (cnt == 1 || tt < min) min = tt;
+  if (tt > max) max = tt;
+}
+END {
+  printf "Avg RT: %.1f ms\n", sum/cnt;
+  printf "Min RT: %d ms\n", min;
+  printf "Max RT: %d ms\n", max;
+  print "Total requests sampled for the day:", cnt;
+}'
+
+awk '{split($10,t,"/"); if (t[5]+0 > 600000) print}' haproxy-aug6.log | grep 'HTTP/1'

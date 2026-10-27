@@ -297,31 +297,6 @@ sort_desc(instantvector)
 timestamp(instantvector)
 
 Grafana:
-sudo apt-get install adduser libfontconfigl musl
-wget https://dl.grafana.com/grafana/release/13.2.0/grafana_13.2.0_32077357341_linux_amd64.deb
-sudo dpkg -i grafana_13.2.0_32077357341_linux_amd64.deb
-systemctl daemon-reload
-systemctl start grafana-server
-systemctl enable grafana-server
-systemctl status grafana-server
-port 3000
-admin/admin
-
-
-sudo yum install -y https://dl.grafana.com/grafana/release/13.2.0/grafana_13.2.0_32077357341_linux_amd64.rpm
-systemctl start grafana-server
-systemctl enable grafana-server
-systemctl status grafana-server
-sudo firewall-cmd --permanent --add-port=3000/tcp
- 
-# Reload firewall to apply changes
-sudo firewall-cmd --reload
- 
-# Verify the rule was added
-sudo firewall-cmd --list-ports
-
-/etc/grafana
-Can push grafana data to seperate postgresql or sql database for that need to update the config files on above location
 
 Create data source
 
@@ -359,15 +334,6 @@ Dashboard setting to enable and disable annatotion
 
 
 
-Install loki and promtail on linux
-loki install 
-yum install loki
-port is 3100
-promtail
-github.com/grafana/loki/releases - Assets with more numbers
-wget https://github.com/grafana/loki/releases/download/v3.7.7/logcli-linux-amd64.zip
-yum install zip
-unzip 
 
 
 OpenTelemetry:
@@ -623,3 +589,60 @@ Location where tit was installed is /etc/tempo/config.yml
 On config.yml it will have listening port and on storage section it will have a path where the trace data will be stored.
 
 Also read tracql and Pomql from udemy or above 
+
+Basic Queries for LogQL:
+
+sum(count_over_time({hostname="eos2git-cec-lab-emc-com-primary", app_name="github_access"}
+| pattern `<user> <auth_user> [<http_timestamp>] "<method> <path>" <status> <response_size> "<referer>" "<user_agent>" "<ip>" <request_duration> <response_duration> <_>`
+| status = 401 or status = 403 [5m]))
+
+sum by(ip)(count_over_time({hostname="eos2git-cec-lab-emc-com-primary", app_name="github_access"}
+| pattern `<user> <auth_user> [<http_timestamp>] "<method> <path>" <status> <response_size> "<referer>" "<user_agent>" "<ip>" <request_duration> <response_duration> <_>`
+| status = 401 or status = 403 [5m]))
+
+topk(10, 
+sum by (ip, auth_user, path, status, user_agent) (
+(count_over_time({hostname="eos2git-cec-lab-emc-com-primary", app_name="github_access"}
+| pattern `<user> <auth_user> [<http_timestamp>] "<method> <path>" <status> <response_size> "<referer>" "<user_agent>" "<ip>" <request_duration> <response_duration> <_>`
+| status = 401 or status = 403 [5m]))))
+
+
+sum(
+  count_over_time(
+    {hostname="eos2git-cec-lab-emc-com-primary", app_name="github_access"}
+    | pattern `<user> <auth_user> [<http_timestamp>] "<method> <path>" <status> <response_size> "<referer>" "<user_agent>" "<ip>" <request_duration> <response_duration> <_>`
+    | status = `200`
+    [5m]
+  )
+)
+
+
+sum(
+  count_over_time(
+    {hostname="eos2git-cec-lab-emc-com-primary", app_name="github_access"}
+    | pattern `<user> <auth_user> [<http_timestamp>] "<method> <path>" <status> <response_size> "<referer>" "<user_agent>" "<ip>" <request_duration> <response_duration> <_>`
+    | status = 401 or status = 403
+    [5m]
+  )
+)
+
+sum by (http_client_ip, user, user_agent, path_info, gh_auth_type, status)(
+  rate(
+    {hostname="eos2git-cec-lab-emc-com-primary", app_name="github_access"}
+    | pattern `<user> <auth_user> [<http_timestamp>] "<method> <path>" <status> <response_size> "<referer>" "<user_agent>" "<ip>" <request_duration> <response_duration> <_>`
+    | status = `401` or status = `403`
+    [5m]
+  )
+)
+
+topk(10,
+sum by (http_client_ip, user, user_agent, path_info, gh_auth_type, status)(
+rate(
+{hostname="eos2git-cec-lab-emc-com-primary", app_name="github-unicorn"}
+    | logfmt
+    | log_type = `request`
+    | status = `401` or status = `403`
+[5m]
+)
+)
+)
