@@ -1,0 +1,30 @@
+Dynatrace One Agent Installation:
+Register Trail version, then on apps install oneagent choose linux and follow the commands mentions there to install the agent on the server.
+
+Infrastructure & Operations:
+We can see here host infra statistics. It will show all the hosts where dynatrace is installed, we can choose any host and see the infra performace metrics of that host.
+Inside we have many tabs
+Overview - On overview it will show highlevel details of uptime, monitoring type like full stack or infrastructure etc, then availability, reachability, total logs for timeframe, events, SLOs. Then it will show CPU, memory, swap, availability, network traffic, system load, DNS queries , DNS errors etc. Then it will show the List of technologies that host currently handeling its availability, cpu, mem. Then list of connections, list of process in and porcess out ie incomming connection and outgoing connections. Then network(interface, bits received and send per sec) and Disk analysis(total disks, space available , used, , reads/sec, writes/sec, reads iops, writes iops etc) as well.
+Info - Will have config about the host like no of core, mem, hypervisor type, ip,os name, version, arch, hostname
+Processes -  process monitoring. Show top process cpu, memory, and its tech,  
+REachability
+Vulnerability - Show app vulnerability
+Logs - Show all host logs inculde app logs as well
+Events
+SLOs
+Connections
+Whatever not mentioned above will read later on course.
+
+Renaming the host:
+Click on 3 dots, then setting->general setting - Rename. We can also revert old name using revert to old name option on same general settings place.
+
+Tags:
+Its a key value pair we can assign to all host, service and application etc. We can create manual and automatic tags.Manual tags need to do on each host manually, automatic tag, we can go create a condition based on that it will apply to all matching conditions.  
+Same way like above we can create a tags for process groups as well.Click on process it will list all process, for those process you need to apply tags we can do it
+
+Enable Maintenance Window:
+Apps->Manage->Settings->General->Maintenance Windows- Set the maintenance window - Which will disable all the alerts during the maintenance window
+
+Enable Process Availability Alerts:
+Process availability in Dynatrace is a monitoring feature that tracks whether critical processes are running on your hosts and alerts you when they go offline or crash. eg Nginix , node etc
+Apps->Manage->Settings->Analyze and alert->Alerts->Process availability
