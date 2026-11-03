@@ -28,3 +28,15 @@ Apps->Manage->Settings->General->Maintenance Windows- Set the maintenance window
 Enable Process Availability Alerts:
 Process availability in Dynatrace is a monitoring feature that tracks whether critical processes are running on your hosts and alerts you when they go offline or crash. eg Nginix , node etc
 Apps->Manage->Settings->Analyze and alert->Alerts->Process availability
+
+To Create Custom Alerts:
+To create an custom alerts like cpu went above certain % send me alert or other alerts
+Go to Apps->Manage->Settings->Analyze and alert->Alerts-All Alerts - Give DQL query - Then other conditions which is easy to read and create. Alerted alerts will shown in problems. To create a DQL, go to dashboard->Click + -> Explore Metrcis - >Get the data -> Choose DQL to convert to DQL and pasted the same DQL in Alerts DQL
+
+Setup Synthetic Monitoring for Private Locations:
+We need to install active gate on VM then only we can enable synthetci monitoring for provate location.In synthetci monitoring we can create our user flow using record flow using browser or using http method we can construct our own api and we can setup the frequency for monitoring default is 1min and it will continously monitor the performnce of those user flow with complete details, with req, resp, performance, alerts, failure etc
+Go to fleet managment->Install->Synthetic Engine->Choose Deployment Type->Setu Token-> Create a Private Location(Complete the Setup of provate location that we need)-> Follow commands to install active gate on vm like setup one agent.
+To create Synthetci monitoring for Flow or Api - Search - Syntetic->New Monitor->Browser or HTTP 
+Choose Ondemend to check right away or Analyse execution to see the history with timeframes.
+
+Using synthetic we can monitor the network connection using network availability using icmp, tcp and dns protacol. To read about what each dose refer Dynatarace in Chatgpt
